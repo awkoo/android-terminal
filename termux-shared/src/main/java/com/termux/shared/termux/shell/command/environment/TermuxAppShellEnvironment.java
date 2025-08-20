@@ -12,7 +12,6 @@ import com.termux.shared.android.PackageUtils;
 import com.termux.shared.android.SELinuxUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.shell.command.environment.ShellEnvironmentUtils;
-import com.termux.shared.termux.TermuxBootstrap;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxUtils;
 import com.termux.shared.termux.shell.am.TermuxAmSocketServer;
@@ -71,10 +70,6 @@ public class TermuxAppShellEnvironment {
     /** Environment variable for the Termux app profile owner. */
     public static final String ENV_TERMUX__PROFILE_OWNER = TERMUX_ENV__S_TERMUX + "PROFILE_OWNER";
 
-    /** Environment variable for the Termux app {@link TermuxBootstrap#TERMUX_APP_PACKAGE_MANAGER}. */
-    public static final String ENV_TERMUX_APP__PACKAGE_MANAGER = TERMUX_APP_ENV_PREFIX + "PACKAGE_MANAGER";
-    /** Environment variable for the Termux app {@link TermuxBootstrap#TERMUX_APP_PACKAGE_VARIANT}. */
-    public static final String ENV_TERMUX_APP__PACKAGE_VARIANT = TERMUX_APP_ENV_PREFIX + "PACKAGE_VARIANT";
     /** Environment variable for the Termux app files directory. */
     public static final String ENV_TERMUX_APP__DATA_DIR = TERMUX_APP_ENV_PREFIX + "DATA_DIR";
     public static final String ENV_TERMUX_APP__LEGACY_DATA_DIR = TERMUX_APP_ENV_PREFIX + "LEGACY_DATA_DIR";
