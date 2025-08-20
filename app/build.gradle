@@ -88,6 +88,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     signingConfigs {
         debug {
             storeFile file('testkey_untrusted.jks')
