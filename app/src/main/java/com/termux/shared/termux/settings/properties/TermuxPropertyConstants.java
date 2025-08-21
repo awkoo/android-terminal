@@ -1,7 +1,6 @@
 package com.termux.shared.termux.settings.properties;
 
 import com.google.common.collect.ImmutableBiMap;
-import com.termux.shared.termux.shell.am.TermuxAmSocketServer;
 import com.termux.shared.theme.NightMode;
 import com.termux.shared.settings.properties.SharedProperties;
 import com.termux.shared.termux.TermuxConstants;
@@ -124,12 +123,6 @@ public final class TermuxPropertyConstants {
 
     /** Defines the key for whether to hide soft keyboard when termux app is started */
     public static final String KEY_HIDE_SOFT_KEYBOARD_ON_STARTUP =  "hide-soft-keyboard-on-startup"; // Default: "hide-soft-keyboard-on-startup"
-
-
-
-    /** Defines the key for whether the {@link TermuxAmSocketServer} should be run at app startup */
-    public static final String KEY_RUN_TERMUX_AM_SOCKET_SERVER =  "run-termux-am-socket-server"; // Default: "run-termux-am-socket-server"
-
 
 
     /** Defines the key for whether url links in terminal transcript will automatically open on click or on tap */
@@ -393,7 +386,6 @@ public final class TermuxPropertyConstants {
         KEY_ENFORCE_CHAR_BASED_INPUT,
         KEY_EXTRA_KEYS_TEXT_ALL_CAPS,
         KEY_HIDE_SOFT_KEYBOARD_ON_STARTUP,
-        KEY_RUN_TERMUX_AM_SOCKET_SERVER,
         KEY_TERMINAL_ONCLICK_URL_OPEN,
         KEY_USE_CTRL_SPACE_WORKAROUND,
         KEY_USE_FULLSCREEN,
@@ -453,8 +445,7 @@ public final class TermuxPropertyConstants {
      * default: true
      */
     public static final Set<String> TERMUX_DEFAULT_TRUE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST = new HashSet<>(Arrays.asList(
-        KEY_EXTRA_KEYS_TEXT_ALL_CAPS,
-        KEY_RUN_TERMUX_AM_SOCKET_SERVER
+        KEY_EXTRA_KEYS_TEXT_ALL_CAPS
     ));
 
     /** Defines the set for keys loaded by termux that have default inverted boolean behaviour with false as default.
