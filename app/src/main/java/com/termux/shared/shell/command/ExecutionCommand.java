@@ -210,18 +210,8 @@ public class ExecutionCommand {
     public String commandHelp;
 
 
-    /** Defines the markdown text for the help of the Termux plugin API that was used to start the
-     * {@link ExecutionCommand}. This can be used to provide useful info to the user if an internal
-     * error is raised. */
-    public String pluginAPIHelp;
-
-
     /** Defines the {@link Intent} received which started the command. */
     public Intent commandIntent;
-
-    /** Defines if {@link ExecutionCommand} was started because of an external plugin request
-     * like with an intent or from within Termux app itself. */
-    public boolean isPluginExecutionCommand;
 
     /** Defines the {@link ResultConfig} for the {@link ExecutionCommand} containing information
      * on how to handle the result. */
@@ -253,11 +243,6 @@ public class ExecutionCommand {
         this.workingDirectory = workingDirectory;
         this.runner = runner;
         this.isFailsafe = isFailsafe;
-    }
-
-
-    public boolean isPluginExecutionCommandWithPendingResult() {
-        return isPluginExecutionCommand && resultConfig.isCommandWithPendingResult();
     }
 
 
@@ -405,10 +390,6 @@ public class ExecutionCommand {
         if (!ignoreNull || executionCommand.commandIntent != null)
             logString.append("\n").append(executionCommand.getCommandIntentLogString());
 
-        logString.append("\n").append(executionCommand.getIsPluginExecutionCommandLogString());
-        if (executionCommand.isPluginExecutionCommand)
-            logString.append("\n").append(ResultConfig.getResultConfigLogString(executionCommand.resultConfig, ignoreNull));
-
         return logString.toString();
     }
 
@@ -453,7 +434,6 @@ public class ExecutionCommand {
 
         logString.append("\n").append(executionCommand.getCommandDescriptionLogString());
         logString.append("\n").append(executionCommand.getCommandHelpLogString());
-        logString.append("\n").append(executionCommand.getPluginAPIHelpLogString());
 
         return logString.toString();
     }
@@ -498,8 +478,6 @@ public class ExecutionCommand {
         markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Shell Create Mode", executionCommand.shellCreateMode, "-"));
         markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Set Shell Command Shell Environment", executionCommand.setShellCommandShellEnvironment, "-"));
 
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("isPluginExecutionCommand", executionCommand.isPluginExecutionCommand, "-"));
-
         markdownString.append("\n\n").append(ResultConfig.getResultConfigMarkdownString(executionCommand.resultConfig));
 
         markdownString.append("\n\n").append(ResultData.getResultDataMarkdownString(executionCommand.resultData));
@@ -509,11 +487,6 @@ public class ExecutionCommand {
                 markdownString.append("\n\n### Command Description\n\n").append(executionCommand.commandDescription).append("\n");
             if (executionCommand.commandHelp != null)
                 markdownString.append("\n\n### Command Help\n\n").append(executionCommand.commandHelp).append("\n");
-            markdownString.append("\n##\n");
-        }
-
-        if (executionCommand.pluginAPIHelp != null) {
-            markdownString.append("\n\n### Plugin API Help\n\n").append(executionCommand.pluginAPIHelp);
             markdownString.append("\n##\n");
         }
 
@@ -606,19 +579,11 @@ public class ExecutionCommand {
         return Logger.getSingleLineLogStringEntry("Command Help", commandHelp, "-");
     }
 
-    public String getPluginAPIHelpLogString() {
-        return Logger.getSingleLineLogStringEntry("Plugin API Help", pluginAPIHelp, "-");
-    }
-
     public String getCommandIntentLogString() {
         if (commandIntent == null)
             return "Command Intent: -";
         else
             return Logger.getMultiLineLogStringEntry("Command Intent", IntentUtils.getIntentString(commandIntent), "-");
-    }
-
-    public String getIsPluginExecutionCommandLogString() {
-        return "isPluginExecutionCommand: `" + isPluginExecutionCommand + "`";
     }
 
 
