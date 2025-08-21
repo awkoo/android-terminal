@@ -68,66 +68,6 @@ public class TermuxUtils {
         return PackageUtils.getContextForPackage(context, TermuxConstants.TERMUX_PACKAGE_NAME, Context.CONTEXT_INCLUDE_CODE);
     }
 
-    /**
-     * Get the {@link Context} for {@link TermuxConstants#TERMUX_API_PACKAGE_NAME} package.
-     *
-     * @param context The {@link Context} to use to get the {@link Context} of the package.
-     * @return Returns the {@link Context}. This will {@code null} if an exception is raised.
-     */
-    public static Context getTermuxAPIPackageContext(@NonNull Context context) {
-        return PackageUtils.getContextForPackage(context, TermuxConstants.TERMUX_API_PACKAGE_NAME);
-    }
-
-    /**
-     * Get the {@link Context} for {@link TermuxConstants#TERMUX_BOOT_PACKAGE_NAME} package.
-     *
-     * @param context The {@link Context} to use to get the {@link Context} of the package.
-     * @return Returns the {@link Context}. This will {@code null} if an exception is raised.
-     */
-    public static Context getTermuxBootPackageContext(@NonNull Context context) {
-        return PackageUtils.getContextForPackage(context, TermuxConstants.TERMUX_BOOT_PACKAGE_NAME);
-    }
-
-    /**
-     * Get the {@link Context} for {@link TermuxConstants#TERMUX_FLOAT_PACKAGE_NAME} package.
-     *
-     * @param context The {@link Context} to use to get the {@link Context} of the package.
-     * @return Returns the {@link Context}. This will {@code null} if an exception is raised.
-     */
-    public static Context getTermuxFloatPackageContext(@NonNull Context context) {
-        return PackageUtils.getContextForPackage(context, TermuxConstants.TERMUX_FLOAT_PACKAGE_NAME);
-    }
-
-    /**
-     * Get the {@link Context} for {@link TermuxConstants#TERMUX_STYLING_PACKAGE_NAME} package.
-     *
-     * @param context The {@link Context} to use to get the {@link Context} of the package.
-     * @return Returns the {@link Context}. This will {@code null} if an exception is raised.
-     */
-    public static Context getTermuxStylingPackageContext(@NonNull Context context) {
-        return PackageUtils.getContextForPackage(context, TermuxConstants.TERMUX_STYLING_PACKAGE_NAME);
-    }
-
-    /**
-     * Get the {@link Context} for {@link TermuxConstants#TERMUX_TASKER_PACKAGE_NAME} package.
-     *
-     * @param context The {@link Context} to use to get the {@link Context} of the package.
-     * @return Returns the {@link Context}. This will {@code null} if an exception is raised.
-     */
-    public static Context getTermuxTaskerPackageContext(@NonNull Context context) {
-        return PackageUtils.getContextForPackage(context, TermuxConstants.TERMUX_TASKER_PACKAGE_NAME);
-    }
-
-    /**
-     * Get the {@link Context} for {@link TermuxConstants#TERMUX_WIDGET_PACKAGE_NAME} package.
-     *
-     * @param context The {@link Context} to use to get the {@link Context} of the package.
-     * @return Returns the {@link Context}. This will {@code null} if an exception is raised.
-     */
-    public static Context getTermuxWidgetPackageContext(@NonNull Context context) {
-        return PackageUtils.getContextForPackage(context, TermuxConstants.TERMUX_WIDGET_PACKAGE_NAME);
-    }
-
     /** Wrapper for {@link PackageUtils#getContextForPackageOrExitApp(Context, String, boolean, String)}. */
     public static Context getContextForPackageOrExitApp(@NonNull Context context, String packageName,
                                                         final boolean exitAppOnError) {
