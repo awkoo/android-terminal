@@ -16,18 +16,6 @@
             app:summaryOn="@string/termux_terminal_view_key_logging_enabled_on"
             app:title="@string/termux_terminal_view_key_logging_enabled_title" />
 
-        <SwitchPreferenceCompat
-            app:key="plugin_error_notifications_enabled"
-            app:summaryOff="@string/termux_plugin_error_notifications_enabled_off"
-            app:summaryOn="@string/termux_plugin_error_notifications_enabled_on"
-            app:title="@string/termux_plugin_error_notifications_enabled_title" />
-
-        <SwitchPreferenceCompat
-            app:key="crash_report_notifications_enabled"
-            app:summaryOff="@string/termux_crash_report_notifications_enabled_off"
-            app:summaryOn="@string/termux_crash_report_notifications_enabled_on"
-            app:title="@string/termux_crash_report_notifications_enabled_title" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

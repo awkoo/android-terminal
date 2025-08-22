@@ -122,34 +122,18 @@ class DebuggingPreferencesDataStore extends PreferenceDataStore {
         if (mPreferences == null) return;
         if (key == null) return;
 
-        switch (key) {
-            case "terminal_view_key_logging_enabled":
-                    mPreferences.setTerminalViewKeyLoggingEnabled(value);
-                break;
-            case "plugin_error_notifications_enabled":
-                mPreferences.setPluginErrorNotificationsEnabled(value);
-                break;
-            case "crash_report_notifications_enabled":
-                mPreferences.setCrashReportNotificationsEnabled(value);
-                break;
-            default:
-                break;
+        if (key.equals("terminal_view_key_logging_enabled")) {
+            mPreferences.setTerminalViewKeyLoggingEnabled(value);
         }
     }
 
     @Override
     public boolean getBoolean(String key, boolean defValue) {
         if (mPreferences == null) return false;
-        switch (key) {
-            case "terminal_view_key_logging_enabled":
-                return mPreferences.isTerminalViewKeyLoggingEnabled();
-            case "plugin_error_notifications_enabled":
-                return mPreferences.arePluginErrorNotificationsEnabled(false);
-            case "crash_report_notifications_enabled":
-                return mPreferences.areCrashReportNotificationsEnabled(false);
-            default:
-                return false;
+        if (key.equals("terminal_view_key_logging_enabled")) {
+            return mPreferences.isTerminalViewKeyLoggingEnabled();
         }
+        return false;
     }
 
 }
