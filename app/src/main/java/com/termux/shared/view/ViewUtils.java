@@ -16,23 +16,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.termux.shared.logger.Logger;
-
 public class ViewUtils {
 
-    /** Log root view events. */
-    public static boolean VIEW_UTILS_LOGGING_ENABLED = false;
-
     private static final String LOG_TAG = "ViewUtils";
-
-    /**
-     * Sets whether view utils logging is enabled or not.
-     *
-     * @param value The boolean value that defines the state.
-     */
-    public static void setIsViewUtilsLoggingEnabled(boolean value) {
-        VIEW_UTILS_LOGGING_ENABLED = value;
-    }
 
     /**
      * Check if a {@link View} is fully visible and not hidden or partially covered by another view.
@@ -66,8 +52,6 @@ public class ViewUtils {
     public static Rect[] getWindowAndViewRects(View view, int statusBarHeight) {
         if (view == null || !view.isShown())
             return null;
-
-        boolean view_utils_logging_enabled = VIEW_UTILS_LOGGING_ENABLED;
 
         // windowRect - will hold available area where content remain visible to users
         // Takes into account screen decorations (e.g. statusbar)
@@ -103,26 +87,12 @@ public class ViewUtils {
         int viewLeft = viewsLocationInWindow[0];
         int viewTop = viewsLocationInWindow[1];
 
-        if (view_utils_logging_enabled) {
-            Logger.logVerbose(LOG_TAG, "getWindowAndViewRects:");
-            Logger.logVerbose(LOG_TAG, "windowRect: " + toRectString(windowRect) + ", windowAvailableRect: " + toRectString(windowAvailableRect));
-            Logger.logVerbose(LOG_TAG, "viewsLocationInWindow: " + toPointString(new Point(viewLeft, viewTop)));
-            Logger.logVerbose(LOG_TAG, "activitySize: " + toPointString(getDisplaySize(context, true)) +
-                ", displaySize: " + toPointString(getDisplaySize(context, false)) +
-                ", displayOrientation=" + displayOrientation);
-        }
-
         if (isInMultiWindowMode) {
             if (displayOrientation == Configuration.ORIENTATION_PORTRAIT) {
                 // The windowRect.top of the window at the of split screen mode should start right
                 // below the status bar
                 if (statusBarHeight != windowRect.top) {
-                    if (view_utils_logging_enabled)
-                        Logger.logVerbose(LOG_TAG, "Window top does not equal statusBarHeight " + statusBarHeight + " in multi-window portrait mode. Window is possibly bottom app in split screen mode. Adding windowRect.top " + windowRect.top + " to viewTop.");
                     viewTop += windowRect.top;
-                } else {
-                    if (view_utils_logging_enabled)
-                        Logger.logVerbose(LOG_TAG, "windowRect.top equals statusBarHeight " + statusBarHeight + " in multi-window portrait mode. Window is possibly top app in split screen mode.");
                 }
 
             } else if (displayOrientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -137,8 +107,6 @@ public class ViewUtils {
         viewRect = new Rect(viewLeft, viewTop, viewRight, viewBottom);
 
         if (displayOrientation == Configuration.ORIENTATION_LANDSCAPE && viewRight > windowAvailableRect.right) {
-            if (view_utils_logging_enabled)
-                Logger.logVerbose(LOG_TAG, "viewRight " + viewRight + " is greater than windowAvailableRect.right " + windowAvailableRect.right + " in landscape mode. Setting windowAvailableRect.right to viewRight since it may not include navbar height.");
             windowAvailableRect.right = viewRight;
         }
 

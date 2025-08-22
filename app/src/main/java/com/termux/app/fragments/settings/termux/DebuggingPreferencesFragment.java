@@ -91,12 +91,10 @@ class DebuggingPreferencesDataStore extends PreferenceDataStore {
         if (mPreferences == null) return null;
         if (key == null) return null;
 
-        switch (key) {
-            case "log_level":
-                return String.valueOf(mPreferences.getLogLevel());
-            default:
-                return null;
+        if (key.equals("log_level")) {
+            return String.valueOf(mPreferences.getLogLevel());
         }
+        return null;
     }
 
     @Override
@@ -104,36 +102,10 @@ class DebuggingPreferencesDataStore extends PreferenceDataStore {
         if (mPreferences == null) return;
         if (key == null) return;
 
-        switch (key) {
-            case "log_level":
-                if (value != null) {
-                    mPreferences.setLogLevel(mContext, Integer.parseInt(value));
-                }
-                break;
-            default:
-                break;
+        if (key.equals("log_level")) {
+            if (value != null) {
+                mPreferences.setLogLevel(mContext, Integer.parseInt(value));
+            }
         }
     }
-
-
-
-    @Override
-    public void putBoolean(String key, boolean value) {
-        if (mPreferences == null) return;
-        if (key == null) return;
-
-        if (key.equals("terminal_view_key_logging_enabled")) {
-            mPreferences.setTerminalViewKeyLoggingEnabled(value);
-        }
-    }
-
-    @Override
-    public boolean getBoolean(String key, boolean defValue) {
-        if (mPreferences == null) return false;
-        if (key.equals("terminal_view_key_logging_enabled")) {
-            return mPreferences.isTerminalViewKeyLoggingEnabled();
-        }
-        return false;
-    }
-
 }

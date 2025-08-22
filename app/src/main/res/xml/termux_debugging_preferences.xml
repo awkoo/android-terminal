@@ -10,12 +10,6 @@
             app:title="@string/termux_log_level_title"
             app:useSimpleSummaryProvider="true" />
 
-        <SwitchPreferenceCompat
-            app:key="terminal_view_key_logging_enabled"
-            app:summaryOff="@string/termux_terminal_view_key_logging_enabled_off"
-            app:summaryOn="@string/termux_terminal_view_key_logging_enabled_on"
-            app:title="@string/termux_terminal_view_key_logging_enabled_title" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>

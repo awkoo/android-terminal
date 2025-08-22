@@ -224,13 +224,4 @@ public class TermuxAppSharedPreferences extends AppSharedPreferences {
     }
 
 
-    public boolean isTerminalViewKeyLoggingEnabled() {
-        return SharedPreferenceUtils.getBoolean(mSharedPreferences, TERMUX_APP.KEY_TERMINAL_VIEW_KEY_LOGGING_ENABLED, TERMUX_APP.DEFAULT_VALUE_TERMINAL_VIEW_KEY_LOGGING_ENABLED);
-    }
-
-    public void setTerminalViewKeyLoggingEnabled(boolean value) {
-        SharedPreferenceUtils.setBoolean(mSharedPreferences, TERMUX_APP.KEY_TERMINAL_VIEW_KEY_LOGGING_ENABLED, value, false);
-    }
-
-
 }
