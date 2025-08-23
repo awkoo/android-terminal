@@ -71,8 +71,9 @@ public class LocalClientSocket implements Closeable {
             close();
         } catch (IOException e) {
             Error error = LocalSocketErrno.ERRNO_CLOSE_CLIENT_SOCKET_FAILED_WITH_EXCEPTION.getError(e, mLocalSocketRunConfig.getTitle(), e.getMessage());
+            //        logExtendedMessage(Log.ERROR, tag, message);
             if (logErrorMessage)
-                Logger.logErrorExtended(LOG_TAG, error.getErrorLogString());
+                error.getErrorLogString();
             return error;
         }
 
@@ -88,7 +89,8 @@ public class LocalClientSocket implements Closeable {
     @Override
     public void close() throws IOException {
         if (mFD >= 0) {
-            Logger.logVerbose(LOG_TAG, "Client socket close for \"" + mLocalSocketRunConfig.getTitle() + "\" server: " + getPeerCred().getMinimalString());
+            getPeerCred().getMinimalString();
+//        logMessage(Log.VERBOSE, tag, message);
             JniResult result = LocalSocketManager.closeSocket(mLocalSocketRunConfig.getLogTitle() + " (client)", mFD);
             if (result == null || result.retval != 0) {
                 throw new IOException(JniResult.getErrorString(result));

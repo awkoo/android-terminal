@@ -82,19 +82,21 @@ public class PhantomProcessUtils {
         ExecutionCommand executionCommand = new ExecutionCommand(-1, "/system/bin/sh", null,
             script + "\n", "/", ExecutionCommand.Runner.APP_SHELL.getName(), true);
         executionCommand.commandLabel = " ActivityManager " + KEY_MAX_PHANTOM_PROCESSES + " Command";
-        executionCommand.backgroundCustomLogLevel = Logger.LOG_LEVEL_OFF;
+//        executionCommand.backgroundCustomLogLevel = Logger.LOG_LEVEL_OFF;
         AppShell appShell = AppShell.execute(context, executionCommand, null, new AndroidShellEnvironment(), null, true);
         boolean stderrSet = !executionCommand.resultData.stderr.toString().isEmpty();
         if (appShell == null || !executionCommand.isSuccessful() || executionCommand.resultData.exitCode != 0 || stderrSet) {
-            Logger.logErrorExtended(LOG_TAG, executionCommand.toString());
+            executionCommand.toString();
+//        logExtendedMessage(Log.ERROR, tag, message);
             return null;
         }
 
         try {
             return Integer.parseInt(executionCommand.resultData.stdout.toString().trim());
         } catch (NumberFormatException e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "The " + executionCommand.commandLabel + " did not return a valid integer", e);
-            Logger.logErrorExtended(LOG_TAG, executionCommand.toString());
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
+            executionCommand.toString();
+//        logExtendedMessage(Log.ERROR, tag, message);
         }
 
         return null;

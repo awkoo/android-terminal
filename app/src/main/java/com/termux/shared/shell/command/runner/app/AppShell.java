@@ -8,14 +8,12 @@ import android.system.OsConstants;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.common.base.Joiner;
 import com.termux.R;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.shell.command.ExecutionCommand;
 import com.termux.shared.shell.command.environment.ShellEnvironmentUtils;
 import com.termux.shared.shell.command.result.ResultData;
 import com.termux.shared.errors.Errno;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.shell.command.ExecutionCommand.ExecutionState;
 import com.termux.shared.shell.command.environment.IShellEnvironment;
 import com.termux.shared.shell.ShellUtils;
@@ -120,10 +118,10 @@ public final class AppShell {
         }
 
         // No need to log stdin if logging is disabled, like for app internal scripts
-        Logger.logDebugExtended(LOG_TAG, ExecutionCommand.getExecutionInputLogString(executionCommand,
-            true, Logger.shouldEnableLoggingForCustomLogLevel(executionCommand.backgroundCustomLogLevel)));
-        Logger.logVerboseExtended(LOG_TAG, "\"" + executionCommand.getCommandIdAndLabelLogString() + "\" AppShell Environment:\n" +
-            Joiner.on("\n").join(environmentArray));
+//        Logger.logDebugExtended(LOG_TAG, ExecutionCommand.getExecutionInputLogString(executionCommand,
+//            true, Logger.shouldEnableLoggingForCustomLogLevel(executionCommand.backgroundCustomLogLevel)));
+//        Logger.logVerboseExtended(LOG_TAG, "\"" + executionCommand.getCommandIdAndLabelLogString() + "\" AppShell Environment:\n" +
+//            Joiner.on("\n").join(environmentArray));
 
         // Exec the process
         final Process process;
@@ -170,14 +168,15 @@ public final class AppShell {
     private void executeInner(@NonNull final Context context) throws IllegalThreadStateException, InterruptedException {
         mExecutionCommand.mPid = ShellUtils.getPid(mProcess);
 
-        Logger.logDebug(LOG_TAG, "Running \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" AppShell with pid " + mExecutionCommand.mPid);
+        mExecutionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
 
         mExecutionCommand.resultData.exitCode = null;
 
         // setup stdin, and stdout and stderr gobblers
         DataOutputStream STDIN = new DataOutputStream(mProcess.getOutputStream());
-        StreamGobbler STDOUT = new StreamGobbler(mExecutionCommand.mPid + "-stdout", mProcess.getInputStream(), mExecutionCommand.resultData.stdout, mExecutionCommand.backgroundCustomLogLevel);
-        StreamGobbler STDERR = new StreamGobbler(mExecutionCommand.mPid + "-stderr", mProcess.getErrorStream(), mExecutionCommand.resultData.stderr, mExecutionCommand.backgroundCustomLogLevel);
+        StreamGobbler STDOUT = new StreamGobbler(mExecutionCommand.mPid + "-stdout", mProcess.getInputStream(), mExecutionCommand.resultData.stdout);
+        StreamGobbler STDERR = new StreamGobbler(mExecutionCommand.mPid + "-stderr", mProcess.getErrorStream(), mExecutionCommand.resultData.stderr);
 
         // start gobbling
         STDOUT.start();
@@ -226,14 +225,17 @@ public final class AppShell {
         mProcess.destroy();
 
         // Process result
+        //        logMessage(Log.DEBUG, tag, message);
+        //        logMessage(Log.DEBUG, tag, message);
         if (exitCode == 0)
-            Logger.logDebug(LOG_TAG, "The \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" AppShell with pid " + mExecutionCommand.mPid + " exited normally");
+            mExecutionCommand.getCommandIdAndLabelLogString();
         else
-            Logger.logDebug(LOG_TAG, "The \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" AppShell with pid " + mExecutionCommand.mPid + " exited with code: " + exitCode);
+            mExecutionCommand.getCommandIdAndLabelLogString();
 
         // If the execution command has already failed, like SIGKILL was sent, then don't continue
         if (mExecutionCommand.isStateFailed()) {
-            Logger.logDebug(LOG_TAG, "Ignoring setting \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" AppShell state to ExecutionState.EXECUTED and processing results since it has already failed");
+            mExecutionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
             return;
         }
 
@@ -256,11 +258,13 @@ public final class AppShell {
     public void killIfExecuting(@NonNull final Context context, boolean processResult) {
         // If execution command has already finished executing, then no need to process results or send SIGKILL
         if (mExecutionCommand.hasExecuted()) {
-            Logger.logDebug(LOG_TAG, "Ignoring sending SIGKILL to \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" AppShell since it has already finished executing");
+            mExecutionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
             return;
         }
 
-        Logger.logDebug(LOG_TAG, "Send SIGKILL to \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" AppShell");
+        mExecutionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
 
         if (mExecutionCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), context.getString(R.string.error_sending_sigkill_to_process))) {
             if (processResult) {
@@ -283,7 +287,9 @@ public final class AppShell {
             // Send SIGKILL to process
             Os.kill(pid, OsConstants.SIGKILL);
         } catch (ErrnoException e) {
-            Logger.logWarn(LOG_TAG, "Failed to send SIGKILL to \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" AppShell with pid " + pid + ": " + e.getMessage());
+            mExecutionCommand.getCommandIdAndLabelLogString();
+            e.getMessage();
+//        logMessage(Log.WARN, tag, message);
         }
     }
 
@@ -309,11 +315,13 @@ public final class AppShell {
         if (executionCommand == null) return;
 
         if (executionCommand.shouldNotProcessResults()) {
-            Logger.logDebug(LOG_TAG, "Ignoring duplicate call to process \"" + executionCommand.getCommandIdAndLabelLogString() + "\" AppShell result");
+            executionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
             return;
         }
 
-        Logger.logDebug(LOG_TAG, "Processing \"" + executionCommand.getCommandIdAndLabelLogString() + "\" AppShell result");
+        executionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
 
         if (appShell != null && appShell.mAppShellClient != null) {
             appShell.mAppShellClient.onAppShellExited(appShell);

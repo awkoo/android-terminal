@@ -21,6 +21,7 @@ import com.termux.shared.data.DataUtils;
 import com.termux.shared.interact.MessageDialogUtils;
 import com.termux.shared.logger.Logger;
 import com.termux.shared.reflection.ReflectionUtils;
+import com.termux.utils.UI;
 
 import java.lang.reflect.Field;
 import java.security.MessageDigest;
@@ -55,7 +56,8 @@ public class PackageUtils {
         try {
             return context.createPackageContext(packageName, flags);
         } catch (Exception e) {
-            Logger.logVerbose(LOG_TAG, "Failed to get \"" + packageName + "\" package context with flags " + flags + ": " + e.getMessage());
+            e.getMessage();
+//        logMessage(Log.VERBOSE, tag, message);
             return null;
         }
     }
@@ -80,7 +82,7 @@ public class PackageUtils {
                 packageName);
             if (!DataUtils.isNullOrEmpty(helpUrl))
                 errorMessage += "\n" + context.getString(R.string.error_get_package_context_failed_help_url_message, helpUrl);
-            Logger.logError(LOG_TAG, errorMessage);
+            //        logMessage(Log.ERROR, tag, message);
             MessageDialogUtils.exitAppWithErrorMessage(context,
                 context.getString(R.string.error_get_package_context_failed_title),
                 errorMessage);
@@ -191,7 +193,7 @@ public class PackageUtils {
             return (Integer) ReflectionUtils.invokeField(ApplicationInfo.class, "privateFlags", applicationInfo).value;
         } catch (Exception e) {
             // ClassCastException may be thrown
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get privateFlags field value for ApplicationInfo class", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -219,7 +221,7 @@ public class PackageUtils {
             return (String) ReflectionUtils.invokeField(ApplicationInfo.class, Build.VERSION.SDK_INT < Build.VERSION_CODES.O ? "seinfo" : "seInfo", applicationInfo).value;
         } catch (Exception e) {
             // ClassCastException may be thrown
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get seInfo field value for ApplicationInfo class", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -240,7 +242,7 @@ public class PackageUtils {
             return (String) ReflectionUtils.invokeField(ApplicationInfo.class, "seInfoUser", applicationInfo).value;
         } catch (Exception e) {
             // ClassCastException may be thrown
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get seInfoUser field value for ApplicationInfo class", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -258,7 +260,7 @@ public class PackageUtils {
             return (Integer) ReflectionUtils.invokeField(ApplicationInfo.class, fieldName, null).value;
         } catch (Exception e) {
             // ClassCastException may be thrown
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get \"" + fieldName + "\" field value for ApplicationInfo class", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -739,7 +741,7 @@ public class PackageUtils {
             PackageManager packageManager = context.getPackageManager();
             if (packageManager != null) {
                 if (toastString != null && alwaysShowToast) {
-                    Logger.showToast(context, toastString, true);
+                    UI.showToast(context, toastString, true);
                     toastString = null;
                 }
 
@@ -755,7 +757,7 @@ public class PackageUtils {
 
                 if (setState == null) return null;
 
-                if (toastString != null) Logger.showToast(context, toastString, true);
+                if (toastString != null) UI.showToast(context, toastString, true);
                 ComponentName componentName = new ComponentName(packageName, className);
                 packageManager.setComponentEnabledSetting(componentName,
                     setState ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
@@ -767,7 +769,7 @@ public class PackageUtils {
                 newState ? R.string.error_enable_component_failed : R.string.error_disable_component_failed,
                 packageName, className) + ": " + e.getMessage();
             if (showErrorMessage)
-                Logger.showToast(context, errmsg, true);
+                UI.showToast(context, errmsg, true);
             return errmsg;
         }
     }
@@ -794,8 +796,8 @@ public class PackageUtils {
                 return packageManager.getComponentEnabledSetting(componentName) == PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
             }
         } catch (final Exception e) {
-            if (logErrorMessage)
-                Logger.logStackTraceWithMessage(LOG_TAG, context.getString(R.string.error_get_component_state_failed, packageName, className), e);
+//            if (logErrorMessage)
+//                Logger.logStackTraceWithMessage(context.getString(R.string.error_get_component_state_failed, packageName, className));
         }
 
         return null;

@@ -6,14 +6,12 @@ import android.system.OsConstants;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.common.base.Joiner;
 import com.termux.R;
 import com.termux.shared.shell.command.ExecutionCommand;
 import com.termux.shared.shell.command.environment.ShellEnvironmentUtils;
 import com.termux.shared.shell.command.environment.UnixShellEnvironment;
 import com.termux.shared.shell.command.result.ResultData;
 import com.termux.shared.errors.Errno;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.shell.command.environment.IShellEnvironment;
 import com.termux.shared.shell.ShellUtils;
 import com.termux.terminal.TerminalSession;
@@ -148,11 +146,11 @@ public class TermuxSession {
             return null;
         }
 
-        Logger.logDebugExtended(LOG_TAG, executionCommand.toString());
-        Logger.logVerboseExtended(LOG_TAG, "\"" + executionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession Environment:\n" +
-            Joiner.on("\n").join(environmentArray));
-
-        Logger.logDebug(LOG_TAG, "Running \"" + executionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession");
+//        Logger.logDebugExtended(LOG_TAG, executionCommand.toString());
+//        Logger.logVerboseExtended(LOG_TAG, "\"" + executionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession Environment:\n" +
+//            Joiner.on("\n").join(environmentArray));
+//
+//        Logger.logDebug(LOG_TAG, "Running \"" + executionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession");
         TerminalSession terminalSession = new TerminalSession(executionCommand.executable,
             executionCommand.workingDirectory, executionCommand.arguments, environmentArray,
             executionCommand.terminalTranscriptRows, terminalSessionClient);
@@ -179,14 +177,17 @@ public class TermuxSession {
 
         int exitCode = mTerminalSession.getExitStatus();
 
+        //        logMessage(Log.DEBUG, tag, message);
+        //        logMessage(Log.DEBUG, tag, message);
         if (exitCode == 0)
-            Logger.logDebug(LOG_TAG, "The \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession exited normally");
+            mExecutionCommand.getCommandIdAndLabelLogString();
         else
-            Logger.logDebug(LOG_TAG, "The \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession exited with code: " + exitCode);
+            mExecutionCommand.getCommandIdAndLabelLogString();
 
         // If the execution command has already failed, like SIGKILL was sent, then don't continue
         if (mExecutionCommand.isStateFailed()) {
-            Logger.logDebug(LOG_TAG, "Ignoring setting \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession state to ExecutionState.EXECUTED and processing results since it has already failed");
+            mExecutionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
             return;
         }
 
@@ -212,11 +213,13 @@ public class TermuxSession {
     public void killIfExecuting(@NonNull final Context context, boolean processResult) {
         // If execution command has already finished executing, then no need to process results or send SIGKILL
         if (mExecutionCommand.hasExecuted()) {
-            Logger.logDebug(LOG_TAG, "Ignoring sending SIGKILL to \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession since it has already finished executing");
+            mExecutionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
             return;
         }
 
-        Logger.logDebug(LOG_TAG, "Send SIGKILL to \"" + mExecutionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession");
+        mExecutionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
         if (mExecutionCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), context.getString(R.string.error_sending_sigkill_to_process))) {
             if (processResult) {
                 mExecutionCommand.resultData.exitCode = 137; // SIGKILL
@@ -256,11 +259,13 @@ public class TermuxSession {
         if (executionCommand == null) return;
 
         if (executionCommand.shouldNotProcessResults()) {
-            Logger.logDebug(LOG_TAG, "Ignoring duplicate call to process \"" + executionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession result");
+            executionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
             return;
         }
 
-        Logger.logDebug(LOG_TAG, "Processing \"" + executionCommand.getCommandIdAndLabelLogString() + "\" TermuxSession result");
+        executionCommand.getCommandIdAndLabelLogString();
+//        logMessage(Log.DEBUG, tag, message);
 
         if (termuxSession != null && termuxSession.mTermuxSessionClient != null) {
             termuxSession.mTermuxSessionClient.onTermuxSessionExited(termuxSession);

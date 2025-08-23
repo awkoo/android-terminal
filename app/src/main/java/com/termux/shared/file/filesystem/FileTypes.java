@@ -4,8 +4,6 @@ import android.system.Os;
 
 import androidx.annotation.NonNull;
 
-import com.termux.shared.logger.Logger;
-
 import java.io.File;
 
 public class FileTypes {
@@ -91,8 +89,9 @@ public class FileTypes {
             return getFileType(fileAttributes);
         } catch (Exception e) {
             // If not a ENOENT (No such file or directory) exception
+            //        logMessage(Log.ERROR, DEFAULT_LOG_TAG, message);
             if (e.getMessage() != null && !e.getMessage().contains("ENOENT"))
-                Logger.logError("Failed to get file type for file at path \"" + filePath + "\": " + e.getMessage());
+                e.getMessage();
             return FileType.NO_EXIST;
         }
     }

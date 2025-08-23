@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.termux.shared.logger.Logger;
 import com.termux.shared.reflection.ReflectionUtils;
 
 import java.lang.reflect.Method;
@@ -30,13 +29,13 @@ public class SELinuxUtils {
             @SuppressLint("PrivateApi") Class<?> clazz = Class.forName(ANDROID_OS_SELINUX_CLASS);
             Method method = ReflectionUtils.getDeclaredMethod(clazz, methodName);
             if (method == null) {
-                Logger.logError(LOG_TAG, "Failed to get " + methodName + "() method of " + ANDROID_OS_SELINUX_CLASS + " class");
+                //        logMessage(Log.ERROR, tag, message);
                 return null;
             }
 
             return (String) ReflectionUtils.invokeMethod(method, null).value;
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to call " + methodName + "() method of " + ANDROID_OS_SELINUX_CLASS + " class", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -56,13 +55,13 @@ public class SELinuxUtils {
             @SuppressLint("PrivateApi") Class<?> clazz = Class.forName(ANDROID_OS_SELINUX_CLASS);
             Method method = ReflectionUtils.getDeclaredMethod(clazz, methodName, int.class);
             if (method == null) {
-                Logger.logError(LOG_TAG, "Failed to get " + methodName + "() method of " + ANDROID_OS_SELINUX_CLASS + " class");
+                //        logMessage(Log.ERROR, tag, message);
                 return null;
             }
 
             return (String) ReflectionUtils.invokeMethod(method, null, pid).value;
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to call " + methodName + "() method of " + ANDROID_OS_SELINUX_CLASS + " class", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -82,13 +81,13 @@ public class SELinuxUtils {
             @SuppressLint("PrivateApi") Class<?> clazz = Class.forName(ANDROID_OS_SELINUX_CLASS);
             Method method = ReflectionUtils.getDeclaredMethod(clazz, methodName, String.class);
             if (method == null) {
-                Logger.logError(LOG_TAG, "Failed to get " + methodName + "() method of " + ANDROID_OS_SELINUX_CLASS + " class");
+                //        logMessage(Log.ERROR, tag, message);
                 return null;
             }
 
             return (String) ReflectionUtils.invokeMethod(method, null, path).value;
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to call " + methodName + "() method of " + ANDROID_OS_SELINUX_CLASS + " class", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }

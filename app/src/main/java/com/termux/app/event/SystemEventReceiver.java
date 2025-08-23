@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.termux.shared.data.IntentUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.termux.TermuxUtils;
 import com.termux.shared.termux.file.TermuxFileUtils;
 import com.termux.shared.termux.shell.command.environment.TermuxShellEnvironment;
@@ -32,7 +31,8 @@ public class SystemEventReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(@NonNull Context context, @Nullable Intent intent) {
         if (intent == null) return;
-        Logger.logDebug(LOG_TAG, "Intent Received:\n" + IntentUtils.getIntentString(intent));
+        IntentUtils.getIntentString(intent);
+//        logMessage(Log.DEBUG, tag, message);
 
         String action = intent.getAction();
         if (action == null) return;
@@ -47,7 +47,7 @@ public class SystemEventReceiver extends BroadcastReceiver {
                 onActionPackageUpdated(context, intent);
                 break;
             default:
-                Logger.logError(LOG_TAG, "Invalid action \"" + action + "\" passed to " + LOG_TAG);
+                //        logMessage(Log.ERROR, tag, message);
         }
     }
 
@@ -58,8 +58,9 @@ public class SystemEventReceiver extends BroadcastReceiver {
     public synchronized void onActionPackageUpdated(@NonNull Context context, @NonNull Intent intent) {
         Uri data = intent.getData();
         if (data != null && TermuxUtils.isUriDataForTermuxPluginPackage(data)) {
-            Logger.logDebug(LOG_TAG, intent.getAction().replaceAll("^android.intent.action.", "") +
-                " event received for \"" + data.toString().replaceAll("^package:", "") + "\"");
+            intent.getAction().replaceAll("^android.intent.action.", "");
+            data.toString().replaceAll("^package:", "");
+//        logMessage(Log.DEBUG, tag, message);
             if (TermuxFileUtils.isTermuxFilesDirectoryAccessible(context, false, false) == null)
                 TermuxShellEnvironment.writeEnvironmentToFile(context);
         }

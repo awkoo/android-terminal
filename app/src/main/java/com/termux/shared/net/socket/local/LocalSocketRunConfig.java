@@ -122,7 +122,7 @@ public class LocalSocketRunConfig implements Serializable {
 
     /** Get log title that should be used for {@link LocalSocketManager}. */
     public String getLogTitle() {
-        return Logger.getDefaultLogTag() + "." + mTitle;
+        return mTitle;
     }
 
     /** Get {@link #mPath}. */

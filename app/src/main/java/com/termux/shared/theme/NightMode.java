@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.termux.shared.logger.Logger;
-
 /** The modes used by to decide night mode for themes. */
 public enum NightMode {
 
@@ -70,13 +68,13 @@ public enum NightMode {
         } else {
             NightMode nightMode = NightMode.modeOf(name);
             if (nightMode == null) {
-                Logger.logError(LOG_TAG, "Invalid APP_NIGHT_MODE \"" + name + "\"");
+                //        logMessage(Log.ERROR, tag, message);
                 return;
             }
             APP_NIGHT_MODE = nightMode;
         }
 
-        Logger.logVerbose(LOG_TAG, "Set APP_NIGHT_MODE to \"" + APP_NIGHT_MODE.getName() + "\"");
+        //        logMessage(Log.VERBOSE, tag, message);
     }
 
     /** Get {@link #APP_NIGHT_MODE}. */

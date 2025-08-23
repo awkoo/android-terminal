@@ -11,7 +11,6 @@ import com.google.common.collect.ImmutableBiMap;
 import com.google.common.primitives.Primitives;
 import com.termux.shared.file.FileUtils;
 import com.termux.shared.file.filesystem.FileType;
-import com.termux.shared.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -234,19 +233,19 @@ public class SharedProperties {
         Properties properties = new Properties();
 
         if (propertiesFile == null) {
-            Logger.logWarn(LOG_TAG, "Not loading properties since file is null");
+//            Logger.logWarn(LOG_TAG, "Not loading properties since file is null");
             return properties;
         }
 
         try {
             try (FileInputStream in = new FileInputStream(propertiesFile)) {
-                Logger.logVerbose(LOG_TAG, "Loading properties from \"" + propertiesFile.getAbsolutePath() + "\" file");
+//                Logger.logVerbose(LOG_TAG, "Loading properties from \"" + propertiesFile.getAbsolutePath() + "\" file");
                 properties.load(new InputStreamReader(in, StandardCharsets.UTF_8));
             }
         } catch (Exception e) {
             if (context != null)
                 Toast.makeText(context, "Could not open properties file \"" + propertiesFile.getAbsolutePath() + "\": " + e.getMessage(), Toast.LENGTH_LONG).show();
-            Logger.logStackTraceWithMessage(LOG_TAG, "Error loading properties file \"" + propertiesFile.getAbsolutePath() + "\"", e);
+//            Logger.logStackTraceWithMessage("Error loading properties file \"" + propertiesFile.getAbsolutePath() + "\"");
             return null;
         }
 
@@ -277,14 +276,15 @@ public class SharedProperties {
             if (fileType == FileType.REGULAR) {
                 if (propertiesFile.canRead())
                     return propertiesFile;
-                else
-                    Logger.logWarn(logTag, "Ignoring properties file at \"" + propertiesFilePath + "\" since it is not readable");
+                else {
+//        logMessage(Log.WARN, tag, message);
+                }
             } else if (fileType != FileType.NO_EXIST) {
-                Logger.logWarn(logTag, "Ignoring properties file at \"" + propertiesFilePath + "\" of type: \"" + fileType.getName() + "\"");
+                //        logMessage(Log.WARN, tag, message);
             }
         }
 
-        Logger.logDebug(logTag, "No readable properties file found at: " + propertiesFilePaths);
+        //        logMessage(Log.DEBUG, tag, message);
         return null;
     }
 
@@ -392,13 +392,13 @@ public class SharedProperties {
     public static boolean putToMap(HashMap<String, Object> map, String key, Object value) {
 
         if (map == null) {
-            Logger.logError(LOG_TAG, "Map passed to SharedProperties.putToProperties() is null");
+            //        logMessage(Log.ERROR, tag, message);
             return false;
         }
 
         // null keys are not allowed to be stored in mMap
         if (key == null) {
-            Logger.logError(LOG_TAG, "Cannot put a null key into properties map");
+            //        logMessage(Log.ERROR, tag, message);
             return false;
         }
 
@@ -416,7 +416,7 @@ public class SharedProperties {
             map.put(key, value);
             return true;
         } else {
-            Logger.logError(LOG_TAG, "Cannot put a non-primitive value for the key \"" + key + "\" into properties map");
+            //        logMessage(Log.ERROR, tag, message);
             return false;
         }
     }
@@ -435,13 +435,13 @@ public class SharedProperties {
     public static boolean putToProperties(Properties properties, String key, String value) {
 
         if (properties == null) {
-            Logger.logError(LOG_TAG, "Properties passed to SharedProperties.putToProperties() is null");
+            //        logMessage(Log.ERROR, tag, message);
             return false;
         }
 
         // null keys are not allowed to be stored in mMap
         if (key == null) {
-            Logger.logError(LOG_TAG, "Cannot put a null key into properties");
+            //        logMessage(Log.ERROR, tag, message);
             return false;
         }
 
@@ -536,14 +536,17 @@ public class SharedProperties {
         Object outputValue = map.get(inputValue);
         if (outputValue == null) {
             Object defaultInputValue = map.inverse().get(defaultOutputValue);
+            //        logMessage(Log.ERROR, tag, message);
             if (defaultInputValue == null)
-                Logger.logError(LOG_TAG, "The default output value \"" + defaultOutputValue + "\" for the key \"" + key + "\" does not exist as a value in the BiMap passed to getDefaultIfNotInMap(): " + map.values());
+                map.values();
 
             if (logErrorOnInvalidValue && inputValue != null) {
-                if (key != null)
-                    Logger.logError(logTag, "The value \"" + inputValue + "\" for the key \"" + key + "\" is invalid. Using default value \"" + defaultInputValue + "\" instead.");
-                else
-                    Logger.logError(logTag, "The value \"" + inputValue + "\" is invalid. Using default value \"" + defaultInputValue + "\" instead.");
+                if (key != null) {
+//        logMessage(Log.ERROR, tag, message);
+                }
+                else {
+//        logMessage(Log.ERROR, tag, message);
+                }
             }
 
             return defaultOutputValue;
@@ -570,10 +573,12 @@ public class SharedProperties {
     public static int getDefaultIfNotInRange(String key, int value, int def, int min, int max, boolean logErrorOnInvalidValue, boolean ignoreErrorIfValueZero, String logTag) {
         if (value < min || value > max) {
             if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
-                if (key != null)
-                    Logger.logError(logTag, "The value \"" + value + "\" for the key \"" + key + "\" is not within the range " + min +  "-" + max +  " (inclusive). Using default value \"" + def + "\" instead.");
-                else
-                    Logger.logError(logTag, "The value \"" + value + "\" is not within the range " + min +  "-" + max +  " (inclusive). Using default value \"" + def + "\" instead.");
+                if (key != null) {
+//        logMessage(Log.ERROR, tag, message);
+                }
+                else {
+//        logMessage(Log.ERROR, tag, message);
+                }
             }
             return def;
         } else {
@@ -599,10 +604,12 @@ public class SharedProperties {
     public static float getDefaultIfNotInRange(String key, float value, float def, float min, float max, boolean logErrorOnInvalidValue, boolean ignoreErrorIfValueZero, String logTag) {
         if (value < min || value > max) {
             if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
-                if (key != null)
-                    Logger.logError(logTag, "The value \"" + value + "\" for the key \"" + key + "\" is not within the range " + min +  "-" + max +  " (inclusive). Using default value \"" + def + "\" instead.");
-                else
-                    Logger.logError(logTag, "The value \"" + value + "\" is not within the range " + min +  "-" + max +  " (inclusive). Using default value \"" + def + "\" instead.");
+                if (key != null) {
+//        logMessage(Log.ERROR, tag, message);
+                }
+                else {
+//        logMessage(Log.ERROR, tag, message);
+                }
             }
             return def;
         } else {

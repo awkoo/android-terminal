@@ -23,7 +23,6 @@ import com.termux.shared.termux.TermuxConstants;
 import com.termux.app.TermuxService;
 import com.termux.shared.termux.settings.properties.TermuxPropertyConstants;
 import com.termux.shared.termux.terminal.io.BellHandler;
-import com.termux.shared.logger.Logger;
 import com.termux.terminal.TerminalColors;
 import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSessionClient;
@@ -211,7 +210,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     public void onTerminalCursorStateChange(boolean enabled) {
         // Do not start cursor blinking thread if activity is not visible
         if (enabled && !mActivity.isVisible()) {
-            Logger.logVerbose(LOG_TAG, "Ignoring call to start cursor blinking since activity is not visible");
+            //        logMessage(Log.VERBOSE, tag, message);
             return;
         }
 
@@ -260,7 +259,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
                 mBellSoundId = mBellSoundPool.load(mActivity, R.raw.bell, 1);
             } catch (Exception e){
                 // Catch java.lang.RuntimeException: Unable to resume activity {com.termux/com.termux.app.TermuxActivity}: android.content.res.Resources$NotFoundException: File res/raw/bell.ogg from drawable resource ID
-                Logger.logStackTraceWithMessage(LOG_TAG, "Failed to load bell sound pool", e);
+                //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             }
         }
     }
@@ -499,7 +498,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
             mActivity.getTerminalView().setTypeface(newTypeface);
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Error in checkForFontAndColors()", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
         }
     }
 

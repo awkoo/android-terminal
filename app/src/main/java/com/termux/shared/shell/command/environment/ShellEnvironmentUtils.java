@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import com.termux.shared.errors.Error;
 import com.termux.shared.file.FileUtils;
-import com.termux.shared.logger.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,14 +105,18 @@ public class ShellEnvironmentUtils {
      */
     public static boolean isValidEnvironmentVariableNameValuePair(@Nullable String name, @Nullable String value, boolean logErrors) {
         if (!isValidEnvironmentVariableName(name)) {
-            if (logErrors)
-                Logger.logErrorPrivate(LOG_TAG, "Invalid environment variable name. name=`" + name + "`, value=`" + value + "`");
+            if (logErrors) {
+//        if (CURRENT_LOG_LEVEL >= LOG_LEVEL_DEBUG)
+//            logMessage(Log.ERROR, tag, message);
+            }
             return false;
         }
 
         if (!isValidEnvironmentVariableValue(value)) {
-            if (logErrors)
-                Logger.logErrorPrivate(LOG_TAG, "Invalid environment variable value. name=`" + name + "`, value=`" + value + "`");
+            if (logErrors) {
+//        if (CURRENT_LOG_LEVEL >= LOG_LEVEL_DEBUG)
+//            logMessage(Log.ERROR, tag, message);
+            }
             return false;
         }
 
@@ -172,7 +175,8 @@ public class ShellEnvironmentUtils {
         if (homeDirectory != null && !homeDirectory.isEmpty()) {
             Error error = FileUtils.createDirectoryFile("shell home", homeDirectory);
             if (error != null) {
-                Logger.logErrorExtended(LOG_TAG, "Failed to create shell home directory\n" + error.toString());
+                error.toString();
+//        logExtendedMessage(Log.ERROR, tag, message);
             }
         }
     }

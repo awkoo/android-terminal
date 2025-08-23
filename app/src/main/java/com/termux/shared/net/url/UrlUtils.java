@@ -3,7 +3,6 @@ package com.termux.shared.net.url;
 import androidx.annotation.Nullable;
 
 import com.termux.shared.data.DataUtils;
-import com.termux.shared.logger.Logger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -40,8 +39,9 @@ public class UrlUtils {
         try {
             return new URL(new URL(base), destination).toString();
         } catch (MalformedURLException e) {
+            //        logMessage(Log.ERROR, tag, message);
             if (logError)
-                Logger.logError(LOG_TAG, "Failed to join url base \"" + base + "\" and destination \"" + destination + "\": " + e.getMessage());
+                e.getMessage();
             return null;
         }
     }

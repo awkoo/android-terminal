@@ -21,14 +21,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Locale;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
-
-import com.termux.shared.logger.Logger;
 
 /**
  * Thread utility class continuously reading from an InputStream
@@ -87,42 +84,42 @@ public class StreamGobbler extends Thread {
     private final OnLineListener lineListener;
     @Nullable
     private final OnStreamClosedListener streamClosedListener;
-    @Nullable
-    private final Integer mLogLevel;
+//    @Nullable
+//    private final Integer mLogLevel;
     private volatile boolean active = true;
     private volatile boolean calledOnClose = false;
 
     private static final String LOG_TAG = "StreamGobbler";
 
-    /**
-     * <p>StreamGobbler constructor</p>
-     *
-     * <p>We use this class because shell STDOUT and STDERR should be read as quickly as
-     * possible to prevent a deadlock from occurring, or Process.waitFor() never
-     * returning (as the buffer is full, pausing the native process)</p>
-     *
-     * @param shell Name of the shell
-     * @param inputStream InputStream to read from
-     * @param outputList {@literal List<String>} to write to, or null
-     * @param logLevel The custom log level to use for logging the command output. If set to
-     *                 {@code null}, then {@link Logger#LOG_LEVEL_VERBOSE} will be used.
-     */
-    @AnyThread
-    public StreamGobbler(@NonNull String shell, @NonNull InputStream inputStream,
-                         @Nullable List<String> outputList,
-                         @Nullable Integer logLevel) {
-        super("Gobbler#" + incThreadCounter());
-        this.shell = shell;
-        this.inputStream = inputStream;
-        reader = new BufferedReader(new InputStreamReader(inputStream));
-        streamClosedListener = null;
-
-        listWriter = outputList;
-        stringWriter = null;
-        lineListener = null;
-
-        mLogLevel = logLevel;
-    }
+//    /**
+//     * <p>StreamGobbler constructor</p>
+//     *
+//     * <p>We use this class because shell STDOUT and STDERR should be read as quickly as
+//     * possible to prevent a deadlock from occurring, or Process.waitFor() never
+//     * returning (as the buffer is full, pausing the native process)</p>
+//     *
+//     * @param shell Name of the shell
+//     * @param inputStream InputStream to read from
+//     * @param outputList {@literal List<String>} to write to, or null
+//     * @param logLevel The custom log level to use for logging the command output. If set to
+//     *                 {@code null}, then {@link Logger#LOG_LEVEL_VERBOSE} will be used.
+//     */
+//    @AnyThread
+//    public StreamGobbler(@NonNull String shell, @NonNull InputStream inputStream,
+//                         @Nullable List<String> outputList,
+//                         @Nullable Integer logLevel) {
+//        super("Gobbler#" + incThreadCounter());
+//        this.shell = shell;
+//        this.inputStream = inputStream;
+//        reader = new BufferedReader(new InputStreamReader(inputStream));
+//        streamClosedListener = null;
+//
+//        listWriter = outputList;
+//        stringWriter = null;
+//        lineListener = null;
+//
+//        mLogLevel = logLevel;
+//    }
 
     /**
      * <p>StreamGobbler constructor</p>
@@ -136,13 +133,10 @@ public class StreamGobbler extends Thread {
      * @param shell Name of the shell
      * @param inputStream InputStream to read from
      * @param outputString {@literal List<String>} to write to, or null
-     * @param logLevel The custom log level to use for logging the command output. If set to
-     *                 {@code null}, then {@link Logger#LOG_LEVEL_VERBOSE} will be used.
      */
     @AnyThread
     public StreamGobbler(@NonNull String shell, @NonNull InputStream inputStream,
-                         @Nullable StringBuilder outputString,
-                         @Nullable Integer logLevel) {
+                         @Nullable StringBuilder outputString) {
         super("Gobbler#" + incThreadCounter());
         this.shell = shell;
         this.inputStream = inputStream;
@@ -153,55 +147,56 @@ public class StreamGobbler extends Thread {
         stringWriter = outputString;
         lineListener = null;
 
-        mLogLevel = logLevel;
+//        mLogLevel = logLevel;
     }
 
-    /**
-     * <p>StreamGobbler constructor</p>
-     *
-     * <p>We use this class because shell STDOUT and STDERR should be read as quickly as
-     * possible to prevent a deadlock from occurring, or Process.waitFor() never
-     * returning (as the buffer is full, pausing the native process)</p>
-     *
-     * @param shell Name of the shell
-     * @param inputStream InputStream to read from
-     * @param onLineListener OnLineListener callback
-     * @param onStreamClosedListener OnStreamClosedListener callback
-     * @param logLevel The custom log level to use for logging the command output. If set to
-     *                 {@code null}, then {@link Logger#LOG_LEVEL_VERBOSE} will be used.
-     */
-    @AnyThread
-    public StreamGobbler(@NonNull String shell, @NonNull InputStream inputStream,
-                         @Nullable OnLineListener onLineListener,
-                         @Nullable OnStreamClosedListener onStreamClosedListener,
-                         @Nullable Integer logLevel) {
-        super("Gobbler#" + incThreadCounter());
-        this.shell = shell;
-        this.inputStream = inputStream;
-        reader = new BufferedReader(new InputStreamReader(inputStream));
-        streamClosedListener = onStreamClosedListener;
-
-        listWriter = null;
-        stringWriter = null;
-        lineListener = onLineListener;
-
-        mLogLevel = logLevel;
-    }
+//    /**
+//     * <p>StreamGobbler constructor</p>
+//     *
+//     * <p>We use this class because shell STDOUT and STDERR should be read as quickly as
+//     * possible to prevent a deadlock from occurring, or Process.waitFor() never
+//     * returning (as the buffer is full, pausing the native process)</p>
+//     *
+//     * @param shell Name of the shell
+//     * @param inputStream InputStream to read from
+//     * @param onLineListener OnLineListener callback
+//     * @param onStreamClosedListener OnStreamClosedListener callback
+//     * @param logLevel The custom log level to use for logging the command output. If set to
+//     *                 {@code null}, then {@link Logger#LOG_LEVEL_VERBOSE} will be used.
+//     */
+//    @AnyThread
+//    public StreamGobbler(@NonNull String shell, @NonNull InputStream inputStream,
+//                         @Nullable OnLineListener onLineListener,
+//                         @Nullable OnStreamClosedListener onStreamClosedListener,
+//                         @Nullable Integer logLevel) {
+//        super("Gobbler#" + incThreadCounter());
+//        this.shell = shell;
+//        this.inputStream = inputStream;
+//        reader = new BufferedReader(new InputStreamReader(inputStream));
+//        streamClosedListener = onStreamClosedListener;
+//
+//        listWriter = null;
+//        stringWriter = null;
+//        lineListener = onLineListener;
+//
+//        mLogLevel = logLevel;
+//    }
 
     @Override
     public void run() {
-        String defaultLogTag = Logger.getDefaultLogTag();
-        boolean loggingEnabled = Logger.shouldEnableLoggingForCustomLogLevel(mLogLevel);
-        if (loggingEnabled)
-            Logger.logVerbose(LOG_TAG, "Using custom log level: " + mLogLevel + ", current log level: " + Logger.getLogLevel());
+//        String defaultLogTag = Logger.getDefaultLogTag();
+//        boolean loggingEnabled = Logger.shouldEnableLoggingForCustomLogLevel(mLogLevel);
+//        if (loggingEnabled) {
+//        logMessage(Log.VERBOSE, tag, message);
+//        }
 
         // keep reading the InputStream until it ends (or an error occurs)
         // optionally pausing when a command is executed that consumes the InputStream itself
         try {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (loggingEnabled)
-                    Logger.logVerboseForce(defaultLogTag + "Command", String.format(Locale.ENGLISH, "[%s] %s", shell, line)); // This will get truncated by LOGGER_ENTRY_MAX_LEN, likely 4KB
+//                if (loggingEnabled)
+//                    Logger.logVerboseForce(defaultLogTag + "Command", String.format(Locale.ENGLISH, "[%s] %s", shell, line)); // This will get truncated by LOGGER_ENTRY_MAX_LEN, likely 4KB
 
                 if (stringWriter != null) stringWriter.append(line).append("\n");
                 if (listWriter != null) listWriter.add(line);

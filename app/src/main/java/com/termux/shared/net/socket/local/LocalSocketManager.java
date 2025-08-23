@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 
 import com.termux.shared.errors.Error;
 import com.termux.shared.jni.models.JniResult;
-import com.termux.shared.logger.Logger;
 
 /**
  * Manager for an AF_UNIX/SOCK_STREAM local server.
@@ -68,16 +67,16 @@ public class LocalSocketManager {
      * Create the {@link LocalServerSocket} and start listening for new {@link LocalClientSocket}.
      */
     public synchronized Error start() {
-        Logger.logDebugExtended(LOG_TAG, "start\n" + mLocalSocketRunConfig);
+//        Logger.logDebugExtended(LOG_TAG, "start\n" + mLocalSocketRunConfig);
 
         if (!localSocketLibraryLoaded) {
             try {
-                Logger.logDebug(LOG_TAG, "Loading \"" + LOCAL_SOCKET_LIBRARY + "\" library");
+//                Logger.logDebug(LOG_TAG, "Loading \"" + LOCAL_SOCKET_LIBRARY + "\" library");
                 System.loadLibrary(LOCAL_SOCKET_LIBRARY);
                 localSocketLibraryLoaded = true;
             } catch (Throwable t) {
                 Error error = LocalSocketErrno.ERRNO_START_LOCAL_SOCKET_LIB_LOAD_FAILED_WITH_EXCEPTION.getError(t, LOCAL_SOCKET_LIBRARY,  t.getMessage());
-                Logger.logErrorExtended(LOG_TAG, error.getErrorLogString());
+//                Logger.logErrorExtended(LOG_TAG, error.getErrorLogString());
                 return error;
             }
         }
@@ -91,7 +90,7 @@ public class LocalSocketManager {
      */
     public synchronized Error stop() {
         if (mIsRunning) {
-            Logger.logDebugExtended(LOG_TAG, "stop\n" + mLocalSocketRunConfig);
+            //        logExtendedMessage(Log.DEBUG, tag, message);
             mIsRunning = false;
             return mServerSocket.stop();
         }
@@ -127,7 +126,7 @@ public class LocalSocketManager {
             return createServerSocketNative(serverTitle, path, backlog);
         } catch (Throwable t) {
             String message = "Exception in createServerSocketNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -146,7 +145,7 @@ public class LocalSocketManager {
             return closeSocketNative(serverTitle, fd);
         } catch (Throwable t) {
             String message = "Exception in closeSocketNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -166,7 +165,7 @@ public class LocalSocketManager {
             return acceptNative(serverTitle, fd);
         } catch (Throwable t) {
             String message = "Exception in acceptNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -194,7 +193,7 @@ public class LocalSocketManager {
             return readNative(serverTitle, fd, data, deadline);
         } catch (Throwable t) {
             String message = "Exception in readNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -218,7 +217,7 @@ public class LocalSocketManager {
             return sendNative(serverTitle, fd, data, deadline);
         } catch (Throwable t) {
             String message = "Exception in sendNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -237,7 +236,7 @@ public class LocalSocketManager {
             return availableNative(serverTitle, fd);
         } catch (Throwable t) {
             String message = "Exception in availableNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -257,7 +256,7 @@ public class LocalSocketManager {
             return setSocketReadTimeoutNative(serverTitle, fd, timeout);
         } catch (Throwable t) {
             String message = "Exception in setSocketReadTimeoutNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -277,7 +276,7 @@ public class LocalSocketManager {
             return setSocketSendTimeoutNative(serverTitle, fd, timeout);
         } catch (Throwable t) {
             String message = "Exception in setSocketSendTimeoutNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -297,7 +296,7 @@ public class LocalSocketManager {
             return getPeerCredNative(serverTitle, fd, peerCred);
         } catch (Throwable t) {
             String message = "Exception in getPeerCredNative()";
-            Logger.logStackTraceWithMessage(LOG_TAG, message, t);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return new JniResult(message, t);
         }
     }
@@ -334,7 +333,7 @@ public class LocalSocketManager {
         try {
             thread.start();
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "LocalSocketManagerClientThread start failed", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
         }
     }
 
@@ -375,7 +374,8 @@ public class LocalSocketManager {
             mLocalSocketManagerClient.getLocalSocketManagerClientThreadUEH(this);
         if (uncaughtExceptionHandler == null)
             uncaughtExceptionHandler = (t, e) ->
-                Logger.logStackTraceWithMessage(LOG_TAG, "Uncaught exception for " + t + " in " + mLocalSocketRunConfig.getTitle() + " server", e);
+            {//        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
+            };
         return uncaughtExceptionHandler;
     }
 

@@ -11,7 +11,6 @@ import com.termux.shared.data.DataUtils;
 import com.termux.shared.markdown.MarkdownUtils;
 import com.termux.shared.errors.Error;
 import com.termux.shared.file.FileUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.errors.FunctionErrno;
 import com.termux.shared.android.AndroidUtils;
 import com.termux.shared.shell.command.ShellCommandConstants.RESULT_SENDER;
@@ -72,7 +71,9 @@ public class ResultSender {
 
         logTag = DataUtils.getDefaultIfNull(logTag, LOG_TAG);
 
-        Logger.logDebugExtended(logTag, "Sending result for command \"" + label + "\":\n" + resultConfig.toString() + "\n" + ResultData.getResultDataLogString(resultData, logStdoutAndStderr));
+        resultConfig.toString();
+        ResultData.getResultDataLogString(resultData, logStdoutAndStderr);
+//        logExtendedMessage(Log.DEBUG, tag, message);
 
         String resultDataStdout = resultData.stdout.toString();
         String resultDataStderr = resultData.stderr.toString();
@@ -94,12 +95,14 @@ public class ResultSender {
         }
 
         if (truncatedStdout != null && truncatedStdout.length() < resultDataStdout.length()) {
-            Logger.logWarn(logTag, "The result for command \"" + label + "\" stdout length truncated from " + stdoutOriginalLength + " to " + truncatedStdout.length());
+            truncatedStdout.length();
+//        logMessage(Log.WARN, tag, message);
             resultDataStdout = truncatedStdout;
         }
 
         if (truncatedStderr != null && truncatedStderr.length() < resultDataStderr.length()) {
-            Logger.logWarn(logTag, "The result for command \"" + label + "\" stderr length truncated from " + stderrOriginalLength + " to " + truncatedStderr.length());
+            truncatedStderr.length();
+//        logMessage(Log.WARN, tag, message);
             resultDataStderr = truncatedStderr;
         }
 
@@ -115,7 +118,8 @@ public class ResultSender {
         // trim from end to preserve start of stacktraces
         String truncatedErrmsg = DataUtils.getTruncatedCommandOutput(resultDataErrmsg, DataUtils.TRANSACTION_SIZE_LIMIT_IN_BYTES / 4, true, false, false);
         if (truncatedErrmsg != null && truncatedErrmsg.length() < resultDataErrmsg.length()) {
-            Logger.logWarn(logTag, "The result for command \"" + label + "\" error length truncated from " + errmsgOriginalLength + " to " + truncatedErrmsg.length());
+            truncatedErrmsg.length();
+//        logMessage(Log.WARN, tag, message);
             resultDataErrmsg = truncatedErrmsg;
         }
 
@@ -137,7 +141,8 @@ public class ResultSender {
             resultConfig.resultPendingIntent.send(context, Activity.RESULT_OK, resultIntent);
         } catch (PendingIntent.CanceledException e) {
             // The caller doesn't want the result? That's fine, just ignore
-            Logger.logDebug(logTag, "The command \"" + label + "\" creator " + resultConfig.resultPendingIntent.getCreatorPackage() + " does not want the results anymore");
+            resultConfig.resultPendingIntent.getCreatorPackage();
+//        logMessage(Log.DEBUG, tag, message);
         }
 
         return null;
@@ -180,7 +185,9 @@ public class ResultSender {
 
         resultConfig.resultDirectoryPath = FileUtils.getCanonicalPath(resultConfig.resultDirectoryPath, null);
 
-        Logger.logDebugExtended(logTag, "Writing result for command \"" + label + "\":\n" + resultConfig.toString() + "\n" + ResultData.getResultDataLogString(resultData, logStdoutAndStderr));
+        resultConfig.toString();
+        ResultData.getResultDataLogString(resultData, logStdoutAndStderr);
+//        logExtendedMessage(Log.DEBUG, tag, message);
 
         // If resultDirectoryPath is not a directory, or is not readable or writable, then just return
         // Creation of missing directory and setting of read, write and execute permissions are

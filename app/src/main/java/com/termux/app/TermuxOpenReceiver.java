@@ -16,7 +16,6 @@ import android.webkit.MimeTypeMap;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.data.IntentUtils;
 import com.termux.shared.net.uri.UriUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.net.uri.UriScheme;
 import com.termux.shared.termux.TermuxConstants;
 
@@ -34,12 +33,15 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final Uri data = intent.getData();
         if (data == null) {
-            Logger.logError(LOG_TAG, "Called without intent data");
+            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
-        Logger.logVerbose(LOG_TAG, "Intent Received:\n" + IntentUtils.getIntentString(intent));
-        Logger.logVerbose(LOG_TAG, "uri: \"" + data + "\", path: \"" + data.getPath() + "\", fragment: \"" + data.getFragment() + "\"");
+        IntentUtils.getIntentString(intent);
+//        logMessage(Log.VERBOSE, tag, message);
+        data.getPath();
+        data.getFragment();
+//        logMessage(Log.VERBOSE, tag, message);
 
         final String contentTypeExtra = intent.getStringExtra("content-type");
         final boolean useChooser = intent.getBooleanExtra("chooser", false);
@@ -50,7 +52,7 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
                 // Ok.
                 break;
             default:
-                Logger.logError(LOG_TAG, "Invalid action '" + intentAction + "', using 'view'");
+                //        logMessage(Log.ERROR, tag, message);
                 break;
         }
 
@@ -67,7 +69,7 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
             try {
                 context.startActivity(urlIntent);
             } catch (ActivityNotFoundException e) {
-                Logger.logError(LOG_TAG, "No app handles the url " + data);
+                //        logMessage(Log.ERROR, tag, message);
             }
             return;
         }
@@ -75,13 +77,14 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
         // Get full path including fragment (anything after last "#")
         String filePath = UriUtils.getUriFilePathWithFragment(data);
         if (DataUtils.isNullOrEmpty(filePath)) {
-            Logger.logError(LOG_TAG, "filePath is null or empty");
+            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
         final File fileToShare = new File(filePath);
         if (!(fileToShare.isFile() && fileToShare.canRead())) {
-            Logger.logError(LOG_TAG, "Not a readable file: '" + fileToShare.getAbsolutePath() + "'");
+            fileToShare.getAbsolutePath();
+//        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -119,7 +122,7 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
         try {
             context.startActivity(sendIntent);
         } catch (ActivityNotFoundException e) {
-            Logger.logError(LOG_TAG, "No app handles the url " + data);
+            //        logMessage(Log.ERROR, tag, message);
         }
     }
 
@@ -202,7 +205,7 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
             try {
                 String path = file.getCanonicalPath();
                 String callingPackageName = getCallingPackage();
-                Logger.logDebug(LOG_TAG, "Open file request received from " + callingPackageName + " for \"" + path + "\" with mode \"" + mode + "\"");
+                //        logMessage(Log.DEBUG, tag, message);
                 String storagePath = Environment.getExternalStorageDirectory().getCanonicalPath();
                 // See https://support.google.com/faqs/answer/7496913:
                 if (!(path.startsWith(TermuxConstants.TERMUX_FILES_DIR_PATH) || path.startsWith(storagePath))) {

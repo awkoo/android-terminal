@@ -4,8 +4,6 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 
-import com.termux.shared.logger.Logger;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -84,7 +82,9 @@ public class Errno {
         try {
             return new Error(getType(), getCode(), String.format(getMessage(), args));
         } catch (Exception e) {
-            Logger.logWarn(LOG_TAG, "Exception raised while calling String.format() for error message of errno " + this + " with args" + Arrays.toString(args) + "\n" + e.getMessage());
+            Arrays.toString(args);
+            e.getMessage();
+//        logMessage(Log.WARN, tag, message);
             // Return unformatted message as a backup
             return new Error(getType(), getCode(), getMessage() + ": " + Arrays.toString(args));
         }
@@ -104,7 +104,9 @@ public class Errno {
             else
                 return new Error(getType(), getCode(), String.format(getMessage(), args), throwablesList);
         } catch (Exception e) {
-            Logger.logWarn(LOG_TAG, "Exception raised while calling String.format() for error message of errno " + this + " with args" + Arrays.toString(args) + "\n" + e.getMessage());
+            Arrays.toString(args);
+            e.getMessage();
+//        logMessage(Log.WARN, tag, message);
             // Return unformatted message as a backup
             return new Error(getType(), getCode(), getMessage() + ": " + Arrays.toString(args), throwablesList);
         }

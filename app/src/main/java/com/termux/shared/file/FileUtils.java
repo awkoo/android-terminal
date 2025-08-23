@@ -509,7 +509,7 @@ public class FileUtils {
                 if (parentDirPath == null || (isPathInParentDirPath && getFileType(parentDirPath, false) == FileType.DIRECTORY)) {
                     // If createDirectoryIfMissing is enabled and no file exists at path, then create directory
                     if (createDirectoryIfMissing && fileType == FileType.NO_EXIST) {
-                        Logger.logVerbose(LOG_TAG, "Creating " + label + "directory file at path \"" + filePath + "\"");
+                        //        logMessage(Log.VERBOSE, tag, message);
                         // Create directory and update fileType if successful, otherwise return with error
                         // It "might" be possible that mkdirs returns false even though directory was created
                         boolean result = file.mkdirs();
@@ -624,7 +624,7 @@ public class FileUtils {
             return error;
 
         try {
-            Logger.logVerbose(LOG_TAG, "Creating " + label + "regular file at path \"" + filePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
 
             if (!file.createNewFile())
                 return FileUtilsErrno.ERRNO_CREATING_FILE_FAILED.getError(label + "regular file", filePath);
@@ -829,7 +829,7 @@ public class FileUtils {
             }
 
             // create a symlink at destFilePath to targetFilePath
-            Logger.logVerbose(LOG_TAG, "Creating " + label + "symlink file at path \"" + destFilePath + "\" to \"" + targetFilePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
             Os.symlink(targetFilePath, destFilePath);
         } catch (Exception e) {
             return FileUtilsErrno.ERRNO_CREATING_SYMLINK_FILE_FAILED_WITH_EXCEPTION.getError(e, label + "symlink file", destFilePath, targetFilePath, e.getMessage());
@@ -1060,7 +1060,7 @@ public class FileUtils {
         Error error;
 
         try {
-            Logger.logVerbose(LOG_TAG, mode + " " + label + "source file from \"" + srcFilePath + "\" to destination \"" + destFilePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
 
             File srcFile = new File(srcFilePath);
             File destFile = new File(destFilePath);
@@ -1115,7 +1115,7 @@ public class FileUtils {
             // If moveFile is true
             if (moveFile) {
                 // We first try to rename source file to destination file to save a copy operation in case both source and destination are on the same filesystem
-                Logger.logVerbose(LOG_TAG, "Attempting to rename source to destination.");
+                //        logMessage(Log.VERBOSE, tag, message);
 
                 // https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/java/java/io/UnixFileSystem.java;l=358
                 // https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/luni/src/main/java/android/system/Os.java;l=512
@@ -1127,14 +1127,14 @@ public class FileUtils {
                         return FileUtilsErrno.ERRNO_CANNOT_MOVE_DIRECTORY_TO_SUB_DIRECTORY_OF_ITSELF.getError(label + "source directory", srcFilePath, destFilePath);
 
                     // If rename failed, then we copy
-                    Logger.logVerbose(LOG_TAG, "Renaming " + label + "source file to destination failed, attempting to copy.");
+                    //        logMessage(Log.VERBOSE, tag, message);
                     copyFile = true;
                 }
             }
 
             // If moveFile is false or renameTo failed while moving
             if (copyFile) {
-                Logger.logVerbose(LOG_TAG, "Attempting to copy source to destination.");
+                //        logMessage(Log.VERBOSE, tag, message);
 
                 // Create the dest file parent directory
                 error = createParentDirectoryFile(label + "dest file parent", destFilePath);
@@ -1172,7 +1172,7 @@ public class FileUtils {
                     return error;
             }
 
-            Logger.logVerbose(LOG_TAG, mode + " successful.");
+            //        logMessage(Log.VERBOSE, tag, message);
         }
         catch (Exception e) {
             return FileUtilsErrno.ERRNO_COPYING_OR_MOVING_FILE_FAILED_WITH_EXCEPTION.getError(e, mode + " " + label + "file", srcFilePath, destFilePath, e.getMessage());
@@ -1287,7 +1287,7 @@ public class FileUtils {
             File file = new File(filePath);
             FileType fileType = getFileType(filePath, false);
 
-            Logger.logVerbose(LOG_TAG, "Processing delete of " + label + "file at path \"" + filePath + "\" of type \"" + fileType.getName() + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
 
             // If file does not exist
             if (fileType == FileType.NO_EXIST) {
@@ -1305,7 +1305,8 @@ public class FileUtils {
             if ((allowedFileTypeFlags & fileType.getValue()) <= 0) {
                 // If wrong file type is to be ignored
                 if (ignoreWrongFileType) {
-                    Logger.logVerbose(LOG_TAG, "Ignoring deletion of " + label + "file at path \"" + filePath + "\" of type \"" + fileType.getName() + "\" not matching allowed file types: " + FileTypes.convertFileTypeFlagsToNamesString(allowedFileTypeFlags));
+                    FileTypes.convertFileTypeFlagsToNamesString(allowedFileTypeFlags);
+//        logMessage(Log.VERBOSE, tag, message);
                     return null;
                 }
 
@@ -1313,7 +1314,7 @@ public class FileUtils {
                 return FileUtilsErrno.ERRNO_FILE_NOT_AN_ALLOWED_FILE_TYPE.getError(label + "file meant to be deleted", filePath, fileType.getName(), FileTypes.convertFileTypeFlagsToNamesString(allowedFileTypeFlags));
             }
 
-            Logger.logVerbose(LOG_TAG, "Deleting " + label + "file at path \"" + filePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 /*
@@ -1393,7 +1394,7 @@ public class FileUtils {
         Error error;
 
         try {
-            Logger.logVerbose(LOG_TAG, "Clearing " + label + "directory at path \"" + filePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
 
             File file = new File(filePath);
             FileType fileType = getFileType(filePath, false);
@@ -1457,7 +1458,7 @@ public class FileUtils {
         Error error;
 
         try {
-            Logger.logVerbose(LOG_TAG, "Deleting files under " + label + "directory at path \"" + filePath + "\" older than " + days + " days");
+            //        logMessage(Log.VERBOSE, tag, message);
 
             File file = new File(filePath);
             FileType fileType = getFileType(filePath, false);
@@ -1523,7 +1524,7 @@ public class FileUtils {
         label = (label == null || label.isEmpty() ? "" : label + " ");
         if (filePath == null || filePath.isEmpty()) return FunctionErrno.ERRNO_NULL_OR_EMPTY_PARAMETER.getError(label + "file path", "readStringFromFile");
 
-        Logger.logVerbose(LOG_TAG, "Reading text from " + label + "file at path \"" + filePath + "\"");
+        //        logMessage(Log.VERBOSE, tag, message);
 
         Error error;
 
@@ -1568,7 +1569,8 @@ public class FileUtils {
                 dataStringBuilder.append(receiveString);
             }
 
-            Logger.logVerbose(LOG_TAG, Logger.getMultiLineLogStringEntry("String", DataUtils.getTruncatedCommandOutput(dataStringBuilder.toString(), Logger.LOGGER_ENTRY_MAX_SAFE_PAYLOAD, true, false, true), "-"));
+            DataUtils.getTruncatedCommandOutput(dataStringBuilder.toString(), Logger.LOGGER_ENTRY_MAX_SAFE_PAYLOAD, true, false, true);
+//        logMessage(Log.VERBOSE, tag, message);
         } catch (Exception e) {
             return FileUtilsErrno.ERRNO_READING_TEXT_FROM_FILE_FAILED_WITH_EXCEPTION.getError(e, label + "file", filePath, e.getMessage());
         } finally {
@@ -1604,7 +1606,7 @@ public class FileUtils {
         label = (label == null || label.isEmpty() ? "" : label + " ");
         if (filePath == null || filePath.isEmpty()) return new ReadSerializableObjectResult(FunctionErrno.ERRNO_NULL_OR_EMPTY_PARAMETER.getError(label + "file path", "readSerializableObjectFromFile"), null);
 
-        Logger.logVerbose(LOG_TAG, "Reading serializable object from " + label + "file at path \"" + filePath + "\"");
+        //        logMessage(Log.VERBOSE, tag, message);
 
         T serializableObject;
 
@@ -1662,7 +1664,8 @@ public class FileUtils {
         label = (label == null || label.isEmpty() ? "" : label + " ");
         if (filePath == null || filePath.isEmpty()) return FunctionErrno.ERRNO_NULL_OR_EMPTY_PARAMETER.getError(label + "file path", "writeStringToFile");
 
-        Logger.logVerbose(LOG_TAG, Logger.getMultiLineLogStringEntry("Writing text to " + label + "file at path \"" + filePath + "\"", DataUtils.getTruncatedCommandOutput(dataString, Logger.LOGGER_ENTRY_MAX_SAFE_PAYLOAD, true, false, true), "-"));
+        DataUtils.getTruncatedCommandOutput(dataString, Logger.LOGGER_ENTRY_MAX_SAFE_PAYLOAD, true, false, true);
+//        logMessage(Log.VERBOSE, tag, message);
 
         Error error;
 
@@ -1708,7 +1711,7 @@ public class FileUtils {
         label = (label == null || label.isEmpty() ? "" : label + " ");
         if (filePath == null || filePath.isEmpty()) return FunctionErrno.ERRNO_NULL_OR_EMPTY_PARAMETER.getError(label + "file path", "writeSerializableObjectToFile");
 
-        Logger.logVerbose(LOG_TAG, "Writing serializable object to " + label + "file at path \"" + filePath + "\"");
+        //        logMessage(Log.VERBOSE, tag, message);
 
         Error error;
 
@@ -1819,7 +1822,7 @@ public class FileUtils {
         if (filePath == null || filePath.isEmpty()) return;
 
         if (!isValidPermissionString(permissionsToSet)) {
-            Logger.logError(LOG_TAG, "Invalid permissionsToSet passed to setFilePermissions: \"" + permissionsToSet + "\"");
+            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -1827,12 +1830,12 @@ public class FileUtils {
 
         if (permissionsToSet.contains("r")) {
             if (!file.canRead()) {
-                Logger.logVerbose(LOG_TAG, "Setting read permissions for " + label + "file at path \"" + filePath + "\"");
+                //        logMessage(Log.VERBOSE, tag, message);
                 file.setReadable(true);
             }
         } else {
             if (file.canRead()) {
-                Logger.logVerbose(LOG_TAG, "Removing read permissions for " + label + "file at path \"" + filePath + "\"");
+                //        logMessage(Log.VERBOSE, tag, message);
                 file.setReadable(false);
             }
         }
@@ -1840,12 +1843,12 @@ public class FileUtils {
 
         if (permissionsToSet.contains("w")) {
             if (!file.canWrite()) {
-                Logger.logVerbose(LOG_TAG, "Setting write permissions for " + label + "file at path \"" + filePath + "\"");
+                //        logMessage(Log.VERBOSE, tag, message);
                 file.setWritable(true);
             }
         } else {
             if (file.canWrite()) {
-                Logger.logVerbose(LOG_TAG, "Removing write permissions for " + label + "file at path \"" + filePath + "\"");
+                //        logMessage(Log.VERBOSE, tag, message);
                 file.setWritable(false);
             }
         }
@@ -1853,12 +1856,12 @@ public class FileUtils {
 
         if (permissionsToSet.contains("x")) {
             if (!file.canExecute()) {
-                Logger.logVerbose(LOG_TAG, "Setting execute permissions for " + label + "file at path \"" + filePath + "\"");
+                //        logMessage(Log.VERBOSE, tag, message);
                 file.setExecutable(true);
             }
         } else {
             if (file.canExecute()) {
-                Logger.logVerbose(LOG_TAG, "Removing execute permissions for " + label + "file at path \"" + filePath + "\"");
+                //        logMessage(Log.VERBOSE, tag, message);
                 file.setExecutable(false);
             }
         }
@@ -1890,24 +1893,24 @@ public class FileUtils {
         if (filePath == null || filePath.isEmpty()) return;
 
         if (!isValidPermissionString(permissionsToSet)) {
-            Logger.logError(LOG_TAG, "Invalid permissionsToSet passed to setMissingFilePermissions: \"" + permissionsToSet + "\"");
+            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
         File file = new File(filePath);
 
         if (permissionsToSet.contains("r") && !file.canRead()) {
-            Logger.logVerbose(LOG_TAG, "Setting missing read permissions for " + label + "file at path \"" + filePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
             file.setReadable(true);
         }
 
         if (permissionsToSet.contains("w") && !file.canWrite()) {
-            Logger.logVerbose(LOG_TAG, "Setting missing write permissions for " + label + "file at path \"" + filePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
             file.setWritable(true);
         }
 
         if (permissionsToSet.contains("x") && !file.canExecute()) {
-            Logger.logVerbose(LOG_TAG, "Setting missing execute permissions for " + label + "file at path \"" + filePath + "\"");
+            //        logMessage(Log.VERBOSE, tag, message);
             file.setExecutable(true);
         }
     }
@@ -1942,7 +1945,7 @@ public class FileUtils {
         if (filePath == null || filePath.isEmpty()) return FunctionErrno.ERRNO_NULL_OR_EMPTY_PARAMETER.getError(label + "file path", "checkMissingFilePermissions");
 
         if (!isValidPermissionString(permissionsToCheck)) {
-            Logger.logError(LOG_TAG, "Invalid permissionsToCheck passed to checkMissingFilePermissions: \"" + permissionsToCheck + "\"");
+            //        logMessage(Log.ERROR, tag, message);
             return FileUtilsErrno.ERRNO_INVALID_FILE_PERMISSIONS_STRING_TO_CHECK.getError();
         }
 

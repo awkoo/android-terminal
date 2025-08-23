@@ -22,7 +22,6 @@ import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE;
 import com.termux.app.TermuxService;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
 import com.termux.shared.termux.settings.properties.TermuxPropertyConstants;
 
@@ -70,7 +69,8 @@ public class FileReceiverActivity extends AppCompatActivity {
         final String type = intent.getType();
         final String scheme = intent.getScheme();
 
-        Logger.logVerbose(LOG_TAG, "Intent Received:\n" + IntentUtils.getIntentString(intent));
+        IntentUtils.getIntentString(intent);
+//        logMessage(Log.VERBOSE, tag, message);
 
         final String sharedTitle = IntentUtils.getStringExtraIfSet(intent, Intent.EXTRA_TITLE, null);
 
@@ -103,7 +103,9 @@ public class FileReceiverActivity extends AppCompatActivity {
             if (UriScheme.SCHEME_CONTENT.equals(scheme)) {
                 handleContentUri(dataUri, sharedTitle);
             } else if (UriScheme.SCHEME_FILE.equals(scheme)) {
-                Logger.logVerbose(LOG_TAG, "uri: \"" + dataUri + "\", path: \"" + dataUri.getPath() + "\", fragment: \"" + dataUri.getFragment() + "\"");
+                dataUri.getPath();
+                dataUri.getFragment();
+//        logMessage(Log.VERBOSE, tag, message);
 
                 // Get full path including fragment (anything after last "#")
                 String path = UriUtils.getUriFilePathWithFragment(dataUri);
@@ -136,7 +138,9 @@ public class FileReceiverActivity extends AppCompatActivity {
 
     void handleContentUri(@NonNull final Uri uri, String subjectFromIntent) {
         try {
-            Logger.logVerbose(LOG_TAG, "uri: \"" + uri + "\", path: \"" + uri.getPath() + "\", fragment: \"" + uri.getFragment() + "\"");
+            uri.getPath();
+            uri.getFragment();
+//        logMessage(Log.VERBOSE, tag, message);
 
             String attachmentFileName = null;
 
@@ -155,7 +159,7 @@ public class FileReceiverActivity extends AppCompatActivity {
             promptNameAndSave(in, attachmentFileName);
         } catch (Exception e) {
             showErrorDialogAndQuit("Unable to handle shared content:\n\n" + e.getMessage());
-            Logger.logStackTraceWithMessage(LOG_TAG, "handleContentUri(uri=" + uri + ") failed", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
         }
     }
 
@@ -223,7 +227,7 @@ public class FileReceiverActivity extends AppCompatActivity {
             return outFile;
         } catch (IOException e) {
             showErrorDialogAndQuit("Error saving file:\n\n" + e);
-            Logger.logStackTraceWithMessage(LOG_TAG, "Error saving file", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -265,20 +269,22 @@ public class FileReceiverActivity extends AppCompatActivity {
                 boolean state;
 
                 state = !properties.isFileShareReceiverDisabled();
-                Logger.logVerbose(LOG_TAG, "Setting " + TERMUX_APP.FILE_SHARE_RECEIVER_ACTIVITY_CLASS_NAME + " component state to " + state);
+                //        logMessage(Log.VERBOSE, tag, message);
                 errmsg = PackageUtils.setComponentState(context,TermuxConstants.TERMUX_PACKAGE_NAME,
                     TERMUX_APP.FILE_SHARE_RECEIVER_ACTIVITY_CLASS_NAME,
                     state, null, false, false);
-                if (errmsg != null)
-                    Logger.logError(LOG_TAG, errmsg);
+                if (errmsg != null) {
+//        logMessage(Log.ERROR, tag, message);
+                }
 
                 state = !properties.isFileViewReceiverDisabled();
-                Logger.logVerbose(LOG_TAG, "Setting " + TERMUX_APP.FILE_VIEW_RECEIVER_ACTIVITY_CLASS_NAME + " component state to " + state);
+                //        logMessage(Log.VERBOSE, tag, message);
                 errmsg = PackageUtils.setComponentState(context,TermuxConstants.TERMUX_PACKAGE_NAME,
                     TERMUX_APP.FILE_VIEW_RECEIVER_ACTIVITY_CLASS_NAME,
                     state, null, false, false);
-                if (errmsg != null)
-                    Logger.logError(LOG_TAG, errmsg);
+                if (errmsg != null) {
+//        logMessage(Log.ERROR, tag, message);
+                }
 
             }
         }.start();

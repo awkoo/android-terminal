@@ -5,14 +5,11 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.termux.shared.logger.Logger;
-
 import org.lsposed.hiddenapibypass.HiddenApiBypass;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 
 public class ReflectionUtils {
 
@@ -27,11 +24,11 @@ public class ReflectionUtils {
      */
     public static void bypassHiddenAPIReflectionRestrictions() {
         if (!HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            Logger.logDebug(LOG_TAG, "Bypassing android hidden api reflection restrictions");
+            //        logMessage(Log.DEBUG, tag, message);
             try {
                 HiddenApiBypass.addHiddenApiExemptions("");
             } catch (Throwable t) {
-                Logger.logStackTraceWithMessage(LOG_TAG, "Failed to bypass hidden API reflection restrictions", t);
+                //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             }
 
             HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED = true;
@@ -61,7 +58,7 @@ public class ReflectionUtils {
             field.setAccessible(true);
             return field;
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get \"" + fieldName + "\" field for \"" + clazz.getName() + "\" class", e);
+//            Logger.logStackTraceWithMessage("Failed to get \"" + fieldName + "\" field for \"" + clazz.getName() + "\" class");
             return null;
         }
     }
@@ -99,7 +96,7 @@ public class ReflectionUtils {
             if (field == null) return new FieldInvokeResult(false, null);
             return new FieldInvokeResult(true, field.get(object));
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get \"" + fieldName + "\" field value for \"" + clazz.getName() + "\" class", e);
+//            Logger.logStackTraceWithMessage("Failed to get \"" + fieldName + "\" field value for \"" + clazz.getName() + "\" class");
             return new FieldInvokeResult(false, null);
         }
     }
@@ -131,7 +128,7 @@ public class ReflectionUtils {
             method.setAccessible(true);
             return method;
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get \"" + methodName + "\" method for \"" + clazz.getName() + "\" class with parameter types: " + Arrays.toString(parameterTypes), e);
+//            Logger.logStackTraceWithMessage("Failed to get \"" + methodName + "\" method for \"" + clazz.getName() + "\" class with parameter types: " + Arrays.toString(parameterTypes));
             return null;
         }
     }
@@ -160,7 +157,7 @@ public class ReflectionUtils {
             method.invoke(obj, args);
             return true;
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to invoke \"" + method.getName() + "\" method with object \"" + obj + "\" and args: " + Arrays.toString(args), e);
+//            Logger.logStackTraceWithMessage("Failed to invoke \"" + method.getName() + "\" method with object \"" + obj + "\" and args: " + Arrays.toString(args));
             return false;
         }
     }
@@ -203,7 +200,7 @@ public class ReflectionUtils {
             method.setAccessible(true);
             return new MethodInvokeResult(true, method.invoke(obj, args));
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to invoke \"" + method.getName() + "\" method with object \"" + obj + "\" and args: " + Arrays.toString(args), e);
+//            Logger.logStackTraceWithMessage("Failed to invoke \"" + method.getName() + "\" method with object \"" + obj + "\" and args: " + Arrays.toString(args));
             return new MethodInvokeResult(false, null);
         }
     }
@@ -227,7 +224,7 @@ public class ReflectionUtils {
         try {
             return getConstructor(Class.forName(className), parameterTypes);
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get constructor for \"" + className + "\" class with parameter types: " + Arrays.toString(parameterTypes), e);
+//            Logger.logStackTraceWithMessage("Failed to get constructor for \"" + className + "\" class with parameter types: " + Arrays.toString(parameterTypes));
             return null;
         }
     }
@@ -246,7 +243,7 @@ public class ReflectionUtils {
             constructor.setAccessible(true);
             return constructor;
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get constructor for \"" + clazz.getName() + "\" class with parameter types: " + Arrays.toString(parameterTypes), e);
+//            Logger.logStackTraceWithMessage("Failed to get constructor for \"" + clazz.getName() + "\" class with parameter types: " + Arrays.toString(parameterTypes));
             return null;
         }
     }
@@ -274,7 +271,7 @@ public class ReflectionUtils {
             constructor.setAccessible(true);
             return constructor.newInstance(args);
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to invoke \"" + constructor.getName() + "\" constructor with args: " + Arrays.toString(args), e);
+//            Logger.logStackTraceWithMessage("Failed to invoke \"" + constructor.getName() + "\" constructor with args: " + Arrays.toString(args));
             return null;
         }
     }

@@ -6,7 +6,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.termux.shared.logger.Logger;
 import com.termux.shared.reflection.ReflectionUtils;
 
 import java.lang.reflect.Method;
@@ -95,7 +94,7 @@ public class FeatureFlagUtils {
             return (Map<String, String>) ReflectionUtils.invokeMethod(getAllFeatureFlagsMethod, null).value;
         } catch (Exception e) {
             // ClassCastException may be thrown
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get all feature flags", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }
@@ -124,7 +123,7 @@ public class FeatureFlagUtils {
     public static FeatureFlagValue getFeatureFlagValueString(@NonNull Context context, @NonNull String feature) {
         Boolean featureFlagExists = featureFlagExists(feature);
         if (featureFlagExists == null) {
-            Logger.logError(LOG_TAG, "Failed to get feature flags \"" + feature + "\" value");
+            //        logMessage(Log.ERROR, tag, message);
             return FeatureFlagValue.UNKNOWN;
         } else if (!featureFlagExists) {
             return FeatureFlagValue.UNSUPPORTED;
@@ -132,7 +131,7 @@ public class FeatureFlagUtils {
 
         Boolean featureFlagValue = isFeatureEnabled(context, feature);
         if (featureFlagValue == null) {
-            Logger.logError(LOG_TAG, "Failed to get feature flags \"" + feature + "\" value");
+            //        logMessage(Log.ERROR, tag, message);
             return FeatureFlagValue.UNKNOWN;
         } else {
             return featureFlagValue ? FeatureFlagValue.TRUE : FeatureFlagValue.FALSE;
@@ -154,14 +153,14 @@ public class FeatureFlagUtils {
             @SuppressLint("PrivateApi") Class<?> clazz = Class.forName(FEATURE_FLAGS_CLASS);
             Method isFeatureEnabledMethod = ReflectionUtils.getDeclaredMethod(clazz, "isEnabled", Context.class, String.class);
             if (isFeatureEnabledMethod == null) {
-                Logger.logError(LOG_TAG, "Failed to check if feature flag \"" + feature + "\" is enabled");
+                //        logMessage(Log.ERROR, tag, message);
                 return null;
             }
 
             return (boolean) ReflectionUtils.invokeMethod(isFeatureEnabledMethod, null, context, feature).value;
         } catch (Exception e) {
             // ClassCastException may be thrown
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to check if feature flag \"" + feature + "\" is enabled", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return null;
         }
     }

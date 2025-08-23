@@ -14,8 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.termux.shared.logger.Logger;
-
 public class KeyboardUtils {
 
     private static final String LOG_TAG = "KeyboardUtils";
@@ -127,13 +125,13 @@ public class KeyboardUtils {
             if (insets != null) {
                 WindowInsetsCompat insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets);
                 if (insetsCompat.isVisible(WindowInsetsCompat.Type.ime())) {
-                    Logger.logVerbose(LOG_TAG, "Soft keyboard visible");
+                    //        logMessage(Log.VERBOSE, tag, message);
                     return true;
                 }
             }
         }
 
-        Logger.logVerbose(LOG_TAG, "Soft keyboard not visible");
+        //        logMessage(Log.VERBOSE, tag, message);
         return false;
     }
 
@@ -187,7 +185,7 @@ public class KeyboardUtils {
             // If soft keyboard is disabled by user only if hardware keyboard is connected
             if(isSoftKeyboardEnabledOnlyIfNoHardware) {
                 boolean isHardKeyboardConnected = KeyboardUtils.isHardKeyboardConnected(context);
-                Logger.logVerbose(LOG_TAG, "Hardware keyboard connected=" + isHardKeyboardConnected);
+                //        logMessage(Log.VERBOSE, tag, message);
                 return isHardKeyboardConnected;
             } else {
                 return false;

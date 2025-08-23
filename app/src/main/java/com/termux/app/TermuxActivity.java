@@ -50,6 +50,7 @@ import com.termux.shared.theme.NightMode;
 import com.termux.shared.view.ViewUtils;
 import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSessionClient;
+import com.termux.utils.UI;
 import com.termux.view.TerminalView;
 import com.termux.view.TerminalViewClient;
 
@@ -187,7 +188,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Logger.logDebug(LOG_TAG, "onCreate");
+        //        logMessage(Log.DEBUG, tag, message);
         mIsOnResumeAfterOnCreate = true;
 
         if (savedInstanceState != null)
@@ -253,8 +254,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             if (!bindService(serviceIntent, this, 0))
                 throw new RuntimeException("bindService() failed");
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG,"TermuxActivity failed to start TermuxService", e);
-            Logger.showToast(this,
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
+            UI.showToast(this,
                 getString(e.getMessage() != null && e.getMessage().contains("app is in background") ?
                     R.string.error_termux_service_start_failed_bg : R.string.error_termux_service_start_failed_general),
                 true);
@@ -271,7 +272,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     public void onStart() {
         super.onStart();
 
-        Logger.logDebug(LOG_TAG, "onStart");
+        //        logMessage(Log.DEBUG, tag, message);
 
         if (mIsInvalidState) return;
 
@@ -293,7 +294,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     public void onResume() {
         super.onResume();
 
-        Logger.logVerbose(LOG_TAG, "onResume");
+        //        logMessage(Log.VERBOSE, tag, message);
 
         if (mIsInvalidState) return;
 
@@ -310,7 +311,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     protected void onStop() {
         super.onStop();
 
-        Logger.logDebug(LOG_TAG, "onStop");
+        //        logMessage(Log.DEBUG, tag, message);
 
         if (mIsInvalidState) return;
 
@@ -332,7 +333,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     public void onDestroy() {
         super.onDestroy();
 
-        Logger.logDebug(LOG_TAG, "onDestroy");
+        //        logMessage(Log.DEBUG, tag, message);
 
         if (mIsInvalidState) return;
 
@@ -351,7 +352,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        Logger.logVerbose(LOG_TAG, "onSaveInstanceState");
+        //        logMessage(Log.VERBOSE, tag, message);
 
         super.onSaveInstanceState(savedInstanceState);
         saveTerminalToolbarTextInput(savedInstanceState);
@@ -369,7 +370,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      */
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
-        Logger.logDebug(LOG_TAG, "onServiceConnected");
+        //        logMessage(Log.DEBUG, tag, message);
 
         mTermuxService = ((TermuxService.LocalBinder) service).service;
 
@@ -412,7 +413,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        Logger.logDebug(LOG_TAG, "onServiceDisconnected");
+        //        logMessage(Log.DEBUG, tag, message);
 
         // Respect being stopped from the {@link TermuxService} notification action.
         finishActivityIfNotFinishing();
@@ -524,7 +525,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (terminalToolbarViewPager == null) return;
 
         final boolean showNow = mPreferences.toogleShowTerminalToolbar();
-        Logger.showToast(this, (showNow ? getString(R.string.msg_enabling_terminal_toolbar) : getString(R.string.msg_disabling_terminal_toolbar)), true);
+        UI.showToast(this, (showNow ? getString(R.string.msg_enabling_terminal_toolbar) : getString(R.string.msg_disabling_terminal_toolbar)), true);
         terminalToolbarViewPager.setVisibility(showNow ? View.VISIBLE : View.GONE);
         if (showNow && isTerminalToolbarTextInputViewSelected()) {
             // Focus the text input view if just revealed.
@@ -731,12 +732,12 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 if(PermissionUtils.checkAndRequestLegacyOrManageExternalStoragePermission(
                     TermuxActivity.this, requestCode, true, !isPermissionCallback)) {
                     if (isPermissionCallback)
-                        Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG,
-                            getString(R.string.msg_storage_permission_granted_on_request));
+                        UI.showToast(TermuxActivity.this,
+                            getString(R.string.msg_storage_permission_granted_on_request), true);
                 } else {
                     if (isPermissionCallback)
-                        Logger.logInfoAndShowToast(TermuxActivity.this, LOG_TAG,
-                            getString(R.string.msg_storage_permission_not_granted_on_request));
+                        UI.showToast(TermuxActivity.this,
+                            getString(R.string.msg_storage_permission_not_granted_on_request), true);
                 }
             }
         }.start();
@@ -745,7 +746,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Logger.logVerbose(LOG_TAG, "onActivityResult: requestCode: " + requestCode + ", resultCode: "  + resultCode + ", data: "  + IntentUtils.getIntentString(data));
+        IntentUtils.getIntentString(data);
+//        logMessage(Log.VERBOSE, tag, message);
         if (requestCode == PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION) {
             requestStoragePermission(true);
         }
@@ -754,7 +756,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Logger.logVerbose(LOG_TAG, "onRequestPermissionsResult: requestCode: " + requestCode + ", permissions: "  + Arrays.toString(permissions) + ", grantResults: "  + Arrays.toString(grantResults));
+        Arrays.toString(permissions);
+        Arrays.toString(grantResults);
+//        logMessage(Log.VERBOSE, tag, message);
         if (requestCode == PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION) {
             requestStoragePermission(true);
         }
@@ -901,11 +905,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
                 switch (intent.getAction()) {
                     case TERMUX_ACTIVITY.ACTION_RELOAD_STYLE:
-                        Logger.logDebug(LOG_TAG, "Received intent to reload styling");
+                        //        logMessage(Log.DEBUG, tag, message);
                         reloadActivityStyling(intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_RECREATE_ACTIVITY, true));
                         return;
                     case TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS:
-                        Logger.logDebug(LOG_TAG, "Received intent to request storage permissions");
+                        //        logMessage(Log.DEBUG, tag, message);
                         requestStoragePermission(false);
                         return;
                     default:
@@ -942,7 +946,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         // It will destroy the activity, including all stored variables and views, and onCreate()
         // will be called again. Extra keys input text, terminal sessions and transcripts will be preserved.
         if (recreateActivity) {
-            Logger.logDebug(LOG_TAG, "Recreating activity");
+            //        logMessage(Log.DEBUG, tag, message);
             TermuxActivity.this.recreate();
         }
     }

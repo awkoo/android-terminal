@@ -1,9 +1,13 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
-        app:key="termux"
-        app:title="@string/termux_preferences_title"
-        app:summary="@string/termux_preferences_summary"
-        app:fragment="com.termux.app.fragments.settings.TermuxPreferencesFragment"/>
+        app:title="@string/termux_terminal_io_preferences_title"
+        app:summary="@string/termux_terminal_io_preferences_summary"
+        app:fragment="com.termux.app.fragments.settings.TerminalIOPreferencesFragment"/>
+
+    <Preference
+        app:title="@string/termux_terminal_view_preferences_title"
+        app:summary="@string/termux_terminal_view_preferences_summary"
+        app:fragment="com.termux.app.fragments.settings.TerminalViewPreferencesFragment"/>
 
 </PreferenceScreen>

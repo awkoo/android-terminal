@@ -9,8 +9,6 @@ import android.os.Build;
 
 import androidx.annotation.Nullable;
 
-import com.termux.shared.logger.Logger;
-
 public class NotificationUtils {
 
     /** Do not show notification */
@@ -110,7 +108,7 @@ public class NotificationUtils {
         // TODO: setDefaults() is deprecated and should also implement setting notification mode via notification channel
         switch (notificationMode) {
             case NOTIFICATION_MODE_NONE:
-                Logger.logWarn(LOG_TAG, "The NOTIFICATION_MODE_NONE passed to setNotificationDefaults(), force setting builder to null.");
+                //        logMessage(Log.WARN, tag, message);
                 return null; // return null since notification is not supposed to be shown
             case NOTIFICATION_MODE_SILENT:
                 break;
@@ -136,7 +134,7 @@ public class NotificationUtils {
                 builder.setDefaults(Notification.DEFAULT_ALL);
                 break;
             default:
-                Logger.logError(LOG_TAG, "Invalid notificationMode: \"" + notificationMode + "\" passed to setNotificationDefaults()");
+                //        logMessage(Log.ERROR, tag, message);
                 break;
         }
 

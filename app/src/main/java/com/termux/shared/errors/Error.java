@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.termux.shared.logger.Logger;
 import com.termux.shared.markdown.MarkdownUtils;
+import com.termux.utils.UI;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -156,7 +157,7 @@ public class Error implements Serializable {
             this.code = code;
             return true;
         } else {
-            Logger.logWarn(LOG_TAG, "Ignoring invalid error code value \"" + code + "\". Force setting it to RESULT_CODE_FAILED \"" + Errno.ERRNO_FAILED.getCode() + "\"");
+            //        logMessage(Log.WARN, tag, message);
             this.code = Errno.ERRNO_FAILED.getCode();
             return false;
         }
@@ -188,8 +189,9 @@ public class Error implements Serializable {
     }
 
     public void logErrorAndShowToast(Context context, String logTag) {
-        Logger.logErrorExtended(logTag, getErrorLogString());
-        Logger.showToast(context, getMinimalErrorLogString(), true);
+        getErrorLogString();
+//        logExtendedMessage(Log.ERROR, tag, message);
+        UI.showToast(context, getMinimalErrorLogString(), true);
     }
 
 

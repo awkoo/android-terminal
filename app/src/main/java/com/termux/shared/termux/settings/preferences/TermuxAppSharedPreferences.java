@@ -181,14 +181,14 @@ public class TermuxAppSharedPreferences extends AppSharedPreferences {
 
 
 
-    public int getLogLevel() {
-        return SharedPreferenceUtils.getInt(mSharedPreferences, TERMUX_APP.KEY_LOG_LEVEL, Logger.DEFAULT_LOG_LEVEL);
-    }
-
-    public void setLogLevel(Context context, int logLevel) {
-        logLevel = Logger.setLogLevel(context, logLevel);
-        SharedPreferenceUtils.setInt(mSharedPreferences, TERMUX_APP.KEY_LOG_LEVEL, logLevel, false);
-    }
+//    public int getLogLevel() {
+//        return SharedPreferenceUtils.getInt(mSharedPreferences, TERMUX_APP.KEY_LOG_LEVEL, Logger.DEFAULT_LOG_LEVEL);
+//    }
+//
+//    public void setLogLevel(Context context, int logLevel) {
+//        logLevel = Logger.setLogLevel(context, logLevel);
+//        SharedPreferenceUtils.setInt(mSharedPreferences, TERMUX_APP.KEY_LOG_LEVEL, logLevel, false);
+//    }
 
 
 

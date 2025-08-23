@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.termux.shared.data.DataUtils;
-import com.termux.shared.logger.Logger;
 
 public class ResourceUtils {
 
@@ -59,7 +58,8 @@ public class ResourceUtils {
         }
 
         if (resourceId == null && logErrorMessage) {
-            Logger.logError(LOG_TAG, "Resource id not found. name: \"" + name + "\", type: \"" + defType+ "\", package: \"" + defPackage + "\", component \"" + context.getClass().getName() + "\"");
+            context.getClass().getName();
+//        logMessage(Log.ERROR, tag, message);
         }
 
         return resourceId;

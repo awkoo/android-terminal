@@ -175,14 +175,14 @@ public class ExecutionCommand {
     /** If the {@link ExecutionCommand} is meant to start a failsafe terminal session. */
     public boolean isFailsafe;
 
-    /**
-     * The {@link ExecutionCommand} custom log level for background {@link AppShell}
-     * commands. By default, @link com.termux.shared.shell.StreamGobbler} only logs stdout and
-     * stderr if {@link Logger} `CURRENT_LOG_LEVEL` is >= {@link Logger#LOG_LEVEL_VERBOSE} and
-     * {@link AppShell} only logs stdin if `CURRENT_LOG_LEVEL` is >=
-     * {@link Logger#LOG_LEVEL_DEBUG}.
-     */
-    public Integer backgroundCustomLogLevel;
+//    /**
+//     * The {@link ExecutionCommand} custom log level for background {@link AppShell}
+//     * commands. By default, @link com.termux.shared.shell.StreamGobbler} only logs stdout and
+//     * stderr if {@link Logger} `CURRENT_LOG_LEVEL` is >= {@link Logger#LOG_LEVEL_VERBOSE} and
+//     * {@link AppShell} only logs stdin if `CURRENT_LOG_LEVEL` is >=
+//     * {@link Logger#LOG_LEVEL_DEBUG}.
+//     */
+//    public Integer backgroundCustomLogLevel;
 
 
     /** The session action of {@link Runner#TERMINAL_SESSION} commands. */
@@ -249,7 +249,8 @@ public class ExecutionCommand {
     public synchronized boolean setState(ExecutionState newState) {
         // The state transition cannot go back or change if already at {@link ExecutionState#SUCCESS}
         if (newState.getValue() < currentState.getValue() || currentState == ExecutionState.SUCCESS) {
-            Logger.logError(LOG_TAG, "Invalid "+ getCommandIdAndLabelLogString() + " state transition from \"" + currentState.getName() + "\" to " +  "\"" + newState.getName() + "\"");
+            getCommandIdAndLabelLogString();
+//        logMessage(Log.ERROR, tag, message);
             return false;
         }
 
@@ -300,7 +301,8 @@ public class ExecutionCommand {
     }
     public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
         if (!this.resultData.setStateFailed(type, code, message, throwablesList)) {
-            Logger.logWarn(LOG_TAG, "setStateFailed for "  + getCommandIdAndLabelLogString() + " resultData encountered an error.");
+            getCommandIdAndLabelLogString();
+//        logMessage(Log.WARN, tag, message);
         }
 
         return setState(ExecutionState.FAILED);
@@ -320,7 +322,8 @@ public class ExecutionCommand {
             return false;
 
         if (!resultData.isStateFailed()) {
-            Logger.logWarn(LOG_TAG, "The "  + getCommandIdAndLabelLogString() + " has an invalid errCode value set in errors list while having ExecutionState.FAILED state.\n" + resultData.errorsList);
+            getCommandIdAndLabelLogString();
+//        logMessage(Log.WARN, tag, message);
             return false;
         } else {
             return true;
@@ -370,8 +373,8 @@ public class ExecutionCommand {
             if (logStdin && (!ignoreNull || !DataUtils.isNullOrEmpty(executionCommand.stdin)))
                 logString.append("\n").append(executionCommand.getStdinLogString());
 
-            if (!ignoreNull || executionCommand.backgroundCustomLogLevel != null)
-                logString.append("\n").append(executionCommand.getBackgroundCustomLogLevelLogString());
+//            if (!ignoreNull || executionCommand.backgroundCustomLogLevel != null)
+//                logString.append("\n").append(executionCommand.getBackgroundCustomLogLevelLogString());
         }
 
         if (!ignoreNull || executionCommand.sessionAction != null)
@@ -468,8 +471,8 @@ public class ExecutionCommand {
         if (Runner.APP_SHELL.equalsRunner(executionCommand.runner)) {
             if (!DataUtils.isNullOrEmpty(executionCommand.stdin))
                 markdownString.append("\n").append(MarkdownUtils.getMultiLineMarkdownStringEntry("Stdin", executionCommand.stdin, "-"));
-            if (executionCommand.backgroundCustomLogLevel != null)
-                markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Background Custom Log Level", executionCommand.backgroundCustomLogLevel, "-"));
+//            if (executionCommand.backgroundCustomLogLevel != null)
+//                markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Background Custom Log Level", executionCommand.backgroundCustomLogLevel, "-"));
         }
 
         markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Session Action", executionCommand.sessionAction, "-"));
@@ -551,9 +554,9 @@ public class ExecutionCommand {
             return Logger.getMultiLineLogStringEntry("Stdin", stdin, "-");
     }
 
-    public String getBackgroundCustomLogLevelLogString() {
-        return "Background Custom Log Level: `" + backgroundCustomLogLevel + "`";
-    }
+//    public String getBackgroundCustomLogLevelLogString() {
+//        return "Background Custom Log Level: `" + backgroundCustomLogLevel + "`";
+//    }
 
     public String getSessionActionLogString() {
         return Logger.getSingleLineLogStringEntry("Session Action", sessionAction, "-");

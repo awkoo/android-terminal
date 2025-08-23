@@ -6,8 +6,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.termux.shared.logger.Logger;
-
 import java.util.List;
 
 public class ProcessUtils {
@@ -49,7 +47,7 @@ public class ProcessUtils {
                 }
             }
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "Failed to get app process name for pid " + pid, e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
         }
 
         return null;

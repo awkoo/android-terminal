@@ -7,7 +7,6 @@ import com.termux.shared.errors.Error;
 import com.termux.shared.file.filesystem.FileTypes;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.file.FileUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
 
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -102,19 +101,19 @@ public class TermuxShellUtils {
             days = 0;
 
         if (days < 0) {
-            Logger.logInfo(LOG_TAG, "Not clearing termux $TMPDIR");
+//            Logger.logInfo(LOG_TAG, "Not clearing termux $TMPDIR");
         } else if (days == 0) {
             error = FileUtils.clearDirectory("$TMPDIR",
                 FileUtils.getCanonicalPath(TermuxConstants.TERMUX_TMP_PREFIX_DIR_PATH, null));
             if (error != null) {
-                Logger.logErrorExtended(LOG_TAG, "Failed to clear termux $TMPDIR\n" + error);
+                //        logExtendedMessage(Log.ERROR, tag, message);
             }
         } else {
             error = FileUtils.deleteFilesOlderThanXDays("$TMPDIR",
                 FileUtils.getCanonicalPath(TermuxConstants.TERMUX_TMP_PREFIX_DIR_PATH, null),
                 TrueFileFilter.INSTANCE, days, true, FileTypes.FILE_TYPE_ANY_FLAGS);
             if (error != null) {
-                Logger.logErrorExtended(LOG_TAG, "Failed to delete files from termux $TMPDIR older than " + days + " days\n" + error);
+                //        logExtendedMessage(Log.ERROR, tag, message);
             }
         }
     }

@@ -23,9 +23,9 @@ public class TermuxApplication extends Application {
         Context context = getApplicationContext();
 
         // Set log config for the app
-        setLogConfig(context);
+//        setLogConfig(context);
 
-        Logger.logDebug("Starting Application");
+//        Logger.logDebug("Starting Application");
 
         // Init app wide SharedProperties loaded from termux.properties
         TermuxAppSharedProperties properties = TermuxAppSharedProperties.init(context);
@@ -41,7 +41,7 @@ public class TermuxApplication extends Application {
         Error error = TermuxFileUtils.isTermuxFilesDirectoryAccessible(this, true, true);
         boolean isTermuxFilesDirectoryAccessible = error == null;
         if (isTermuxFilesDirectoryAccessible) {
-            Logger.logInfo(LOG_TAG, "Termux files directory is accessible");
+//            Logger.logInfo(LOG_TAG, "Termux files directory is accessible");
             /*
             error = TermuxFileUtils.isAppsTermuxAppDirectoryAccessible(true, true);
             if (error != null) {
@@ -53,7 +53,7 @@ public class TermuxApplication extends Application {
             TermuxAmSocketServer.setupTermuxAmSocketServer(context);
              */
         } else {
-            Logger.logErrorExtended(LOG_TAG, "Termux files directory is not accessible\n" + error);
+//            Logger.logErrorExtended(LOG_TAG, "Termux files directory is not accessible\n" + error);
         }
 
         // Init TermuxShellEnvironment constants and caches after everything has been setup including termux-am-socket server
@@ -64,13 +64,13 @@ public class TermuxApplication extends Application {
         }
     }
 
-    public static void setLogConfig(Context context) {
-        Logger.setDefaultLogTag(TermuxConstants.TERMUX_APP_NAME);
-
+//    public static void setLogConfig(Context context) {
+//        Logger.setDefaultLogTag(TermuxConstants.TERMUX_APP_NAME);
+//
         // Load the log level from shared preferences and set it to the {@link Logger.CURRENT_LOG_LEVEL}
-        TermuxAppSharedPreferences preferences = TermuxAppSharedPreferences.build(context);
-        if (preferences == null) return;
-        preferences.setLogLevel(null, preferences.getLogLevel());
-    }
+//        TermuxAppSharedPreferences preferences = TermuxAppSharedPreferences.build(context);
+//        if (preferences == null) return;
+//        preferences.setLogLevel(null, preferences.getLogLevel());
+//    }
 
 }

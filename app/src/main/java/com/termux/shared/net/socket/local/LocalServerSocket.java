@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.termux.shared.errors.Error;
 import com.termux.shared.file.FileUtils;
 import com.termux.shared.jni.models.JniResult;
-import com.termux.shared.logger.Logger;
 
 import java.io.Closeable;
 import java.io.File;
@@ -50,7 +49,7 @@ public class LocalServerSocket implements Closeable {
 
     /** Start server by creating server socket. */
     public synchronized Error start() {
-        Logger.logDebug(LOG_TAG, "start");
+        //        logMessage(Log.DEBUG, tag, message);
 
         String path = mLocalSocketRunConfig.getPath();
         if (path == null || path.isEmpty()) {
@@ -117,7 +116,7 @@ public class LocalServerSocket implements Closeable {
             // Start listening to server clients
             mClientSocketListener.start();
         } catch (Exception e) {
-            Logger.logStackTraceWithMessage(LOG_TAG, "mClientSocketListener start failed", e);
+            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
         }
 
         return null;
@@ -125,7 +124,7 @@ public class LocalServerSocket implements Closeable {
 
     /** Stop server. */
     public synchronized Error stop() {
-        Logger.logDebug(LOG_TAG, "stop");
+        //        logMessage(Log.DEBUG, tag, message);
 
         try {
             // Stop the LocalClientSocket listener.
@@ -141,14 +140,15 @@ public class LocalServerSocket implements Closeable {
 
     /** Close server socket. */
     public synchronized Error closeServerSocket(boolean logErrorMessage) {
-        Logger.logDebug(LOG_TAG, "closeServerSocket");
+        //        logMessage(Log.DEBUG, tag, message);
 
         try {
             close();
         } catch (IOException e) {
             Error error = LocalSocketErrno.ERRNO_CLOSE_SERVER_SOCKET_FAILED_WITH_EXCEPTION.getError(e, mLocalSocketRunConfig.getTitle(), e.getMessage());
+            //        logExtendedMessage(Log.ERROR, tag, message);
             if (logErrorMessage)
-                Logger.logErrorExtended(LOG_TAG, error.getErrorLogString());
+                error.getErrorLogString();
             return error;
         }
 
@@ -158,7 +158,7 @@ public class LocalServerSocket implements Closeable {
     /** Implementation for {@link Closeable#close()} to close server socket. */
     @Override
     public synchronized void close() throws IOException {
-        Logger.logDebug(LOG_TAG, "close");
+        //        logMessage(Log.DEBUG, tag, message);
 
         int fd = mLocalSocketRunConfig.getFD();
 
@@ -185,7 +185,7 @@ public class LocalServerSocket implements Closeable {
 
     /** Listen and accept new {@link LocalClientSocket}. */
     public LocalClientSocket accept() {
-        Logger.logVerbose(LOG_TAG, "accept");
+        //        logMessage(Log.VERBOSE, tag, message);
 
         int clientFD;
         while (true) {
@@ -227,7 +227,8 @@ public class LocalServerSocket implements Closeable {
             }
 
             LocalClientSocket clientSocket =  new LocalClientSocket(mLocalSocketManager, clientFD, peerCred);
-            Logger.logVerbose(LOG_TAG, "Client socket accept for \"" + mLocalSocketRunConfig.getTitle() + "\" server\n" + clientSocket.getLogString());
+            clientSocket.getLogString();
+//        logMessage(Log.VERBOSE, tag, message);
 
             // Only allow connection if the peer has the same uid as server app's user id or root user id
             if (peerUid != mLocalSocketManager.getContext().getApplicationInfo().uid && peerUid != 0) {
@@ -251,7 +252,7 @@ public class LocalServerSocket implements Closeable {
         @Override
         public void run() {
             try {
-                Logger.logVerbose(LOG_TAG, "ClientSocketListener start");
+                //        logMessage(Log.VERBOSE, tag, message);
 
                 while (!Thread.currentThread().isInterrupted()) {
                     LocalClientSocket clientSocket = null;
@@ -295,7 +296,7 @@ public class LocalServerSocket implements Closeable {
                 } catch (Exception ignored) {}
             }
 
-            Logger.logVerbose(LOG_TAG, "ClientSocketListener end");
+            //        logMessage(Log.VERBOSE, tag, message);
         }
 
     }

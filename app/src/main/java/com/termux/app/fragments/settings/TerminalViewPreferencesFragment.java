@@ -1,4 +1,4 @@
-package com.termux.app.fragments.settings.termux;
+package com.termux.app.fragments.settings;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import com.termux.R;
 import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
 
 @Keep
-public class TerminalIOPreferencesFragment extends PreferenceFragmentCompat {
+public class TerminalViewPreferencesFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -20,28 +20,28 @@ public class TerminalIOPreferencesFragment extends PreferenceFragmentCompat {
         if (context == null) return;
 
         PreferenceManager preferenceManager = getPreferenceManager();
-        preferenceManager.setPreferenceDataStore(TerminalIOPreferencesDataStore.getInstance(context));
+        preferenceManager.setPreferenceDataStore(TerminalViewPreferencesDataStore.getInstance(context));
 
-        setPreferencesFromResource(R.xml.termux_terminal_io_preferences, rootKey);
+        setPreferencesFromResource(R.xml.termux_terminal_view_preferences, rootKey);
     }
 
 }
 
-class TerminalIOPreferencesDataStore extends PreferenceDataStore {
+class TerminalViewPreferencesDataStore extends PreferenceDataStore {
 
     private final Context mContext;
     private final TermuxAppSharedPreferences mPreferences;
 
-    private static TerminalIOPreferencesDataStore mInstance;
+    private static TerminalViewPreferencesDataStore mInstance;
 
-    private TerminalIOPreferencesDataStore(Context context) {
+    private TerminalViewPreferencesDataStore(Context context) {
         mContext = context;
         mPreferences = TermuxAppSharedPreferences.build(context, true);
     }
 
-    public static synchronized TerminalIOPreferencesDataStore getInstance(Context context) {
+    public static synchronized TerminalViewPreferencesDataStore getInstance(Context context) {
         if (mInstance == null) {
-            mInstance = new TerminalIOPreferencesDataStore(context);
+            mInstance = new TerminalViewPreferencesDataStore(context);
         }
         return mInstance;
     }
@@ -54,11 +54,8 @@ class TerminalIOPreferencesDataStore extends PreferenceDataStore {
         if (key == null) return;
 
         switch (key) {
-            case "soft_keyboard_enabled":
-                    mPreferences.setSoftKeyboardEnabled(value);
-                break;
-            case "soft_keyboard_enabled_only_if_no_hardware":
-                mPreferences.setSoftKeyboardEnabledOnlyIfNoHardware(value);
+            case "terminal_margin_adjustment":
+                    mPreferences.setTerminalMarginAdjustment(value);
                 break;
             default:
                 break;
@@ -70,10 +67,8 @@ class TerminalIOPreferencesDataStore extends PreferenceDataStore {
         if (mPreferences == null) return false;
 
         switch (key) {
-            case "soft_keyboard_enabled":
-                return mPreferences.isSoftKeyboardEnabled();
-            case "soft_keyboard_enabled_only_if_no_hardware":
-                return mPreferences.isSoftKeyboardEnabledOnlyIfNoHardware();
+            case "terminal_margin_adjustment":
+                return mPreferences.isTerminalMarginAdjustmentEnabled();
             default:
                 return false;
         }

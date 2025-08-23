@@ -26,6 +26,7 @@ import com.termux.shared.logger.Logger;
 import com.termux.shared.errors.Error;
 import com.termux.shared.errors.FunctionErrno;
 import com.termux.shared.activity.ActivityUtils;
+import com.termux.utils.UI;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -64,9 +65,9 @@ public class PermissionUtils {
         // checkSelfPermission may return true for permissions not even requested
         List<String> permissionsNotRequested = getPermissionsNotRequested(context, permissions);
         if (permissionsNotRequested.size() > 0) {
-            Logger.logError(LOG_TAG,
-                context.getString(R.string.error_attempted_to_check_for_permissions_not_requested,
-                    Joiner.on(", ").join(permissionsNotRequested)));
+            context.getString(R.string.error_attempted_to_check_for_permissions_not_requested,
+                Joiner.on(", ").join(permissionsNotRequested));
+//        logMessage(Log.ERROR, tag, message);
             return false;
         }
 
@@ -122,9 +123,9 @@ public class PermissionUtils {
                                              int requestCode) {
         List<String> permissionsNotRequested = getPermissionsNotRequested(context, permissions);
         if (permissionsNotRequested.size() > 0) {
-            Logger.logErrorAndShowToast(context, LOG_TAG,
+            UI.showToast(context,
                 context.getString(R.string.error_attempted_to_ask_for_permissions_not_requested,
-                    Joiner.on(", ").join(permissionsNotRequested)));
+                    Joiner.on(", ").join(permissionsNotRequested)), true);
             return false;
         }
 
@@ -132,7 +133,7 @@ public class PermissionUtils {
             int result = ContextCompat.checkSelfPermission(context, permission);
             // If at least one permission not granted
             if (result != PackageManager.PERMISSION_GRANTED) {
-                Logger.logInfo(LOG_TAG, "Requesting Permissions: " + Arrays.toString(permissions));
+//                Logger.logInfo(LOG_TAG, "Requesting Permissions: " + Arrays.toString(permissions));
 
                 try {
                     if (context instanceof AppCompatActivity)
@@ -146,8 +147,8 @@ public class PermissionUtils {
                     }
                 } catch (Exception e) {
                     String errmsg = context.getString(R.string.error_failed_to_request_permissions, requestCode, Arrays.toString(permissions));
-                    Logger.logStackTraceWithMessage(LOG_TAG, errmsg, e);
-                    Logger.showToast(context, errmsg + "\n" + e.getMessage(), true);
+                    //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
+                    UI.showToast(context, errmsg + "\n" + e.getMessage(), true);
                     return false;
                 }
 
@@ -280,7 +281,7 @@ public class PermissionUtils {
                                                                                  int requestCode,
                                                                                  boolean prioritizeManageExternalStoragePermission,
                                                                                  boolean showErrorMessage) {
-        Logger.logVerbose(LOG_TAG, "Checking storage permission");
+        //        logMessage(Log.VERBOSE, tag, message);
 
         String errmsg;
         Boolean requestLegacyStoragePermission = null;
@@ -293,9 +294,7 @@ public class PermissionUtils {
 
         boolean checkIfHasRequestedLegacyExternalStorage = checkIfHasRequestedLegacyExternalStorage(context);
 
-        Logger.logVerbose(LOG_TAG, "prioritizeManageExternalStoragePermission=" + prioritizeManageExternalStoragePermission +
-                ", requestLegacyStoragePermission=" + requestLegacyStoragePermission +
-                ", checkIfHasRequestedLegacyExternalStorage=" + checkIfHasRequestedLegacyExternalStorage);
+        //        logMessage(Log.VERBOSE, tag, message);
 
         if (requestLegacyStoragePermission && checkIfHasRequestedLegacyExternalStorage) {
             // Check if requestLegacyExternalStorage is set to true in app manifest
@@ -309,9 +308,9 @@ public class PermissionUtils {
 
 
         errmsg = context.getString(R.string.msg_storage_permission_not_granted);
-        Logger.logError(LOG_TAG, errmsg);
+        //        logMessage(Log.ERROR, tag, message);
         if (showErrorMessage)
-            Logger.showToast(context, errmsg, false);
+            UI.showToast(context, errmsg, false);
 
         if (requestCode < 0 || Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return false;
@@ -359,7 +358,7 @@ public class PermissionUtils {
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean requestLegacyStorageExternalPermission(@NonNull Context context, int requestCode) {
-        Logger.logInfo(LOG_TAG, "Requesting legacy external storage permission");
+//        Logger.logInfo(LOG_TAG, "Requesting legacy external storage permission");
         return requestPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, requestCode);
     }
 
@@ -382,7 +381,7 @@ public class PermissionUtils {
      */
     @RequiresApi(api = Build.VERSION_CODES.R)
     public static Error requestManageStorageExternalPermission(@NonNull Context context, int requestCode) {
-        Logger.logInfo(LOG_TAG, "Requesting manage external storage permission");
+//        Logger.logInfo(LOG_TAG, "Requesting manage external storage permission");
 
         Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
         intent.addCategory("android.intent.category.DEFAULT");
@@ -459,9 +458,9 @@ public class PermissionUtils {
         if (hasRequestedLegacyExternalStorage != null && !hasRequestedLegacyExternalStorage) {
             errmsg = context.getString(R.string.error_has_not_requested_legacy_external_storage,
                 context.getPackageName(), PackageUtils.getTargetSDKForPackage(context), Build.VERSION.SDK_INT);
-            Logger.logError(LOG_TAG, errmsg);
+            //        logMessage(Log.ERROR, tag, message);
             if (showErrorMessage)
-                Logger.showToast(context, errmsg, true);
+                UI.showToast(context, errmsg, true);
             return false;
         }
 
@@ -502,7 +501,7 @@ public class PermissionUtils {
      * @return Returns the {@code error} if requesting the permission was not successful, otherwise {@code null}.
      */
     public static Error requestDisplayOverOtherAppsPermission(@NonNull Context context, int requestCode) {
-        Logger.logInfo(LOG_TAG, "Requesting display over apps permission");
+//        Logger.logInfo(LOG_TAG, "Requesting display over apps permission");
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return null;
@@ -534,12 +533,14 @@ public class PermissionUtils {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return true;
 
         if (!checkDisplayOverOtherAppsPermission(context)) {
+            //        logMessage(Log.WARN, tag, message);
             if (logResults)
-                Logger.logWarn(LOG_TAG, context.getPackageName() + " does not have Display over other apps (SYSTEM_ALERT_WINDOW) permission");
+                context.getPackageName();
             return false;
         } else {
+            //        logMessage(Log.DEBUG, tag, message);
             if (logResults)
-                Logger.logDebug(LOG_TAG, context.getPackageName() + " already has Display over other apps (SYSTEM_ALERT_WINDOW) permission");
+                context.getPackageName();
             return true;
         }
     }
@@ -582,7 +583,7 @@ public class PermissionUtils {
      */
     @SuppressLint("BatteryLife")
     public static Error requestDisableBatteryOptimizations(@NonNull Context context, int requestCode) {
-        Logger.logInfo(LOG_TAG, "Requesting to disable battery optimizations");
+//        Logger.logInfo(LOG_TAG, "Requesting to disable battery optimizations");
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
             return null;

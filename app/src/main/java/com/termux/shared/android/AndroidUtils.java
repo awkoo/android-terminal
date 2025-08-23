@@ -217,7 +217,7 @@ public class AndroidUtils {
             process.destroy();
 
         } catch (IOException e) {
-            Logger.logStackTraceWithMessage("Failed to get run \"/system/bin/getprop\" to get system properties.", e);
+//            Logger.logStackTraceWithMessage("Failed to get run \"/system/bin/getprop\" to get system properties.", e);
         }
 
         //for (String key : systemProperties.stringPropertyNames()) {
@@ -231,7 +231,7 @@ public class AndroidUtils {
         try {
             return System.getProperty(property);
         } catch (Exception e) {
-            Logger.logVerbose("Failed to get system property \"" + property + "\":" + e.getMessage());
+//            Logger.logVerbose("Failed to get system property \"" + property + "\":" + e.getMessage());
             return null;
         }
     }

@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.termux.shared.errors.Error;
-import com.termux.shared.logger.Logger;
 
 /** Base helper implementation for {@link ILocalSocketManager}. */
 public abstract class LocalSocketManagerClientBase implements ILocalSocketManager {
@@ -20,17 +19,25 @@ public abstract class LocalSocketManagerClientBase implements ILocalSocketManage
     public void onError(@NonNull LocalSocketManager localSocketManager,
                         @Nullable LocalClientSocket clientSocket, @NonNull Error error) {
         // Only log if log level is debug or higher since PeerCred.cmdline may contain private info
-        Logger.logErrorPrivate(getLogTag(), "onError");
-        Logger.logErrorPrivateExtended(getLogTag(), LocalSocketManager.getErrorLogString(error,
-            localSocketManager.getLocalSocketRunConfig(), clientSocket));
+        getLogTag();
+//        if (CURRENT_LOG_LEVEL >= LOG_LEVEL_DEBUG)
+//            logMessage(Log.ERROR, tag, message);
+        getLogTag();
+        LocalSocketManager.getErrorLogString(error,
+            localSocketManager.getLocalSocketRunConfig(), clientSocket);
+//        if (CURRENT_LOG_LEVEL >= LOG_LEVEL_DEBUG)
+//            logExtendedMessage(Log.ERROR, tag, message);
     }
 
     @Override
     public void onDisallowedClientConnected(@NonNull LocalSocketManager localSocketManager,
                                             @NonNull LocalClientSocket clientSocket, @NonNull Error error) {
-        Logger.logWarn(getLogTag(), "onDisallowedClientConnected");
-        Logger.logWarnExtended(getLogTag(), LocalSocketManager.getErrorLogString(error,
-            localSocketManager.getLocalSocketRunConfig(), clientSocket));
+        getLogTag();
+//        logMessage(Log.WARN, tag, message);
+        getLogTag();
+        LocalSocketManager.getErrorLogString(error,
+            localSocketManager.getLocalSocketRunConfig(), clientSocket);
+//        logExtendedMessage(Log.WARN, tag, message);
     }
 
     @Override

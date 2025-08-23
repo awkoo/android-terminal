@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.termux.shared.logger.Logger;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.settings.properties.SharedProperties;
 import com.termux.shared.settings.properties.SharedPropertiesParser;
@@ -165,7 +164,7 @@ public abstract class TermuxSharedProperties {
                 // A null value can still be returned by
                 // {@link #getInternalPropertyValueFromValue(Context,String,String)} for some keys
                 value = getInternalTermuxPropertyValueFromValue(mContext, key, null);
-                Logger.logWarn(LOG_TAG, "The value for \"" + key + "\" not found in SharedProperties cache, force returning default value: `" + value +  "`");
+                //        logMessage(Log.WARN, tag, message);
                 return value;
             }
         } else {
@@ -220,7 +219,7 @@ public abstract class TermuxSharedProperties {
         String useBlackUIStringValue = properties.getProperty(TermuxPropertyConstants.KEY_USE_BLACK_UI);
         if (useBlackUIStringValue == null) return properties;
 
-        Logger.logWarn(LOG_TAG, "Removing deprecated property " + TermuxPropertyConstants.KEY_USE_BLACK_UI + "=" + useBlackUIStringValue);
+        //        logMessage(Log.WARN, tag, message);
         properties.remove(TermuxPropertyConstants.KEY_USE_BLACK_UI);
 
         // If KEY_NIGHT_MODE is not set
@@ -229,7 +228,7 @@ public abstract class TermuxSharedProperties {
             if (useBlackUI != null) {
                 String termuxAppTheme = useBlackUI ? TermuxPropertyConstants.IVALUE_NIGHT_MODE_TRUE :
                     TermuxPropertyConstants.IVALUE_NIGHT_MODE_FALSE;
-                Logger.logWarn(LOG_TAG, "Replacing deprecated property " + TermuxPropertyConstants.KEY_USE_BLACK_UI + "=" + useBlackUI + " with " + TermuxPropertyConstants.KEY_NIGHT_MODE + "=" + termuxAppTheme);
+                //        logMessage(Log.WARN, tag, message);
                 properties.put(TermuxPropertyConstants.KEY_NIGHT_MODE, termuxAppTheme);
             }
         }
@@ -470,7 +469,7 @@ public abstract class TermuxSharedProperties {
         String[] parts = value.toLowerCase().trim().split("\\+");
         String input = parts.length == 2 ? parts[1].trim() : null;
         if (!(parts.length == 2 && parts[0].trim().equals("ctrl")) || input.isEmpty() || input.length() > 2) {
-            Logger.logError(LOG_TAG, "Keyboard shortcut '" + key + "' is not Ctrl+<something>");
+            //        logMessage(Log.ERROR, tag, message);
             return null;
         }
 
@@ -478,7 +477,7 @@ public abstract class TermuxSharedProperties {
         int codePoint = c;
         if (Character.isLowSurrogate(c)) {
             if (input.length() != 2 || Character.isHighSurrogate(input.charAt(1))) {
-                Logger.logError(LOG_TAG, "Keyboard shortcut '" + key + "' is not Ctrl+<something>");
+                //        logMessage(Log.ERROR, tag, message);
                 return null;
             } else {
                 codePoint = Character.toCodePoint(input.charAt(1), c);
@@ -511,7 +510,7 @@ public abstract class TermuxSharedProperties {
         if (!workDir.exists() || !workDir.isDirectory() || !workDir.canRead()) {
             // Fallback to default directory if user configured working directory does not exist,
             // is not a directory or is not readable.
-            Logger.logError(LOG_TAG, "The path \"" + path + "\" for the key \"" + TermuxPropertyConstants.KEY_DEFAULT_WORKING_DIRECTORY + "\" does not exist, is not a directory or is not readable. Using default value \"" + TermuxPropertyConstants.DEFAULT_IVALUE_DEFAULT_WORKING_DIRECTORY + "\" instead.");
+            //        logMessage(Log.ERROR, tag, message);
             return TermuxPropertyConstants.DEFAULT_IVALUE_DEFAULT_WORKING_DIRECTORY;
         } else {
             return path;
@@ -697,7 +696,8 @@ public abstract class TermuxSharedProperties {
             propertiesDump.append(" null");
         }
 
-        Logger.logVerbose(LOG_TAG, propertiesDump.toString());
+        propertiesDump.toString();
+//        logMessage(Log.VERBOSE, tag, message);
     }
 
     public void dumpInternalPropertiesToLog() {
@@ -711,7 +711,8 @@ public abstract class TermuxSharedProperties {
             }
         }
 
-        Logger.logVerbose(LOG_TAG, internalPropertiesDump.toString());
+        internalPropertiesDump.toString();
+//        logMessage(Log.VERBOSE, tag, message);
     }
 
 }

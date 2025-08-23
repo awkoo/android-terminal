@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 
-import com.termux.shared.logger.Logger;
 import com.termux.shared.theme.NightMode;
 
 public class AppCompatActivityUtils {
@@ -69,7 +68,7 @@ public class AppCompatActivityUtils {
                 if (titleAppearance != 0)
                     toolbar.setTitleTextAppearance(activity, titleAppearance);
             } catch (Exception e) {
-                Logger.logStackTraceWithMessage(LOG_TAG, "Failed to set toolbar title appearance to style resource id " + titleAppearance, e);
+                //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             }
 
 
@@ -92,7 +91,7 @@ public class AppCompatActivityUtils {
                 if (subtitleAppearance != 0)
                     toolbar.setSubtitleTextAppearance(activity, subtitleAppearance);
             } catch (Exception e) {
-                Logger.logStackTraceWithMessage(LOG_TAG, "Failed to set toolbar subtitle appearance to style resource id " + subtitleAppearance, e);
+                //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             }
         }
     }

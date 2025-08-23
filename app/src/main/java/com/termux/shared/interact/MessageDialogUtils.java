@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.termux.R;
-import com.termux.shared.logger.Logger;
 
 public class MessageDialogUtils {
 
@@ -80,7 +79,7 @@ public class MessageDialogUtils {
         AlertDialog dialog = builder.create();
 
         dialog.setOnShowListener(dialogInterface -> {
-            Logger.logError("dialog");
+            //        logMessage(Log.ERROR, DEFAULT_LOG_TAG, message);
             Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
             if (button != null)
                 button.setTextColor(Color.BLACK);

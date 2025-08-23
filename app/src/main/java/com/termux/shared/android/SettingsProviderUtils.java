@@ -6,8 +6,6 @@ import android.provider.Settings;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.termux.shared.logger.Logger;
-
 public class SettingsProviderUtils {
 
     private static final String LOG_TAG = "SettingsProviderUtils";
@@ -91,7 +89,9 @@ public class SettingsProviderUtils {
         } catch (Settings.SettingNotFoundException e) {
             // Ignore
         } catch (Exception e) {
-            Logger.logError(LOG_TAG, "Failed to get \"" + key + "\" key value from settings \"" + namespace.name() + "\" namespace of type \"" + type.name() + "\"");
+            namespace.name();
+            type.name();
+//        logMessage(Log.ERROR, tag, message);
         }
         return def;
     }
