@@ -39,7 +39,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
-        android:theme="@style/Theme.Material3.Light">
+        android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar">
 
         <activity
             android:name=".app.TermuxActivity"
@@ -81,8 +81,7 @@
         <activity
             android:name=".app.activities.SettingsActivity"
             android:exported="true"
-            android:label="@string/title_activity_termux_settings"
-            android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar" />
+            android:label="@string/title_activity_termux_settings" />
 
         <activity
             android:name=".app.api.file.FileReceiverActivity"
