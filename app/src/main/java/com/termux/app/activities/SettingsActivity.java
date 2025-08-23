@@ -7,14 +7,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.termux.R;
+import com.termux.databinding.ActivitySettingsBinding;
 import com.termux.utils.UI;
 
 public class SettingsActivity extends AppCompatActivity {
+    ActivitySettingsBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        binding = ActivitySettingsBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         UI.setDefaultToolbar(this, true);
         if (savedInstanceState == null) {
             getSupportFragmentManager()

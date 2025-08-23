@@ -25,13 +25,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.termux.R;
-import com.termux.app.api.file.FileReceiverActivity;
 import com.termux.app.terminal.TermuxActivityRootView;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.io.TermuxTerminalExtraKeys;
 import com.termux.shared.activity.ActivityUtils;
-import com.termux.shared.data.IntentUtils;
-import com.termux.shared.android.PermissionUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
 import com.termux.app.activities.SettingsActivity;
@@ -128,10 +125,10 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      */
     TermuxSessionsListViewController mTermuxSessionListViewController;
 
-    /**
-     * The {@link TermuxActivity} broadcast receiver for various things like terminal style configuration changes.
-     */
-    private final BroadcastReceiver mTermuxActivityBroadcastReceiver = new TermuxActivityBroadcastReceiver();
+//    /**
+//     * The {@link TermuxActivity} broadcast receiver for various things like terminal style configuration changes.
+//     */
+//    private final BroadcastReceiver mTermuxActivityBroadcastReceiver = new TermuxActivityBroadcastReceiver();
 
     /**
      * The last toast shown, used cancel current toast before showing new in {@link #showToast(String, boolean)}.
@@ -181,7 +178,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //        logMessage(Log.DEBUG, tag, message);
         mIsOnResumeAfterOnCreate = true;
 
         if (savedInstanceState != null)
@@ -233,8 +229,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         registerForContextMenu(mTerminalView);
 
-        FileReceiverActivity.updateFileReceiverActivityComponentsState(this);
-
         try {
             // Start the {@link TermuxService} and make it run regardless of who is bound to it
             Intent serviceIntent = new Intent(this, TermuxService.class);
@@ -277,7 +271,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (mPreferences.isTerminalMarginAdjustmentEnabled())
             addTermuxActivityRootViewGlobalLayoutListener();
 
-        registerTermuxActivityBroadcastReceiver();
+//        registerTermuxActivityBroadcastReceiver();
     }
 
     @Override
@@ -315,7 +309,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         removeTermuxActivityRootViewGlobalLayoutListener();
 
-        unregisterTermuxActivityBroadcastReceiver();
+//        unregisterTermuxActivityBroadcastReceiver();
         getDrawer().closeDrawers();
     }
 
@@ -562,6 +556,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     @SuppressLint("RtlHardcoded")
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         if (getDrawer().isDrawerOpen(Gravity.LEFT)) {
             getDrawer().closeDrawers();
         } else {
@@ -661,7 +656,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     @Override
-    public void onContextMenuClosed(Menu menu) {
+    public void onContextMenuClosed(@NonNull Menu menu) {
         super.onContextMenuClosed(menu);
         // onContextMenuClosed() is triggered twice if back button is pressed to dismiss instead of tap for some reason
         mTerminalView.onContextMenuClosed(menu);
@@ -684,7 +679,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private void onResetTerminalSession(TerminalSession session) {
         if (session != null) {
             session.reset();
-            showToast(getResources().getString(R.string.msg_terminal_reset), true);
+            UI.showToast(this, getResources().getString(R.string.msg_terminal_reset), true);
 
             if (mTermuxTerminalSessionActivityClient != null)
                 mTermuxTerminalSessionActivityClient.onResetTerminalSession();
@@ -700,54 +695,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             mPreferences.setKeepScreenOn(true);
         }
     }
-
-
-
-    /**
-     * For processes to access primary external storage (/sdcard, /storage/emulated/0, ~/storage/shared),
-     * termux needs to be granted legacy WRITE_EXTERNAL_STORAGE or MANAGE_EXTERNAL_STORAGE permissions
-     * if targeting targetSdkVersion 30 (android 11) and running on sdk 30 (android 11) and higher.
-     */
-    public void requestStoragePermission(boolean isPermissionCallback) {
-        new Thread() {
-            @Override
-            public void run() {
-                // Do not ask for permission again
-                int requestCode = isPermissionCallback ? -1 : PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION;
-
-                // If permission is granted, then also setup storage symlinks.
-                if(PermissionUtils.checkAndRequestLegacyOrManageExternalStoragePermission(
-                    TermuxActivity.this, requestCode, true, !isPermissionCallback)) {
-                    if (isPermissionCallback)
-                        UI.showToast(TermuxActivity.this,
-                            getString(R.string.msg_storage_permission_granted_on_request), true);
-                } else {
-                    if (isPermissionCallback)
-                        UI.showToast(TermuxActivity.this,
-                            getString(R.string.msg_storage_permission_not_granted_on_request), true);
-                }
-            }
-        }.start();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        IntentUtils.getIntentString(data);
-//        logMessage(Log.VERBOSE, tag, message);
-        if (requestCode == PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION) {
-            requestStoragePermission(true);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION) {
-            requestStoragePermission(true);
-        }
-    }
-
 
 
     public int getNavBarHeight() {
@@ -822,9 +769,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         return mTerminalView;
     }
 
-    public TermuxTerminalViewClient getTermuxTerminalViewClient() {
-        return mTermuxTerminalViewClient;
-    }
+//    public TermuxTerminalViewClient getTermuxTerminalViewClient() {
+//        return mTermuxTerminalViewClient;
+//    }
 
     public TermuxTerminalSessionActivityClient getTermuxTerminalSessionClient() {
         return mTermuxTerminalSessionActivityClient;
@@ -849,93 +796,84 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
 
 
-    public static void updateTermuxActivityStyling(Context context, boolean recreateActivity) {
-        // Make sure that terminal styling is always applied.
-        Intent stylingIntent = new Intent(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
-        stylingIntent.putExtra(TERMUX_ACTIVITY.EXTRA_RECREATE_ACTIVITY, recreateActivity);
-        context.sendBroadcast(stylingIntent);
-    }
+//    public static void updateTermuxActivityStyling(Context context, boolean recreateActivity) {
+//        // Make sure that terminal styling is always applied.
+//        Intent stylingIntent = new Intent(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
+//        stylingIntent.putExtra(TERMUX_ACTIVITY.EXTRA_RECREATE_ACTIVITY, recreateActivity);
+//        context.sendBroadcast(stylingIntent);
+//    }
 
-    private void registerTermuxActivityBroadcastReceiver() {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(TERMUX_ACTIVITY.ACTION_NOTIFY_APP_CRASH);
-        intentFilter.addAction(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
-        intentFilter.addAction(TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS);
+//    private void registerTermuxActivityBroadcastReceiver() {
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
+//        intentFilter.addAction(TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS);
+//
+//        registerReceiver(mTermuxActivityBroadcastReceiver, intentFilter, Context.RECEIVER_EXPORTED);
+//    }
+//
+//    private void unregisterTermuxActivityBroadcastReceiver() {
+//        unregisterReceiver(mTermuxActivityBroadcastReceiver);
+//    }
 
-        registerReceiver(mTermuxActivityBroadcastReceiver, intentFilter, Context.RECEIVER_EXPORTED);
-    }
+//    private void fixTermuxActivityBroadcastReceiverIntent(Intent intent) {
+//        if (intent == null) return;
+//
+//        String extraReloadStyle = intent.getStringExtra(TERMUX_ACTIVITY.EXTRA_RELOAD_STYLE);
+//        if ("storage".equals(extraReloadStyle)) {
+//            intent.removeExtra(TERMUX_ACTIVITY.EXTRA_RELOAD_STYLE);
+//            intent.setAction(TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS);
+//        }
+//    }
 
-    private void unregisterTermuxActivityBroadcastReceiver() {
-        unregisterReceiver(mTermuxActivityBroadcastReceiver);
-    }
+//    class TermuxActivityBroadcastReceiver extends BroadcastReceiver {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            if (intent == null) return;
+//
+//            if (mIsVisible) {
+//                fixTermuxActivityBroadcastReceiverIntent(intent);
+//
+//                switch (intent.getAction()) {
+//                    case TERMUX_ACTIVITY.ACTION_RELOAD_STYLE:
+//                        reloadActivityStyling(intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_RECREATE_ACTIVITY, true));
+//                        return;
+//                    case null:
+//                    default:
+//                        break;
+//                }
+//            }
+//        }
+//    }
 
-    private void fixTermuxActivityBroadcastReceiverIntent(Intent intent) {
-        if (intent == null) return;
-
-        String extraReloadStyle = intent.getStringExtra(TERMUX_ACTIVITY.EXTRA_RELOAD_STYLE);
-        if ("storage".equals(extraReloadStyle)) {
-            intent.removeExtra(TERMUX_ACTIVITY.EXTRA_RELOAD_STYLE);
-            intent.setAction(TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS);
-        }
-    }
-
-    class TermuxActivityBroadcastReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent == null) return;
-
-            if (mIsVisible) {
-                fixTermuxActivityBroadcastReceiverIntent(intent);
-
-                switch (intent.getAction()) {
-                    case TERMUX_ACTIVITY.ACTION_RELOAD_STYLE:
-                        //        logMessage(Log.DEBUG, tag, message);
-                        reloadActivityStyling(intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_RECREATE_ACTIVITY, true));
-                        return;
-                    case TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS:
-                        //        logMessage(Log.DEBUG, tag, message);
-                        requestStoragePermission(false);
-                        return;
-                    case null:
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
-    private void reloadActivityStyling(boolean recreateActivity) {
-        if (mProperties != null) {
-            reloadProperties();
-
-            if (mExtraKeysView != null) {
-                mExtraKeysView.setButtonTextAllCaps(mProperties.shouldExtraKeysTextBeAllCaps());
-                mExtraKeysView.reload(mTermuxTerminalExtraKeys.getExtraKeysInfo(), mTerminalToolbarDefaultHeight);
-            }
-
-            // Update NightMode.APP_NIGHT_MODE
-            TermuxThemeUtils.setAppNightMode(mProperties.getNightMode());
-        }
-
-        setMargins();
-        setTerminalToolbarHeight();
-
-        FileReceiverActivity.updateFileReceiverActivityComponentsState(this);
-
-        if (mTermuxTerminalSessionActivityClient != null)
-            mTermuxTerminalSessionActivityClient.onReloadActivityStyling();
-
-        if (mTermuxTerminalViewClient != null)
-            mTermuxTerminalViewClient.onReloadActivityStyling();
-
-        // To change the activity and drawer theme, activity needs to be recreated.
-        // It will destroy the activity, including all stored variables and views, and onCreate()
-        // will be called again. Extra keys input text, terminal sessions and transcripts will be preserved.
-        if (recreateActivity) {
-            //        logMessage(Log.DEBUG, tag, message);
-            TermuxActivity.this.recreate();
-        }
-    }
+//    private void reloadActivityStyling(boolean recreateActivity) {
+//        if (mProperties != null) {
+//            reloadProperties();
+//
+//            if (mExtraKeysView != null) {
+//                mExtraKeysView.setButtonTextAllCaps(mProperties.shouldExtraKeysTextBeAllCaps());
+//                mExtraKeysView.reload(mTermuxTerminalExtraKeys.getExtraKeysInfo(), mTerminalToolbarDefaultHeight);
+//            }
+//
+//            // Update NightMode.APP_NIGHT_MODE
+//            TermuxThemeUtils.setAppNightMode(mProperties.getNightMode());
+//        }
+//
+//        setMargins();
+//        setTerminalToolbarHeight();
+//
+//        if (mTermuxTerminalSessionActivityClient != null)
+//            mTermuxTerminalSessionActivityClient.onReloadActivityStyling();
+//
+//        if (mTermuxTerminalViewClient != null)
+//            mTermuxTerminalViewClient.onReloadActivityStyling();
+//
+//        // To change the activity and drawer theme, activity needs to be recreated.
+//        // It will destroy the activity, including all stored variables and views, and onCreate()
+//        // will be called again. Extra keys input text, terminal sessions and transcripts will be preserved.
+//        if (recreateActivity) {
+//            TermuxActivity.this.recreate();
+//        }
+//    }
 
 
 

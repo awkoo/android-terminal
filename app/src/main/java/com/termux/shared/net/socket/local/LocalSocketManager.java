@@ -386,47 +386,25 @@ public class LocalSocketManager {
 
 
 
-    /** Get an error log {@link String} for the {@link LocalSocketManager}. */
-    public static String getErrorLogString(@NonNull Error error,
-                                           @NonNull LocalSocketRunConfig localSocketRunConfig,
-                                           @Nullable LocalClientSocket clientSocket) {
-        StringBuilder logString = new StringBuilder();
-
-        logString.append(localSocketRunConfig.getTitle()).append(" Socket Server Error:\n");
-        logString.append(error.getErrorLogString());
-        logString.append("\n\n\n");
-
-        logString.append(localSocketRunConfig.getLogString());
-
-        if (clientSocket != null) {
-            logString.append("\n\n\n");
-            logString.append(clientSocket.getLogString());
-        }
-
-        return logString.toString();
-    }
-
-    /** Get an error markdown {@link String} for the {@link LocalSocketManager}. */
-    public static String getErrorMarkdownString(@NonNull Error error,
-                                                @NonNull LocalSocketRunConfig localSocketRunConfig,
-                                                @Nullable LocalClientSocket clientSocket) {
-        StringBuilder markdownString = new StringBuilder();
-
-        markdownString.append(error.getErrorMarkdownString());
-        markdownString.append("\n##\n\n\n");
-
-        markdownString.append(localSocketRunConfig.getMarkdownString());
-
-        if (clientSocket != null) {
-            markdownString.append("\n\n\n");
-            markdownString.append(clientSocket.getMarkdownString());
-        }
-
-        return markdownString.toString();
-    }
-
-
-
+//    /** Get an error log {@link String} for the {@link LocalSocketManager}. */
+//    public static String getErrorLogString(@NonNull Error error,
+//                                           @NonNull LocalSocketRunConfig localSocketRunConfig,
+//                                           @Nullable LocalClientSocket clientSocket) {
+//        StringBuilder logString = new StringBuilder();
+//
+//        logString.append(localSocketRunConfig.getTitle()).append(" Socket Server Error:\n");
+//        logString.append(error.getErrorLogString());
+//        logString.append("\n\n\n");
+//
+//        logString.append(localSocketRunConfig.getLogString());
+//
+//        if (clientSocket != null) {
+//            logString.append("\n\n\n");
+//            logString.append(clientSocket.getLogString());
+//        }
+//
+//        return logString.toString();
+//    }
 
 
     @Nullable private static native JniResult createServerSocketNative(@NonNull String serverTitle, @NonNull byte[] path, int backlog);

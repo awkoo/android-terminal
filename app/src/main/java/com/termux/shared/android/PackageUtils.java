@@ -19,7 +19,6 @@ import androidx.annotation.RequiresApi;
 import com.termux.R;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.interact.MessageDialogUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.reflection.ReflectionUtils;
 import com.termux.utils.UI;
 
@@ -91,17 +90,6 @@ public class PackageUtils {
         return packageContext;
     }
 
-
-
-    /**
-     * Get the {@link PackageInfo} for the package associated with the {@code context}.
-     *
-     * @param context The {@link Context} for the package.
-     * @return Returns the {@link PackageInfo}. This will be {@code null} if an exception is raised.
-     */
-    public static PackageInfo getPackageInfoForPackage(@NonNull final Context context) {
-        return getPackageInfoForPackage(context, context.getPackageName());
-    }
 
     /**
      * Get the {@link PackageInfo} for the package associated with the {@code context}.

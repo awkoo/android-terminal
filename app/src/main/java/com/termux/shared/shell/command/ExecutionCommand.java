@@ -11,7 +11,6 @@ import com.termux.shared.shell.command.result.ResultConfig;
 import com.termux.shared.shell.command.result.ResultData;
 import com.termux.shared.errors.Error;
 import com.termux.shared.logger.Logger;
-import com.termux.shared.markdown.MarkdownUtils;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.shell.command.runner.app.AppShell;
 import com.termux.terminal.TerminalSession;
@@ -228,9 +227,6 @@ public class ExecutionCommand {
     private static final String LOG_TAG = "ExecutionCommand";
 
 
-    public ExecutionCommand() {
-    }
-
     public ExecutionCommand(Integer id) {
         this.id = id;
     }
@@ -421,81 +417,6 @@ public class ExecutionCommand {
         return logString.toString();
     }
 
-    /**
-     * Get a log friendly {@link String} for {@link ExecutionCommand} with more details.
-     *
-     * @param executionCommand The {@link ExecutionCommand} to convert.
-     * @return Returns the log friendly {@link String}.
-     */
-    public static String getDetailedLogString(final ExecutionCommand executionCommand) {
-        if (executionCommand == null) return "null";
-
-        StringBuilder logString = new StringBuilder();
-
-        logString.append(getExecutionInputLogString(executionCommand, false, true));
-        logString.append(getExecutionOutputLogString(executionCommand, false, true, true));
-
-        logString.append("\n").append(executionCommand.getCommandDescriptionLogString());
-        logString.append("\n").append(executionCommand.getCommandHelpLogString());
-
-        return logString.toString();
-    }
-
-    /**
-     * Get a markdown {@link String} for {@link ExecutionCommand}.
-     *
-     * @param executionCommand The {@link ExecutionCommand} to convert.
-     * @return Returns the markdown {@link String}.
-     */
-    public static String getExecutionCommandMarkdownString(final ExecutionCommand executionCommand) {
-        if (executionCommand == null) return "null";
-
-        if (executionCommand.commandLabel == null) executionCommand.commandLabel = "Execution Command";
-
-        StringBuilder markdownString = new StringBuilder();
-
-        markdownString.append("## ").append(executionCommand.commandLabel).append("\n");
-
-        if (executionCommand.mPid != -1)
-            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Pid", executionCommand.mPid, "-"));
-
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Previous State", executionCommand.previousState.getName(), "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Current State", executionCommand.currentState.getName(), "-"));
-
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Executable", executionCommand.executable, "-"));
-        markdownString.append("\n").append(getArgumentsMarkdownString("Arguments", executionCommand.arguments));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Working Directory", executionCommand.workingDirectory, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Runner", executionCommand.runner, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("isFailsafe", executionCommand.isFailsafe, "-"));
-
-        if (Runner.APP_SHELL.equalsRunner(executionCommand.runner)) {
-            if (!DataUtils.isNullOrEmpty(executionCommand.stdin))
-                markdownString.append("\n").append(MarkdownUtils.getMultiLineMarkdownStringEntry("Stdin", executionCommand.stdin, "-"));
-//            if (executionCommand.backgroundCustomLogLevel != null)
-//                markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Background Custom Log Level", executionCommand.backgroundCustomLogLevel, "-"));
-        }
-
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Session Action", executionCommand.sessionAction, "-"));
-
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Shell Name", executionCommand.shellName, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Shell Create Mode", executionCommand.shellCreateMode, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Set Shell Command Shell Environment", executionCommand.setShellCommandShellEnvironment, "-"));
-
-        markdownString.append("\n\n").append(ResultConfig.getResultConfigMarkdownString(executionCommand.resultConfig));
-
-        markdownString.append("\n\n").append(ResultData.getResultDataMarkdownString(executionCommand.resultData));
-
-        if (executionCommand.commandDescription != null || executionCommand.commandHelp != null) {
-            if (executionCommand.commandDescription != null)
-                markdownString.append("\n\n### Command Description\n\n").append(executionCommand.commandDescription).append("\n");
-            if (executionCommand.commandHelp != null)
-                markdownString.append("\n\n### Command Help\n\n").append(executionCommand.commandHelp).append("\n");
-            markdownString.append("\n##\n");
-        }
-
-        return markdownString.toString();
-    }
-
 
     public String getIdLogString() {
         if (id != null)
@@ -574,14 +495,6 @@ public class ExecutionCommand {
         return "Set Shell Command Shell Environment: `" + setShellCommandShellEnvironment + "`";
     }
 
-    public String getCommandDescriptionLogString() {
-        return Logger.getSingleLineLogStringEntry("Command Description", commandDescription, "-");
-    }
-
-    public String getCommandHelpLogString() {
-        return Logger.getSingleLineLogStringEntry("Command Help", commandHelp, "-");
-    }
-
     public String getCommandIntentLogString() {
         if (commandIntent == null)
             return "Command Intent: -";
@@ -617,40 +530,6 @@ public class ExecutionCommand {
             argumentsString.append("```");
         } else{
             argumentsString.append(" -");
-        }
-
-        return argumentsString.toString();
-    }
-
-    /**
-     * Get a markdown {@link String} for {@link String[]} argumentsArray.
-     * If argumentsArray are null or of size 0, then `**Arguments:** -` is returned. Otherwise
-     * following format is returned:
-     *
-     * **Arguments:**
-     *
-     * **Arg 1:**
-     * ```
-     * value
-     * ```
-     * **Arg 2:**
-     * ```
-     * value
-     *```
-     *
-     * @param argumentsArray The {@link String[]} argumentsArray to convert.
-     * @return Returns the markdown {@link String}.
-     */
-    public static String getArgumentsMarkdownString(String label, final String[] argumentsArray) {
-        StringBuilder argumentsString = new StringBuilder("**" + label + ":**");
-
-        if (argumentsArray != null && argumentsArray.length != 0) {
-            argumentsString.append("\n");
-            for (int i = 0; i != argumentsArray.length; i++) {
-                argumentsString.append(MarkdownUtils.getMultiLineMarkdownStringEntry("Arg " + (i + 1), argumentsArray[i], "-")).append("\n");
-            }
-        } else{
-            argumentsString.append(" -  ");
         }
 
         return argumentsString.toString();

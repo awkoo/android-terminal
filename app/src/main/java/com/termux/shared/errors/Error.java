@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.termux.shared.logger.Logger;
-import com.termux.shared.markdown.MarkdownUtils;
 import com.termux.utils.UI;
 
 import java.io.Serializable;
@@ -257,29 +256,6 @@ public class Error implements Serializable {
         return logString.toString();
     }
 
-    /**
-     * Get a markdown {@link String} for {@link Error}.
-     *
-     * @param error The {@link Error} to convert.
-     * @return Returns the markdown {@link String}.
-     */
-    public static String getErrorMarkdownString(final Error error) {
-        if (error == null) return "null";
-        return error.getErrorMarkdownString();
-    }
-
-    public String getErrorMarkdownString() {
-        StringBuilder markdownString = new StringBuilder();
-
-        markdownString.append(MarkdownUtils.getSingleLineMarkdownStringEntry("Error Code", getCode(), "-"));
-        markdownString.append("\n").append(MarkdownUtils.getMultiLineMarkdownStringEntry(
-            (Errno.TYPE.equals(getType()) ? "Error Message" : "Error Message (" + getType() + ")"), message, "-"));
-        if (throwablesList != null && throwablesList.size() > 0)
-            markdownString.append("\n\n").append(geStackTracesMarkdownString());
-
-        return markdownString.toString();
-    }
-
 
     public String getCodeString() {
         return Logger.getSingleLineLogStringEntry("Error Code", code, "-");
@@ -291,10 +267,6 @@ public class Error implements Serializable {
 
     public String geStackTracesLogString() {
         return Logger.getStackTracesString("StackTraces:", Logger.getStackTracesStringArray(throwablesList));
-    }
-
-    public String geStackTracesMarkdownString() {
-        return Logger.getStackTracesMarkdownString("StackTraces", Logger.getStackTracesStringArray(throwablesList));
     }
 
 }

@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.logger.Logger;
-import com.termux.shared.markdown.MarkdownUtils;
 import com.termux.shared.errors.Errno;
 import com.termux.shared.errors.Error;
 
@@ -188,71 +187,6 @@ public class ResultData implements Serializable {
         }
 
         return logString.toString();
-    }
-
-    /**
-     * Get a markdown {@link String} for {@link ResultData}.
-     *
-     * @param resultData The {@link ResultData} to convert.
-     * @return Returns the markdown {@link String}.
-     */
-    public static String getResultDataMarkdownString(final ResultData resultData) {
-        if (resultData == null) return "null";
-
-        StringBuilder markdownString = new StringBuilder();
-
-        if (resultData.stdout.toString().isEmpty())
-            markdownString.append(MarkdownUtils.getSingleLineMarkdownStringEntry("Stdout", null, "-"));
-        else
-            markdownString.append(MarkdownUtils.getMultiLineMarkdownStringEntry("Stdout", resultData.stdout.toString(), "-"));
-
-        if (resultData.stderr.toString().isEmpty())
-            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Stderr", null, "-"));
-        else
-            markdownString.append("\n").append(MarkdownUtils.getMultiLineMarkdownStringEntry("Stderr", resultData.stderr.toString(), "-"));
-
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Exit Code", resultData.exitCode, "-"));
-
-        markdownString.append("\n\n").append(getErrorsListMarkdownString(resultData));
-
-
-        return markdownString.toString();
-    }
-
-    public static String getErrorsListMarkdownString(final ResultData resultData) {
-        if (resultData == null) return "null";
-
-        StringBuilder markdownString = new StringBuilder();
-
-        if (resultData.errorsList != null) {
-            for (Error error : resultData.errorsList) {
-                if (error.isStateFailed()) {
-                    if (!markdownString.toString().isEmpty())
-                        markdownString.append("\n");
-                    markdownString.append(Error.getErrorMarkdownString(error));
-                }
-            }
-        }
-
-        return markdownString.toString();
-    }
-
-    public static String getErrorsListMinimalString(final ResultData resultData) {
-        if (resultData == null) return "null";
-
-        StringBuilder minimalString = new StringBuilder();
-
-        if (resultData.errorsList != null) {
-            for (Error error : resultData.errorsList) {
-                if (error.isStateFailed()) {
-                    if (!minimalString.toString().isEmpty())
-                        minimalString.append("\n");
-                    minimalString.append(Error.getMinimalErrorString(error));
-                }
-            }
-        }
-
-        return minimalString.toString();
     }
 
 }

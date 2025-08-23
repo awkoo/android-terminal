@@ -1,7 +1,6 @@
 package com.termux.shared.shell.command.environment;
 
 import android.content.Context;
-import android.os.Build;
 
 import androidx.annotation.NonNull;
 
@@ -21,24 +20,10 @@ import java.util.HashMap;
  */
 public class AndroidShellEnvironment extends UnixShellEnvironment {
 
-    /** Environment variable scope for Android. */
-    public static final String ANDROID_ENV_SCOPE = "ANDROID__"; // Default: "ANDROID__"
-
-    /**
-     * Environment variable for the Android build SDK version currently running on the device that
-     * is defined by {@link Build.VERSION#SDK_INT} and `ro.build.version.sdk` system property.
-     *
-     * - https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT
-     * - https://developer.android.com/reference/android/os/Build.VERSION_CODES
-     *
-     * Default value: `ANDROID__BUILD_VERSION_SDK`
-     */
-    public static final String ENV_ANDROID__BUILD_VERSION_SDK = ANDROID_ENV_SCOPE + "BUILD_VERSION_SDK";
-
-    protected ShellCommandShellEnvironment shellCommandShellEnvironment;
+    protected HashMap<String, String> shellCommandShellEnvironment;
 
     public AndroidShellEnvironment() {
-        shellCommandShellEnvironment = new ShellCommandShellEnvironment();
+        shellCommandShellEnvironment = new HashMap<>();
     }
 
     /** Get shell environment for Android. */
@@ -54,29 +39,6 @@ public class AndroidShellEnvironment extends UnixShellEnvironment {
 
         environment.put(ENV_COLORTERM, "truecolor");
         environment.put(ENV_TERM, "xterm-256color");
-
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_ASSETS");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_DATA");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_ROOT");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_STORAGE");
-
-        // EXTERNAL_STORAGE is needed for /system/bin/am to work on at least
-        // Samsung S7 - see https://plus.google.com/110070148244138185604/posts/gp8Lk3aCGp3.
-        // https://cs.android.com/android/_/android/platform/system/core/+/fc000489
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "EXTERNAL_STORAGE");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ASEC_MOUNTPOINT");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "LOOP_MOUNTPOINT");
-
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_RUNTIME_ROOT");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_ART_ROOT");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_I18N_ROOT");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "ANDROID_TZDATA_ROOT");
-
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "BOOTCLASSPATH");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "DEX2OATBOOTCLASSPATH");
-        ShellEnvironmentUtils.putToEnvIfInSystemEnv(environment, "SYSTEMSERVERCLASSPATH");
-
-        ShellEnvironmentUtils.putToEnvIfSet(environment, ENV_ANDROID__BUILD_VERSION_SDK, String.valueOf(Build.VERSION.SDK_INT));
 
         return environment;
     }
@@ -107,9 +69,6 @@ public class AndroidShellEnvironment extends UnixShellEnvironment {
             workingDirectory != null && !workingDirectory.isEmpty() ? new File(workingDirectory).getAbsolutePath() : // PWD must be absolute path
             getDefaultWorkingDirectoryPath());
         ShellEnvironmentUtils.createHomeDir(environment);
-
-        if (executionCommand.setShellCommandShellEnvironment && shellCommandShellEnvironment != null)
-            environment.putAll(shellCommandShellEnvironment.getEnvironment(currentPackageContext, executionCommand));
 
         return environment;
     }

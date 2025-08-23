@@ -4,22 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.termux.shared.data.IntentUtils;
-import com.termux.shared.termux.TermuxUtils;
-import com.termux.shared.termux.file.TermuxFileUtils;
-import com.termux.shared.termux.shell.command.environment.TermuxShellEnvironment;
 import com.termux.shared.termux.shell.TermuxShellManager;
 
 public class SystemEventReceiver extends BroadcastReceiver {
 
     private static SystemEventReceiver mInstance;
-
-    private static final String LOG_TAG = "SystemEventReceiver";
 
     public static synchronized SystemEventReceiver getInstance() {
         if (mInstance == null) {
@@ -44,7 +38,7 @@ public class SystemEventReceiver extends BroadcastReceiver {
             case Intent.ACTION_PACKAGE_ADDED:
             case Intent.ACTION_PACKAGE_REMOVED:
             case Intent.ACTION_PACKAGE_REPLACED:
-                onActionPackageUpdated(context, intent);
+//                onActionPackageUpdated(context, intent);
                 break;
             default:
                 //        logMessage(Log.ERROR, tag, message);
@@ -54,18 +48,6 @@ public class SystemEventReceiver extends BroadcastReceiver {
     public synchronized void onActionBootCompleted(@NonNull Context context, @NonNull Intent intent) {
         TermuxShellManager.onActionBootCompleted(context, intent);
     }
-
-    public synchronized void onActionPackageUpdated(@NonNull Context context, @NonNull Intent intent) {
-        Uri data = intent.getData();
-        if (data != null && TermuxUtils.isUriDataForTermuxPluginPackage(data)) {
-            intent.getAction().replaceAll("^android.intent.action.", "");
-            data.toString().replaceAll("^package:", "");
-//        logMessage(Log.DEBUG, tag, message);
-            if (TermuxFileUtils.isTermuxFilesDirectoryAccessible(context, false, false) == null)
-                TermuxShellEnvironment.writeEnvironmentToFile(context);
-        }
-    }
-
 
 
     /**

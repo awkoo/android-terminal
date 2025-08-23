@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.termux.shared.file.FileUtils;
 import com.termux.shared.logger.Logger;
-import com.termux.shared.markdown.MarkdownUtils;
+//import com.termux.shared.markdown.MarkdownUtils;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -231,28 +231,28 @@ public class LocalSocketRunConfig implements Serializable {
      * @param config The {@link LocalSocketRunConfig} to get info of.
      * @return Returns the markdown {@link String}.
      */
-    public static String getRunConfigMarkdownString(final LocalSocketRunConfig config) {
-        if (config == null) return "null";
-        return config.getMarkdownString();
-    }
+//    public static String getRunConfigMarkdownString(final LocalSocketRunConfig config) {
+//        if (config == null) return "null";
+//        return config.getMarkdownString();
+//    }
 
-    /** Get a markdown {@link String} for the {@link LocalSocketRunConfig}. */
-    @NonNull
-    public String getMarkdownString() {
-        StringBuilder markdownString = new StringBuilder();
-
-        markdownString.append("## ").append(mTitle).append(" Socket Server Run Config");
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Path", mPath, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("AbstractNamespaceSocket", mAbstractNamespaceSocket, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("LocalSocketManagerClient", mLocalSocketManagerClient.getClass().getName(), "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("FD", mFD, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("ReceiveTimeout", getReceiveTimeout(), "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("SendTimeout", getSendTimeout(), "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Deadline", getDeadline(), "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Backlog", getBacklog(), "-"));
-
-        return markdownString.toString();
-    }
+//    /** Get a markdown {@link String} for the {@link LocalSocketRunConfig}. */
+//    @NonNull
+//    public String getMarkdownString() {
+//        StringBuilder markdownString = new StringBuilder();
+//
+//        markdownString.append("## ").append(mTitle).append(" Socket Server Run Config");
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Path", mPath, "-"));
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("AbstractNamespaceSocket", mAbstractNamespaceSocket, "-"));
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("LocalSocketManagerClient", mLocalSocketManagerClient.getClass().getName(), "-"));
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("FD", mFD, "-"));
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("ReceiveTimeout", getReceiveTimeout(), "-"));
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("SendTimeout", getSendTimeout(), "-"));
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Deadline", getDeadline(), "-"));
+//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Backlog", getBacklog(), "-"));
+//
+//        return markdownString.toString();
+//    }
 
 
 

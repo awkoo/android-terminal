@@ -6,7 +6,6 @@ import com.termux.shared.data.DataUtils;
 import com.termux.shared.errors.Error;
 import com.termux.shared.jni.models.JniResult;
 import com.termux.shared.logger.Logger;
-import com.termux.shared.markdown.MarkdownUtils;
 
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -366,35 +365,13 @@ public class LocalClientSocket implements Closeable {
     /** Get a log {@link String} for the {@link LocalClientSocket}. */
     @NonNull
     public String getLogString() {
-        StringBuilder logString = new StringBuilder();
 
-        logString.append("Client Socket:");
-        logString.append("\n").append(Logger.getSingleLineLogStringEntry("FD", mFD, "-"));
-        logString.append("\n").append(Logger.getSingleLineLogStringEntry("Creation Time", mCreationTime, "-"));
-        logString.append("\n\n\n");
-
-        logString.append(mPeerCred.getLogString());
-
-        return logString.toString();
+        return "Client Socket:" +
+            "\n" + Logger.getSingleLineLogStringEntry("FD", mFD, "-") +
+            "\n" + Logger.getSingleLineLogStringEntry("Creation Time", mCreationTime, "-") +
+            "\n\n\n" +
+            mPeerCred.getLogString();
     }
-
-    /** Get a markdown {@link String} for the {@link LocalClientSocket}. */
-    @NonNull
-    public String getMarkdownString() {
-        StringBuilder markdownString = new StringBuilder();
-
-        markdownString.append("## ").append("Client Socket");
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("FD", mFD, "-"));
-        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Creation Time", mCreationTime, "-"));
-        markdownString.append("\n\n\n");
-
-        markdownString.append(mPeerCred.getMarkdownString());
-
-        return markdownString.toString();
-    }
-
-
-
 
 
     /** Wrapper class to allow pass by reference of int values. */
@@ -417,14 +394,14 @@ public class LocalClientSocket implements Closeable {
             MutableInt bytesRead = new MutableInt(0);
             Error error = LocalClientSocket.this.read(mBytes, bytesRead);
             if (error != null) {
-                throw new IOException(error.getErrorMarkdownString());
+                throw new IOException(error.getErrorLogString());
             }
 
             if (bytesRead.value == 0) {
                 return -1;
             }
 
-            return mBytes[0];
+            return mBytes[0] & 0xFF;
         }
 
         @Override
@@ -436,7 +413,7 @@ public class LocalClientSocket implements Closeable {
             MutableInt bytesRead = new MutableInt(0);
             Error error = LocalClientSocket.this.read(bytes, bytesRead);
             if (error != null) {
-                throw new IOException(error.getErrorMarkdownString());
+                throw new IOException(error.getErrorLogString());
             }
 
             if (bytesRead.value == 0) {
@@ -451,7 +428,7 @@ public class LocalClientSocket implements Closeable {
             MutableInt available = new MutableInt(0);
             Error error = LocalClientSocket.this.available(available);
             if (error != null) {
-                throw new IOException(error.getErrorMarkdownString());
+                throw new IOException(error.getErrorLogString());
             }
             return available.value;
         }
@@ -469,7 +446,7 @@ public class LocalClientSocket implements Closeable {
 
             Error error = LocalClientSocket.this.send(mBytes);
             if (error != null) {
-                throw new IOException(error.getErrorMarkdownString());
+                throw new IOException(error.getErrorLogString());
             }
         }
 
@@ -477,7 +454,7 @@ public class LocalClientSocket implements Closeable {
         public void write(byte[] bytes) throws IOException {
             Error error = LocalClientSocket.this.send(bytes);
             if (error != null) {
-                throw new IOException(error.getErrorMarkdownString());
+                throw new IOException(error.getErrorLogString());
             }
         }
     }

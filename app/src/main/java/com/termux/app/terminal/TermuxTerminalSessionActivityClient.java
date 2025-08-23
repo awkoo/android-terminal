@@ -27,6 +27,7 @@ import com.termux.terminal.TerminalColors;
 import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSessionClient;
 import com.termux.terminal.TextStyle;
+import com.termux.utils.UI;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -125,7 +126,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             // Only show toast for other sessions than the current one, since the user
             // probably consciously caused the title change to change in the current session
             // and don't want an annoying toast for that.
-            mActivity.showToast(toToastTitle(updatedSession), true);
+            UI.showToast(mActivity, toToastTitle(updatedSession), true);
         }
 
         termuxSessionListNotifyUpdated();
@@ -147,7 +148,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             // Show toast for non-current sessions that exit.
             // Verify that session was not removed before we got told about it finishing:
             if (index >= 0)
-                mActivity.showToast(toToastTitle(finishedSession) + " - exited", true);
+                UI.showToast(mActivity, toToastTitle(finishedSession) + " - exited", true);
         }
 
         if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
@@ -294,7 +295,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
         if (!mActivity.getProperties().areTerminalSessionChangeToastsDisabled()) {
             TerminalSession session = mActivity.getCurrentSession();
-            mActivity.showToast(toToastTitle(session), false);
+            UI.showToast(mActivity, toToastTitle(session), false);
         }
     }
 
@@ -358,7 +359,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
             String workingDirectory;
             if (currentSession == null) {
-                workingDirectory = mActivity.getProperties().getDefaultWorkingDirectory();
+                workingDirectory = mActivity.getFilesDir().getAbsolutePath();
             } else {
                 workingDirectory = currentSession.getCwd();
             }
