@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!--
      https://material.io/develop/android/theming/dark
     -->
@@ -18,10 +18,10 @@
     <!-- TermuxActivity DayNight NoActionBar theme. -->
     <style name="Theme.TermuxActivity.DayNight.NoActionBar" parent="Theme.TermuxApp.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/black</item>
-        <item name="colorPrimaryVariant">@color/black</item>
+<!--        <item name="colorPrimary">@color/black</item>-->
+<!--        <item name="colorPrimaryVariant">@color/black</item>-->
 
-        <item name="android:windowBackground">@color/black</item>
+<!--        <item name="android:windowBackground">@color/black</item>-->
 
         <!-- Avoid action mode toolbar pushing down terminal content when
              selecting text on pre-6.0 (non-floating toolbar). -->
@@ -58,22 +58,22 @@
      -->
     <style name="Theme.BaseActivity.Light.DarkActionBar" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/red_400</item>
-        <item name="colorPrimaryVariant">@color/red_800</item>
-        <item name="colorOnPrimary">@color/white</item>
+<!--        <item name="colorPrimary">@color/red_400</item>-->
+<!--        <item name="colorPrimaryVariant">@color/red_800</item>-->
+<!--        <item name="colorOnPrimary">@color/white</item>-->
 
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/grey_900</item>
-        <item name="colorSecondaryVariant">@color/black</item>
-        <item name="colorOnSecondary">@color/white</item>
+<!--        <item name="colorSecondary">@color/grey_900</item>-->
+<!--        <item name="colorSecondaryVariant">@color/black</item>-->
+<!--        <item name="colorOnSecondary">@color/white</item>-->
 
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <item name="colorPrimaryDark" tools:targetApi="l">?attr/colorPrimary</item>
+<!--        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>-->
+<!--        <item name="colorPrimaryDark" >?attr/colorPrimary</item>-->
 
         <!-- Text color. -->
-        <item name="android:textColorPrimary">@color/black</item>
-        <item name="android:textColorLink">@color/blue_link_light</item>
+<!--        <item name="android:textColorPrimary">@color/black</item>-->
+<!--        <item name="android:textColorLink">@color/blue_link_light</item>-->
 
         <!--
          Dialog Themes.
@@ -120,24 +120,24 @@
      -->
     <style name="ThemeOverlay.BaseDialog.Light" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/red_400</item>
-        <item name="colorPrimaryVariant">@color/red_800</item>
-        <item name="colorOnPrimary">@color/white</item>
+<!--        <item name="colorPrimary">@color/red_400</item>-->
+<!--        <item name="colorPrimaryVariant">@color/red_800</item>-->
+<!--        <item name="colorOnPrimary">@color/white</item>-->
 
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/grey_900</item>
-        <item name="colorSecondaryVariant">@color/black</item>
-        <item name="colorOnSecondary">@color/white</item>
+<!--        <item name="colorSecondary">@color/grey_900</item>-->
+<!--        <item name="colorSecondaryVariant">@color/black</item>-->
+<!--        <item name="colorOnSecondary">@color/white</item>-->
 
         <!-- Surface color. -->
-        <item name="colorSurface">@color/design_default_color_surface</item>
-        <item name="colorOnSurface">@color/design_default_color_on_surface</item>
+<!--        <item name="colorSurface">@color/design_default_color_surface</item>-->
+<!--        <item name="colorOnSurface">@color/design_default_color_on_surface</item>-->
 
         <!-- Dialog title panel style. -->
-        <item name="materialAlertDialogTitlePanelStyle">@style/BaseDialog.Title.Panel</item>
+<!--        <item name="materialAlertDialogTitlePanelStyle">@style/BaseDialog.Title.Panel</item>-->
 
         <!-- Dialog message text style. -->
-        <item name="materialAlertDialogBodyTextStyle">@style/BaseDialog.Message.Text.Light</item>
+<!--        <item name="materialAlertDialogBodyTextStyle">@style/BaseDialog.Message.Text.Light</item>-->
     </style>
 
     <!-- BaseDialog DayNight theme. -->

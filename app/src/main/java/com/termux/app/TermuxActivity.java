@@ -184,8 +184,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private static final String ARG_TERMINAL_TOOLBAR_TEXT_INPUT = "terminal_toolbar_text_input";
     private static final String ARG_ACTIVITY_RECREATED = "activity_recreated";
 
-    private static final String LOG_TAG = "TermuxActivity";
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         //        logMessage(Log.DEBUG, tag, message);
@@ -254,7 +252,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             if (!bindService(serviceIntent, this, 0))
                 throw new RuntimeException("bindService() failed");
         } catch (Exception e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             UI.showToast(this,
                 getString(e.getMessage() != null && e.getMessage().contains("app is in background") ?
                     R.string.error_termux_service_start_failed_bg : R.string.error_termux_service_start_failed_general),
@@ -640,37 +637,45 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     public boolean onContextItemSelected(MenuItem item) {
         TerminalSession session = getCurrentSession();
 
-        switch (item.getItemId()) {
-            case CONTEXT_MENU_SELECT_URL_ID:
+        return switch (item.getItemId()) {
+            case CONTEXT_MENU_SELECT_URL_ID -> {
                 mTermuxTerminalViewClient.showUrlSelection();
-                return true;
-            case CONTEXT_MENU_SHARE_TRANSCRIPT_ID:
+                yield true;
+            }
+            case CONTEXT_MENU_SHARE_TRANSCRIPT_ID -> {
                 mTermuxTerminalViewClient.shareSessionTranscript();
-                return true;
-            case CONTEXT_MENU_SHARE_SELECTED_TEXT:
+                yield true;
+            }
+            case CONTEXT_MENU_SHARE_SELECTED_TEXT -> {
                 mTermuxTerminalViewClient.shareSelectedText();
-                return true;
-            case CONTEXT_MENU_AUTOFILL_USERNAME:
+                yield true;
+            }
+            case CONTEXT_MENU_AUTOFILL_USERNAME -> {
                 mTerminalView.requestAutoFillUsername();
-                return true;
-            case CONTEXT_MENU_AUTOFILL_PASSWORD:
+                yield true;
+            }
+            case CONTEXT_MENU_AUTOFILL_PASSWORD -> {
                 mTerminalView.requestAutoFillPassword();
-                return true;
-            case CONTEXT_MENU_RESET_TERMINAL_ID:
+                yield true;
+            }
+            case CONTEXT_MENU_RESET_TERMINAL_ID -> {
                 onResetTerminalSession(session);
-                return true;
-            case CONTEXT_MENU_KILL_PROCESS_ID:
+                yield true;
+            }
+            case CONTEXT_MENU_KILL_PROCESS_ID -> {
                 showKillSessionDialog(session);
-                return true;
-            case CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON:
+                yield true;
+            }
+            case CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON -> {
                 toggleKeepScreenOn();
-                return true;
-            case CONTEXT_MENU_SETTINGS_ID:
+                yield true;
+            }
+            case CONTEXT_MENU_SETTINGS_ID -> {
                 ActivityUtils.startActivity(this, new Intent(this, SettingsActivity.class));
-                return true;
-            default:
-                return super.onContextItemSelected(item);
-        }
+                yield true;
+            }
+            default -> super.onContextItemSelected(item);
+        };
     }
 
     @Override
@@ -756,9 +761,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Arrays.toString(permissions);
-        Arrays.toString(grantResults);
-//        logMessage(Log.VERBOSE, tag, message);
         if (requestCode == PermissionUtils.REQUEST_GRANT_STORAGE_PERMISSION) {
             requestStoragePermission(true);
         }
@@ -878,7 +880,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         intentFilter.addAction(TERMUX_ACTIVITY.ACTION_RELOAD_STYLE);
         intentFilter.addAction(TERMUX_ACTIVITY.ACTION_REQUEST_PERMISSIONS);
 
-        registerReceiver(mTermuxActivityBroadcastReceiver, intentFilter);
+        registerReceiver(mTermuxActivityBroadcastReceiver, intentFilter, Context.RECEIVER_EXPORTED);
     }
 
     private void unregisterTermuxActivityBroadcastReceiver() {
@@ -912,7 +914,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                         //        logMessage(Log.DEBUG, tag, message);
                         requestStoragePermission(false);
                         return;
+                    case null:
                     default:
+                        break;
                 }
             }
         }

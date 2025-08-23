@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.window.layout.WindowMetrics;
+import androidx.window.layout.WindowMetricsCalculator;
 
 public class ViewUtils {
 
@@ -151,15 +153,12 @@ public class ViewUtils {
      * @return Returns the display size as {@link Point}.
      */
     public static Point getDisplaySize( @NonNull Context context, boolean activitySize) {
-        // android.view.WindowManager.getDefaultDisplay() and Display.getSize() are deprecated in
-        // API 30 and give wrong values in API 30 for activitySize=false in multi-window
-        androidx.window.WindowManager windowManager = new androidx.window.WindowManager(context);
-        androidx.window.WindowMetrics windowMetrics;
-        if (activitySize)
-            windowMetrics = windowManager.getCurrentWindowMetrics();
-        else
-            windowMetrics = windowManager.getMaximumWindowMetrics();
-        return new Point(windowMetrics.getBounds().width(), windowMetrics.getBounds().height());
+        WindowMetricsCalculator calculator = WindowMetricsCalculator.getOrCreate();
+        WindowMetrics metrics;
+        if (activitySize) metrics = calculator.computeCurrentWindowMetrics(context);
+        else metrics = calculator.computeMaximumWindowMetrics(context);
+        Rect bounds = metrics.getBounds();
+        return new Point(bounds.width(), bounds.height());
     }
 
     /** Convert {@link Rect} to {@link String}. */

@@ -8,16 +8,12 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import com.termux.R;
 import com.termux.shared.activity.media.AppCompatActivityUtils;
-import com.termux.shared.theme.NightMode;
 
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        AppCompatActivityUtils.setNightMode(this, NightMode.getAppNightMode().getName(), true);
-
         setContentView(R.layout.activity_settings);
         if (savedInstanceState == null) {
             getSupportFragmentManager()

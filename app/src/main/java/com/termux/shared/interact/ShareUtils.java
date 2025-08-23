@@ -7,12 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
 import com.termux.R;
 import com.termux.shared.data.DataUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.utils.UI;
-
-import javax.annotation.Nullable;
 
 public class ShareUtils {
 
