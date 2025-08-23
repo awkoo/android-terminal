@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.termux.R;
-import com.termux.shared.activity.media.AppCompatActivityUtils;
+import com.termux.utils.UI;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -15,15 +15,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        UI.setDefaultToolbar(this, true);
         if (savedInstanceState == null) {
             getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settings, new RootPreferencesFragment())
                 .commit();
         }
-
-        AppCompatActivityUtils.setToolbar(this, R.id.toolbar);
-        AppCompatActivityUtils.setShowBackButtonInActionBar(this, true);
     }
 
     @Override

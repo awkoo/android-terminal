@@ -8,7 +8,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:minHeight="?attr/actionBarSize">
-    </com.google.android.material.appbar.MaterialToolbar>
+        android:minHeight="?attr/actionBarSize" />
 
 </com.google.android.material.appbar.AppBarLayout>

@@ -30,7 +30,6 @@ import com.termux.app.terminal.TermuxActivityRootView;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.io.TermuxTerminalExtraKeys;
 import com.termux.shared.activity.ActivityUtils;
-import com.termux.shared.activity.media.AppCompatActivityUtils;
 import com.termux.shared.data.IntentUtils;
 import com.termux.shared.android.PermissionUtils;
 import com.termux.shared.data.DataUtils;
@@ -42,11 +41,9 @@ import com.termux.app.terminal.io.TerminalToolbarViewPager;
 import com.termux.app.terminal.TermuxTerminalViewClient;
 import com.termux.shared.termux.extrakeys.ExtraKeysView;
 import com.termux.shared.termux.interact.TextInputDialogUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.termux.TermuxUtils;
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
 import com.termux.shared.termux.theme.TermuxThemeUtils;
-import com.termux.shared.theme.NightMode;
 import com.termux.shared.view.ViewUtils;
 import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSessionClient;
@@ -59,8 +56,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
-
-import java.util.Arrays;
 
 /**
  * A terminal emulator activity.
@@ -195,8 +190,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         // Load Termux app SharedProperties from disk
         mProperties = TermuxAppSharedProperties.getProperties();
         reloadProperties();
-
-        setActivityTheme();
 
         super.onCreate(savedInstanceState);
 
@@ -428,17 +421,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             mTermuxTerminalViewClient.onReloadProperties();
     }
 
-
-
-    private void setActivityTheme() {
-        // Update NightMode.APP_NIGHT_MODE
-        TermuxThemeUtils.setAppNightMode(mProperties.getNightMode());
-
-        // Set activity night mode. If NightMode.SYSTEM is set, then android will automatically
-        // trigger recreation of activity when uiMode/dark mode configuration is changed so that
-        // day or night theme takes affect.
-        AppCompatActivityUtils.setNightMode(this, NightMode.getAppNightMode().getName(), true);
-    }
 
     private void setMargins() {
         RelativeLayout relativeLayout = findViewById(R.id.activity_termux_root_relative_layout);
