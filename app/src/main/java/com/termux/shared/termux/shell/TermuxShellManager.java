@@ -7,9 +7,7 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 
 import com.termux.shared.shell.command.ExecutionCommand;
-import com.termux.shared.shell.command.runner.app.AppShell;
 import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
-import com.termux.shared.termux.shell.command.runner.terminal.TermuxSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +28,10 @@ public class TermuxShellManager {
      */
     public final List<TermuxSession> mTermuxSessions = new ArrayList<>();
 
-    /**
-     * The background TermuxTasks which this service manages.
-     */
-    public final List<AppShell> mTermuxTasks = new ArrayList<>();
+//    /**
+//     * The background TermuxTasks which this service manages.
+//     */
+//    public final List<AppShell> mTermuxTasks = new ArrayList<>();
 
     /**
      * The {@link ExecutionCommand.Runner#APP_SHELL} number after app process was started/restarted.

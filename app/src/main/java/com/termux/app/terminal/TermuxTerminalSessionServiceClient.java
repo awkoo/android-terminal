@@ -5,7 +5,7 @@ import android.app.Service;
 import androidx.annotation.NonNull;
 
 import com.termux.app.TermuxService;
-import com.termux.shared.termux.shell.command.runner.terminal.TermuxSession;
+import com.termux.shared.termux.shell.TermuxSession;
 import com.termux.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSessionClient;

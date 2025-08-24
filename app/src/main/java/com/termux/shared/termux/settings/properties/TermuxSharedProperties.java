@@ -657,13 +657,9 @@ public abstract class TermuxSharedProperties {
         return (boolean) TermuxPropertyConstants.IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR, true));
     }
 
-    public String getDefaultWorkingDirectory() {
-        return (String) getInternalPropertyValue(TermuxPropertyConstants.KEY_DEFAULT_WORKING_DIRECTORY, true);
-    }
-
-    public String getNightMode() {
-        return (String) getInternalPropertyValue(TermuxPropertyConstants.KEY_NIGHT_MODE, true);
-    }
+//    public String getDefaultWorkingDirectory() {
+//        return (String) getInternalPropertyValue(TermuxPropertyConstants.KEY_DEFAULT_WORKING_DIRECTORY, true);
+//    }
 
     /** Get the {@link TermuxPropertyConstants#KEY_NIGHT_MODE} value from the properties file on disk. */
     public static String getNightMode(Context context) {
@@ -711,7 +707,7 @@ public abstract class TermuxSharedProperties {
             }
         }
 
-        internalPropertiesDump.toString();
+//        internalPropertiesDump.toString();
 //        logMessage(Log.VERBOSE, tag, message);
     }
 

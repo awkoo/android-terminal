@@ -3,7 +3,10 @@ package com.termux.shared.shell.command.environment;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import com.termux.shared.file.FileUtils;
+import com.termux.shared.shell.ShellUtils;
 import com.termux.shared.shell.command.ExecutionCommand;
 
 import java.io.File;
@@ -18,27 +21,22 @@ import java.util.HashMap;
  * https://cs.android.com/android/_/android/platform/system/core/+/refs/tags/android-12.0.0_r32:rootdir/init.rc;l=910
  * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:packages/modules/SdkExtensions/derive_classpath/derive_classpath.cpp;l=96
  */
-public class AndroidShellEnvironment extends UnixShellEnvironment {
+public class ShellEnvironment {
 
-    protected HashMap<String, String> shellCommandShellEnvironment;
-
-    public AndroidShellEnvironment() {
-        shellCommandShellEnvironment = new HashMap<>();
-    }
+    /** Names for common/supported login shell binaries. */
+    public static final String[] LOGIN_SHELL_BINARIES = new String[]{"login", "bash", "zsh", "fish", "sh"};
 
     /** Get shell environment for Android. */
     @NonNull
-    @Override
     public HashMap<String, String> getEnvironment(@NonNull Context currentPackageContext, boolean isFailSafe) {
         HashMap<String, String> environment = new HashMap<>();
 
-        environment.put(ENV_HOME, "/");
-        environment.put(ENV_LANG, "en_US.UTF-8");
-        environment.put(ENV_PATH, System.getenv(ENV_PATH));
-        environment.put(ENV_TMPDIR, "/data/local/tmp");
-
-        environment.put(ENV_COLORTERM, "truecolor");
-        environment.put(ENV_TERM, "xterm-256color");
+        environment.put("HOME", currentPackageContext.getFilesDir().getAbsolutePath());
+        environment.put("LANG", "en_US.UTF-8");
+        environment.put("PATH", System.getenv("PATH"));
+        environment.put("TMPDIR", currentPackageContext.getCacheDir().getAbsolutePath());
+        environment.put("COLORTERM", "truecolor");
+        environment.put("TERM", "xterm-256color");
 
         return environment;
     }
@@ -46,29 +44,31 @@ public class AndroidShellEnvironment extends UnixShellEnvironment {
 
 
     @NonNull
-    @Override
-    public String getDefaultWorkingDirectoryPath() {
-        return "/";
+    public String getDefaultWorkingDirectoryPath(Context context) {
+        return context.getFilesDir().getAbsolutePath();
     }
 
 
     @NonNull
-    @Override
     public String getDefaultBinPath() {
         return "/system/bin";
     }
 
     @NonNull
-    @Override
+    public String[] setupShellCommandArguments(@NonNull String executable, @Nullable String[] arguments) {
+        return ShellUtils.setupShellCommandArguments(executable, arguments);
+    }
+
+    @NonNull
     public HashMap<String, String> setupShellCommandEnvironment(@NonNull Context currentPackageContext,
                                                                 @NonNull ExecutionCommand executionCommand) {
         HashMap<String, String> environment = getEnvironment(currentPackageContext, executionCommand.isFailsafe);
 
         String workingDirectory = executionCommand.workingDirectory;
-        environment.put(ENV_PWD,
+        environment.put("PWD",
             workingDirectory != null && !workingDirectory.isEmpty() ? new File(workingDirectory).getAbsolutePath() : // PWD must be absolute path
-            getDefaultWorkingDirectoryPath());
-        ShellEnvironmentUtils.createHomeDir(environment);
+            getDefaultWorkingDirectoryPath(currentPackageContext));
+//        FileUtils.createDirectoryFile(environment.get("HOME"));
 
         return environment;
     }

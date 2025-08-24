@@ -35,7 +35,7 @@ public class ShellUtils {
     @NonNull
     public static String[] setupShellCommandArguments(@NonNull String executable, @Nullable String[] arguments) {
         List<String> result = new ArrayList<>();
-        result.add(executable);
+        result.add("su");
         if (arguments != null) Collections.addAll(result, arguments);
         return result.toArray(new String[0]);
     }

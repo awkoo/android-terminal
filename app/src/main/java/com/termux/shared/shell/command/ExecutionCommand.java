@@ -12,7 +12,6 @@ import com.termux.shared.shell.command.result.ResultData;
 import com.termux.shared.errors.Error;
 import com.termux.shared.logger.Logger;
 import com.termux.shared.data.DataUtils;
-import com.termux.shared.shell.command.runner.app.AppShell;
 import com.termux.terminal.TerminalSession;
 
 import java.util.Collections;
@@ -238,7 +237,6 @@ public class ExecutionCommand {
         this.stdin = stdin;
         this.workingDirectory = workingDirectory;
         this.runner = runner;
-        this.isFailsafe = isFailsafe;
     }
 
 

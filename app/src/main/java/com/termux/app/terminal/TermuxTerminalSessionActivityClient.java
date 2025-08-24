@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 
 import com.termux.R;
 import com.termux.shared.interact.ShareUtils;
-import com.termux.shared.termux.shell.command.runner.terminal.TermuxSession;
+import com.termux.shared.termux.shell.TermuxSession;
 import com.termux.shared.termux.interact.TextInputDialogUtils;
 import com.termux.app.TermuxActivity;
 import com.termux.shared.termux.terminal.TermuxTerminalSessionClientBase;
