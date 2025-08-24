@@ -34,21 +34,14 @@ public class BellHandler {
     private final Runnable bellRunnable;
 
     private BellHandler(final Vibrator vibrator) {
-        bellRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (vibrator != null) {
-                    try {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            vibrator.vibrate(VibrationEffect.createOneShot(DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
-                        } else {
-                            vibrator.vibrate(DURATION);
-                        }
-                    } catch (Exception e) {
-                        // Issue on samsung devices on android 8
-                        // java.lang.NullPointerException: Attempt to read from field 'android.os.VibrationEffect com.android.server.VibratorService$Vibration.mEffect' on a null object reference
-                        //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
-                    }
+        bellRunnable = () -> {
+            if (vibrator != null) {
+                try {
+                    vibrator.vibrate(VibrationEffect.createOneShot(DURATION, VibrationEffect.DEFAULT_AMPLITUDE));
+                } catch (Exception e) {
+                    // Issue on samsung devices on android 8
+                    // java.lang.NullPointerException: Attempt to read from field 'android.os.VibrationEffect com.android.server.VibratorService$Vibration.mEffect' on a null object reference
+                    //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
                 }
             }
         };

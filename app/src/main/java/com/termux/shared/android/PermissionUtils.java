@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import com.google.common.base.Joiner;
 import com.termux.R;
 import com.termux.shared.file.FileUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.errors.Error;
 import com.termux.shared.errors.FunctionErrno;
 import com.termux.shared.activity.ActivityUtils;
@@ -94,7 +93,6 @@ public class PermissionUtils {
      *                    will fail silently and will log an exception.
      * @return Returns {@code true} if requesting the permission was successful, otherwise {@code false}.
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean requestPermission(@NonNull Context context, @NonNull String permission,
                                             int requestCode) {
         return requestPermissions(context, new String[]{permission}, requestCode);
@@ -118,7 +116,6 @@ public class PermissionUtils {
      *                    will fail silently and will log an exception.
      * @return Returns {@code true} if requesting the permissions was successful, otherwise {@code false}.
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean requestPermissions(@NonNull Context context, @NonNull String[] permissions,
                                              int requestCode) {
         List<String> permissionsNotRequested = getPermissionsNotRequested(context, permissions);
@@ -286,7 +283,7 @@ public class PermissionUtils {
         String errmsg;
         Boolean requestLegacyStoragePermission = null;
 
-        if (prioritizeManageExternalStoragePermission && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        if (prioritizeManageExternalStoragePermission)
             requestLegacyStoragePermission = false;
 
         if (requestLegacyStoragePermission == null)
@@ -312,10 +309,10 @@ public class PermissionUtils {
         if (showErrorMessage)
             UI.showToast(context, errmsg, false);
 
-        if (requestCode < 0 || Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
+        if (requestCode < 0)
             return false;
 
-        if (requestLegacyStoragePermission || Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        if (requestLegacyStoragePermission) {
             requestLegacyStorageExternalPermission(context, requestCode);
         } else {
             requestManageStorageExternalPermission(context, requestCode);
@@ -337,7 +334,7 @@ public class PermissionUtils {
      * @return Returns {@code true} if permission is granted, otherwise {@code false}.
      */
     public static boolean checkStoragePermission(@NonNull Context context, boolean checkLegacyStoragePermission) {
-        if (checkLegacyStoragePermission || Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+        if (checkLegacyStoragePermission) {
             return checkPermissions(context,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE});
@@ -356,14 +353,12 @@ public class PermissionUtils {
      *                    will fail silently and will log an exception.
      * @return Returns {@code true} if requesting the permission was successful, otherwise {@code false}.
      */
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean requestLegacyStorageExternalPermission(@NonNull Context context, int requestCode) {
 //        Logger.logInfo(LOG_TAG, "Requesting legacy external storage permission");
         return requestPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE, requestCode);
     }
 
     /** Wrapper for {@link #requestManageStorageExternalPermission(Context, int)}. */
-    @RequiresApi(api = Build.VERSION_CODES.R)
     public static Error requestManageStorageExternalPermission(@NonNull Context context) {
         return requestManageStorageExternalPermission(context, -1);
     }
@@ -379,7 +374,6 @@ public class PermissionUtils {
      *                    result it required.
      * @return Returns the {@code error} if requesting the permission was not successful, otherwise {@code null}.
      */
-    @RequiresApi(api = Build.VERSION_CODES.R)
     public static Error requestManageStorageExternalPermission(@NonNull Context context, int requestCode) {
 //        Logger.logInfo(LOG_TAG, "Requesting manage external storage permission");
 
@@ -417,8 +411,7 @@ public class PermissionUtils {
      * https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage
      */
     public static boolean isLegacyExternalStoragePossible(@NonNull Context context) {
-        return !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
-            PackageUtils.getTargetSDKForPackage(context) >= Build.VERSION_CODES.R);
+        return !(PackageUtils.getTargetSDKForPackage(context) >= Build.VERSION_CODES.R);
     }
 
     /**
@@ -436,9 +429,9 @@ public class PermissionUtils {
         int targetSdkVersion = PackageUtils.getTargetSDKForPackage(context);
 
         if (targetSdkVersion >= Build.VERSION_CODES.R) {
-            return Build.VERSION.SDK_INT == Build.VERSION_CODES.Q;
+            return false;
         } else if (targetSdkVersion == Build.VERSION_CODES.Q) {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+            return true;
         } else {
             return false;
         }
@@ -478,10 +471,7 @@ public class PermissionUtils {
      * @return Returns {@code true} if permission is granted, otherwise {@code false}.
      */
     public static boolean checkDisplayOverOtherAppsPermission(@NonNull Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M)
-            return Settings.canDrawOverlays(context);
-        else
-            return true;
+        return Settings.canDrawOverlays(context);
     }
 
     /** Wrapper for {@link #requestDisplayOverOtherAppsPermission(Context, int)}. */
@@ -502,9 +492,6 @@ public class PermissionUtils {
      */
     public static Error requestDisplayOverOtherAppsPermission(@NonNull Context context, int requestCode) {
 //        Logger.logInfo(LOG_TAG, "Requesting display over apps permission");
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-            return null;
 
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
         intent.setData(Uri.parse("package:" + context.getPackageName()));
@@ -530,7 +517,6 @@ public class PermissionUtils {
      */
     public static boolean validateDisplayOverOtherAppsPermissionForPostAndroid10(@NonNull Context context,
                                                                                  boolean logResults) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return true;
 
         if (!checkDisplayOverOtherAppsPermission(context)) {
             //        logMessage(Log.WARN, tag, message);
@@ -557,11 +543,8 @@ public class PermissionUtils {
      * @return Returns {@code true} if permission is granted, otherwise {@code false}.
      */
     public static boolean checkIfBatteryOptimizationsDisabled(@NonNull Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
-        } else
-            return true;
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
     }
 
     /** Wrapper for {@link #requestDisableBatteryOptimizations(Context, int)}. */
@@ -584,9 +567,6 @@ public class PermissionUtils {
     @SuppressLint("BatteryLife")
     public static Error requestDisableBatteryOptimizations(@NonNull Context context, int requestCode) {
 //        Logger.logInfo(LOG_TAG, "Requesting to disable battery optimizations");
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M)
-            return null;
 
         Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         intent.setData(Uri.parse("package:" + context.getPackageName()));

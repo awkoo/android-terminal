@@ -4,6 +4,7 @@
 #include <jni.h>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <unistd.h>
 
 #include <android/log.h>
@@ -23,7 +24,7 @@ using namespace std;
 string jstring_to_stdstr(JNIEnv *env, jstring jString) {
     jclass stringClass = env->FindClass("java/lang/String");
     jmethodID getBytes = env->GetMethodID(stringClass, "getBytes", "()[B");
-    jbyteArray jStringBytesArray = (jbyteArray) env->CallObjectMethod(jString, getBytes);
+    auto jStringBytesArray = (jbyteArray) env->CallObjectMethod(jString, getBytes);
     jsize length = env->GetArrayLength(jStringBytesArray);
     jbyte* jStringBytes = env->GetByteArrayElements(jStringBytesArray, nullptr);
     std::string stdString((char *)jStringBytes, length);
@@ -32,7 +33,7 @@ string jstring_to_stdstr(JNIEnv *env, jstring jString) {
 }
 
 /* Get characters before first occurrence of the delim in a std:string. */
-string get_string_till_first_delim(string str, char delim) {
+string get_string_till_first_delim(const string& str, char delim) {
     if (!str.empty()) {
         stringstream cmdline_args(str);
         string tmp;
@@ -43,7 +44,7 @@ string get_string_till_first_delim(string str, char delim) {
 }
 
 /* Replace `\0` values with spaces in a std:string. */
-string replace_null_with_space(string str) {
+string replace_null_with_space(const string& str) {
     if (str.empty())
         return "";
 
@@ -66,7 +67,7 @@ string replace_null_with_space(string str) {
 string get_class_name(JNIEnv *env, jclass clazz) {
     jclass classClass = env->FindClass("java/lang/Class");
     jmethodID getName = env->GetMethodID(classClass, "getName", "()Ljava/lang/String;");
-    jstring className = (jstring) env->CallObjectMethod(clazz, getName);
+    auto className = (jstring) env->CallObjectMethod(clazz, getName);
     return jstring_to_stdstr(env, className);
 }
 
@@ -95,23 +96,23 @@ string get_process_cmdline(const pid_t pid) {
 }
 
 /* Extract process name from /proc/[pid]/cmdline value of a process. */
-string get_process_name_from_cmdline(string cmdline) {
+string get_process_name_from_cmdline(const string& cmdline) {
     return get_string_till_first_delim(cmdline, '\0');
 }
 
 /* Replace `\0` values with spaces in /proc/[pid]/cmdline value of a process. */
-string get_process_cmdline_spaced(string cmdline) {
+string get_process_cmdline_spaced(const string& cmdline) {
     return replace_null_with_space(cmdline);
 }
 
 
 /* Send an ERROR log message to android logcat. */
-void log_error(string message) {
+void log_error(const string& message) {
     __android_log_write(ANDROID_LOG_ERROR, LOG_TAG, message.c_str());
 }
 
 /* Send an WARN log message to android logcat. */
-void log_warn(string message) {
+void log_warn(const string& message) {
     __android_log_write(ANDROID_LOG_WARN, LOG_TAG, message.c_str());
 }
 
@@ -144,7 +145,7 @@ timeval milliseconds_to_timeval(int milliseconds) {
 bool checkJniException(JNIEnv *env) {
     if (env->ExceptionCheck()) {
         jthrowable throwable = env->ExceptionOccurred();
-        if (throwable != NULL) {
+        if (throwable != nullptr) {
             env->ExceptionClear();
             env->Throw(throwable);
             return true;
@@ -164,33 +165,33 @@ string getJniResultString(const int retvalParam, const int errnoParam,
 jobject getJniResult(JNIEnv *env, jstring title, const int retvalParam, const int errnoParam,
                      string errmsgParam, const int intDataParam) {
     jclass clazz = env->FindClass("com/termux/shared/jni/models/JniResult");
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     if (!clazz) {
         log_error(get_title_and_message(env, title,
                                         "Failed to find JniResult class to create object for " +
                                         getJniResultString(retvalParam, errnoParam, errmsgParam, intDataParam)));
-        return NULL;
+        return nullptr;
     }
 
     jmethodID constructor = env->GetMethodID(clazz, "<init>", "(IILjava/lang/String;I)V");
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     if (!constructor) {
         log_error(get_title_and_message(env, title,
                                         "Failed to get constructor for JniResult class to create object for " +
                                         getJniResultString(retvalParam, errnoParam, errmsgParam, intDataParam)));
-        return NULL;
+        return nullptr;
     }
 
     if (!errmsgParam.empty())
         errmsgParam = get_title_and_message(env, title, string(errmsgParam));
 
     jobject obj = env->NewObject(clazz, constructor, retvalParam, errnoParam, env->NewStringUTF(errmsgParam.c_str()), intDataParam);
-    if (checkJniException(env)) return NULL;
-    if (obj == NULL) {
+    if (checkJniException(env)) return nullptr;
+    if (obj == nullptr) {
         log_error(get_title_and_message(env, title,
                                         "Failed to get JniResult object for " +
                                         getJniResultString(retvalParam, errnoParam, errmsgParam, intDataParam)));
-        return NULL;
+        return nullptr;
     }
 
     return obj;
@@ -268,7 +269,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_createServerSocketNat
     }
 
     jbyte* path = env->GetByteArrayElements(pathArray, nullptr);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     if (path == nullptr) {
         close(fd);
         return getJniResult(env, logTitle, -1, "createServerSocketNative(): Path passed is null");
@@ -276,10 +277,10 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_createServerSocketNat
 
     // On Linux, sun_path is 108 bytes (UNIX_PATH_MAX) in size
     int chars = env->GetArrayLength(pathArray);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     if (chars >= 108 || chars >= sizeof(struct sockaddr_un) - sizeof(sa_family_t)) {
         env->ReleaseByteArrayElements(pathArray, path, JNI_ABORT);
-        if (checkJniException(env)) return NULL;
+        if (checkJniException(env)) return nullptr;
         close(fd);
         return getJniResult(env, logTitle, -1, "createServerSocketNative(): Path passed is too long");
     }
@@ -291,7 +292,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_createServerSocketNat
     if (::bind(fd, reinterpret_cast<struct sockaddr*>(&adr), sizeof(adr)) == -1) {
         int errnoBackup = errno;
         env->ReleaseByteArrayElements(pathArray, path, JNI_ABORT);
-        if (checkJniException(env)) return NULL;
+        if (checkJniException(env)) return nullptr;
         close(fd);
         return getJniResult(env, logTitle, -1, errnoBackup,
                             "createServerSocketNative(): Bind to local socket at path \"" + string(adr.sun_path) + "\" with fd " + to_string(fd) + " failed");
@@ -301,14 +302,14 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_createServerSocketNat
     if (listen(fd, backlog) == -1) {
         int errnoBackup = errno;
         env->ReleaseByteArrayElements(pathArray, path, JNI_ABORT);
-        if (checkJniException(env)) return NULL;
+        if (checkJniException(env)) return nullptr;
         close(fd);
         return getJniResult(env, logTitle, -1, errnoBackup,
                             "createServerSocketNative(): Listen on local socket at path \"" + string(adr.sun_path) + "\" with fd " + to_string(fd) + " failed");
     }
 
     env->ReleaseByteArrayElements(pathArray, path, JNI_ABORT);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
 
     // Return success and server socket fd in JniResult.intData field
     return getJniResult(env, logTitle, fd);
@@ -359,7 +360,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_readNative(JNIEnv *en
     }
 
     jbyte* data = env->GetByteArrayElements(dataArray, nullptr);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     if (data == nullptr) {
         return getJniResult(env, logTitle, -1, "readNative(): data passed is null");
     }
@@ -367,7 +368,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_readNative(JNIEnv *en
     struct timespec time = {};
     jbyte* current = data;
     int bytes = env->GetArrayLength(dataArray);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     int bytesRead = 0;
     while (bytesRead < bytes) {
         if (deadline > 0) {
@@ -375,7 +376,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_readNative(JNIEnv *en
                 // If current time is greater than the time defined in deadline
                 if (timespec_to_milliseconds(&time) > deadline) {
                     env->ReleaseByteArrayElements(dataArray, data, 0);
-                    if (checkJniException(env)) return NULL;
+                    if (checkJniException(env)) return nullptr;
                     return getJniResult(env, logTitle, -1,
                                         "readNative(): Deadline \"" + to_string(deadline) + "\" timeout");
                 }
@@ -391,7 +392,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_readNative(JNIEnv *en
         if (ret == -1) {
             int errnoBackup = errno;
             env->ReleaseByteArrayElements(dataArray, data, 0);
-            if (checkJniException(env)) return NULL;
+            if (checkJniException(env)) return nullptr;
             return getJniResult(env, logTitle, -1, errnoBackup, "readNative(): Failed to read on fd "  + to_string(fd));
         }
         // EOF, peer closed writing end
@@ -404,7 +405,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_readNative(JNIEnv *en
     }
 
     env->ReleaseByteArrayElements(dataArray, data, 0);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
 
     // Return success and bytes read in JniResult.intData field
     return getJniResult(env, logTitle, bytesRead);
@@ -422,7 +423,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_sendNative(JNIEnv *en
     }
 
     jbyte* data = env->GetByteArrayElements(dataArray, nullptr);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     if (data == nullptr) {
         return getJniResult(env, logTitle, -1, "sendNative(): data passed is null");
     }
@@ -430,14 +431,14 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_sendNative(JNIEnv *en
     struct timespec time = {};
     jbyte* current = data;
     int bytes = env->GetArrayLength(dataArray);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     while (bytes > 0) {
         if (deadline > 0) {
             if (clock_gettime(CLOCK_REALTIME, &time) != -1) {
                 // If current time is greater than the time defined in deadline
                 if (timespec_to_milliseconds(&time) > deadline) {
                     env->ReleaseByteArrayElements(dataArray, data, JNI_ABORT);
-                    if (checkJniException(env)) return NULL;
+                    if (checkJniException(env)) return nullptr;
                     return getJniResult(env, logTitle, -1,
                                         "sendNative(): Deadline \"" + to_string(deadline) + "\" timeout");
                 }
@@ -453,7 +454,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_sendNative(JNIEnv *en
         if (ret == -1) {
             int errnoBackup = errno;
             env->ReleaseByteArrayElements(dataArray, data, JNI_ABORT);
-            if (checkJniException(env)) return NULL;
+            if (checkJniException(env)) return nullptr;
             return getJniResult(env, logTitle, -1, errnoBackup, "sendNative(): Failed to send on fd " + to_string(fd));
         }
 
@@ -462,7 +463,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_sendNative(JNIEnv *en
     }
 
     env->ReleaseByteArrayElements(dataArray, data, JNI_ABORT);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
 
     // Return success
     return getJniResult(env, logTitle);
@@ -558,7 +559,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_getPeerCredNative(JNI
     // The pname and cmdline will only be set if current process has access to "/proc/[pid]/cmdline"
     // of peer process. Processes of other users/apps are not normally accessible.
     jclass peerCredClazz = env->GetObjectClass(peerCred);
-    if (checkJniException(env)) return NULL;
+    if (checkJniException(env)) return nullptr;
     if (!peerCredClazz) {
         return getJniResult(env, logTitle, -1, errno, "getPeerCredNative(): Failed to get PeerCred class");
     }
@@ -567,19 +568,19 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_getPeerCredNative(JNI
 
     error = setIntField(env, peerCred, peerCredClazz, "pid", cred.pid);
     if (!error.empty()) {
-        if (error == JNI_EXCEPTION) return NULL;
+        if (error == JNI_EXCEPTION) return nullptr;
         return getJniResult(env, logTitle, -1, "getPeerCredNative(): " + error);
     }
 
     error = setIntField(env, peerCred, peerCredClazz, "uid", cred.uid);
     if (!error.empty()) {
-        if (error == JNI_EXCEPTION) return NULL;
+        if (error == JNI_EXCEPTION) return nullptr;
         return getJniResult(env, logTitle, -1, "getPeerCredNative(): " + error);
     }
 
     error = setIntField(env, peerCred, peerCredClazz, "gid", cred.gid);
     if (!error.empty()) {
-        if (error == JNI_EXCEPTION) return NULL;
+        if (error == JNI_EXCEPTION) return nullptr;
         return getJniResult(env, logTitle, -1, "getPeerCredNative(): " + error);
     }
 
@@ -587,13 +588,13 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_getPeerCredNative(JNI
     if (!cmdline.empty()) {
         error = setStringField(env, peerCred, peerCredClazz, "pname", get_process_name_from_cmdline(cmdline));
         if (!error.empty()) {
-            if (error == JNI_EXCEPTION) return NULL;
+            if (error == JNI_EXCEPTION) return nullptr;
             return getJniResult(env, logTitle, -1, "getPeerCredNative(): " + error);
         }
 
         error = setStringField(env, peerCred, peerCredClazz, "cmdline", get_process_cmdline_spaced(cmdline));
         if (!error.empty()) {
-            if (error == JNI_EXCEPTION) return NULL;
+            if (error == JNI_EXCEPTION) return nullptr;
             return getJniResult(env, logTitle, -1, "getPeerCredNative(): " + error);
         }
     }

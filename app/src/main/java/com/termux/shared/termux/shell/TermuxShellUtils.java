@@ -1,8 +1,5 @@
 package com.termux.shared.termux.shell;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.termux.shared.errors.Error;
 import com.termux.shared.file.filesystem.FileTypes;
 import com.termux.shared.termux.TermuxConstants;
@@ -10,13 +7,6 @@ import com.termux.shared.file.FileUtils;
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
 
 import org.apache.commons.io.filefilter.TrueFileFilter;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class TermuxShellUtils {
 

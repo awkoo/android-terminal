@@ -5,12 +5,9 @@
     -->
 
     <!-- TermuxApp Light DarkActionBar theme. -->
-    <style name="Theme.TermuxApp.Light.DarkActionBar" parent="Theme.BaseActivity.Light.DarkActionBar"/>
     <!-- TermuxApp Light NoActionBar theme. -->
-    <style name="Theme.TermuxApp.Light.NoActionBar" parent="Theme.BaseActivity.Light.NoActionBar"/>
 
     <!-- TermuxApp DayNight DarkActionBar theme. -->
-    <style name="Theme.TermuxApp.DayNight.DarkActionBar" parent="Theme.BaseActivity.DayNight.DarkActionBar"/>
     <!-- TermuxApp DayNight NoActionBar theme. -->
     <style name="Theme.TermuxApp.DayNight.NoActionBar" parent="Theme.BaseActivity.DayNight.NoActionBar"/>
 
@@ -103,15 +100,8 @@
 
 
     <!-- BaseActivity extended classes Day NoActionBar themes. -->
-    <style name="Theme.MediaViewActivity.Light" parent="Theme.BaseActivity.Light.NoActionBar"/>
-    <style name="Theme.MarkdownViewActivity.Light" parent="Theme.MediaViewActivity.Light"/>
 
     <!-- BaseActivity extended classes DayNight NoActionBar themes. -->
-    <style name="Theme.MediaViewActivity.DayNight" parent="Theme.BaseActivity.DayNight.NoActionBar"/>
-    <style name="Theme.MarkdownViewActivity.DayNight" parent="Theme.MediaViewActivity.DayNight"/>
-
-
-
 
 
     <!--
@@ -144,6 +134,5 @@
     <style name="ThemeOverlay.BaseDialog.DayNight" parent="ThemeOverlay.BaseDialog.Light"/>
 
     <!-- BaseDialog extended classes DayNight themes. -->
-    <style name="ThemeOverlay.MessageDialog.DayNight" parent="ThemeOverlay.BaseDialog.DayNight"/>
 
 </resources>

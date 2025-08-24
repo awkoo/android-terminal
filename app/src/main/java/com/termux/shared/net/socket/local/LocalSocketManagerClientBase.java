@@ -3,8 +3,6 @@ package com.termux.shared.net.socket.local;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.termux.shared.errors.Error;
-
 /** Base helper implementation for {@link ILocalSocketManager}. */
 public abstract class LocalSocketManagerClientBase implements ILocalSocketManager {
 

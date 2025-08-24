@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 
 public class ReflectionUtils {
 
-    private static boolean HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED = Build.VERSION.SDK_INT < Build.VERSION_CODES.P;
+    private static boolean HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED = false;
 
     private static final String LOG_TAG = "ReflectionUtils";
 
@@ -23,7 +23,7 @@ public class ReflectionUtils {
      * https://developer.android.com/guide/app-compatibility/restrictions-non-sdk-interfaces
      */
     public static void bypassHiddenAPIReflectionRestrictions() {
-        if (!HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED && Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        if (!HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED) {
             //        logMessage(Log.DEBUG, tag, message);
             try {
                 HiddenApiBypass.addHiddenApiExemptions("");

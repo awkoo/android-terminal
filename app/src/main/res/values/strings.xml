@@ -15,8 +15,6 @@
 <resources>
 
     <string name="application_name">&TERMUX_APP_NAME;</string>
-    <string name="shared_user_label">&TERMUX_APP_NAME; user</string>
-
 
 
     <!-- Termux RUN_COMMAND permission -->
@@ -27,27 +25,6 @@
 
 
     <!-- Termux Bootstrap Packages Installation -->
-    <string name="bootstrap_installer_body">Installing bootstrap packages…</string>
-    <string name="bootstrap_error_title">&TERMUX_APP_NAME; Bootstrap Error</string>
-    <string name="bootstrap_error_body">&TERMUX_APP_NAME; was unable to install the bootstrap packages.</string>
-    <string name="bootstrap_error_abort">Abort</string>
-    <string name="bootstrap_error_try_again">Try again</string>
-    <string name="bootstrap_error_apk_bootstrap_variant_min_sdk_incompatible">The APK bootstrap variant %1$s
-        of currently installed &TERMUX_APP_NAME; app is not compatible with the Android version %2$s
-        (sdk `%3$d`) of the device and it requires minimum Android version %4$s (sdk `%5$d`).
-        \n\nUninstall the &TERMUX_APP_NAME; app and reinstall the correct APK build variant.</string>
-    <string name="bootstrap_error_apk_bootstrap_variant_max_sdk_incompatible">The APK bootstrap variant %1$s
-        of currently installed &TERMUX_APP_NAME; app is not compatible with the Android version %2$s
-        (sdk `%3$d`) of the device and it requires maximum Android version %4$s (sdk `%5$d`).
-        \n\nUninstall the &TERMUX_APP_NAME; app and reinstall the correct APK build variant.</string>
-    <string name="bootstrap_error_not_primary_user_message">&TERMUX_APP_NAME; can only be run as the primary user.
-        \nBootstrap binaries compiled for &TERMUX_APP_NAME; have hardcoded $PREFIX path and cannot be installed
-        under any path other than:\n%1$s.</string>
-    <string name="bootstrap_error_installed_on_portable_sd">&TERMUX_APP_NAME; cannot be installed on
-        portable/external/removable sd card on your device.
-        \nBootstrap binaries compiled for &TERMUX_APP_NAME; have hardcoded $PREFIX path and cannot be installed
-        under any path other than:\n%1$s.</string>
-
 
 
     <!-- Terminal Sidebar and Shortcuts -->
@@ -91,18 +68,8 @@
     <string name="action_kill_process">Kill process (%d)</string>
     <string name="title_confirm_kill_process">Really kill this session?</string>
 
-    <string name="action_style_terminal">Style</string>
     <string name="action_toggle_keep_screen_on">Keep screen on</string>
-    <string name="action_open_help">Help</string>
     <string name="action_open_settings">Settings</string>
-
-    <string name="action_report_issue">Report Issue</string>
-    <string name="msg_generating_report">Generating Report</string>
-    <string name="msg_add_termux_debug_info">Add termux debug info to report?</string>
-
-    <string name="error_styling_not_installed">The &TERMUX_STYLING_APP_NAME; Plugin App is not installed.</string>
-    <string name="action_styling_install">Install</string>
-
 
 
     <!-- Termux Notifications -->
@@ -113,29 +80,12 @@
 
 
     <!-- TermuxService -->
-    <string name="error_display_over_other_apps_permission_not_granted_to_start_terminal">&TERMUX_APP_NAME; requires
-        \"Display over other apps\" permission to start terminal sessions from background on Android >= 10.
-        Grants it from Settings -> Apps -> &TERMUX_APP_NAME; -> Advanced</string>
-    <string name="error_termux_service_invalid_execution_command_runner">Invalid execution command runner to TermuxService: `%1$s`</string>
-    <string name="error_termux_service_unsupported_execution_command_runner">Unsupported execution command runner to TermuxService: `%1$s`</string>
-    <string name="error_termux_service_unsupported_execution_command_shell_create_mode">Unsupported execution command shell create mode to TermuxService: `%1$s`</string>
-    <string name="error_termux_service_execution_command_shell_name_unset">Shell name not set but `%1$s` shell create mode passed</string>
-
 
 
     <!-- Termux RunCommandService -->
-    <string name="error_run_command_service_invalid_intent_action">Invalid intent action to RunCommandService: `%1$s`</string>
-    <string name="error_run_command_service_invalid_execution_command_runner">Invalid execution command runner to RunCommandService: `%1$s`</string>
-    <string name="error_run_command_service_mandatory_extra_missing">Mandatory extra missing to RunCommandService: \"%1$s\"</string>
-    <string name="error_run_command_service_api_help">Visit %1$s for more info on RUN_COMMAND Intent usage.</string>
-
 
 
     <!-- Termux File Receiver -->
-    <string name="title_file_received">Save file in ~/downloads/</string>
-    <string name="action_file_received_edit">Edit</string>
-    <string name="action_file_received_open_directory">Open directory</string>
-
 
 
     <!-- Miscellaneous -->
@@ -148,37 +98,21 @@
     <string name="title_activity_termux_settings">&TERMUX_APP_NAME; Settings</string>
 
     <!-- Termux App Preferences -->
-    <string name="termux_preferences_title">&TERMUX_APP_NAME;</string>
-    <string name="termux_preferences_summary">Preferences for &TERMUX_APP_NAME; app</string>
 
-        <!-- Debugging Preferences -->
-        <string name="termux_debugging_preferences_title">Debugging</string>
-        <string name="termux_debugging_preferences_summary">Preferences for debugging</string>
+    <!-- Debugging Preferences -->
 
-            <!-- Logging Category -->
-            <string name="termux_logging_header">Logging</string>
+    <!-- Logging Category -->
 
-                <!-- Log Level -->
-                <string name="termux_log_level_title">Log Level</string>
+    <!-- Log Level -->
 
-                <!-- Terminal View Key Logging -->
-                <string name="termux_terminal_view_key_logging_enabled_title">Terminal View Key Logging</string>
-                <string name="termux_terminal_view_key_logging_enabled_off">Logs will not have entries for terminal view keys. (Default)</string>
-                <string name="termux_terminal_view_key_logging_enabled_on">Logcat logs will have entries for terminal view keys.
-                    These are very verbose and should be disabled under normal circumstances or will cause performance issues.</string>
+    <!-- Terminal View Key Logging -->
 
-                <!-- Plugin Error Notifications -->
-                <string name="termux_plugin_error_notifications_enabled_title">Plugin Error Notifications</string>
-                <string name="termux_plugin_error_notifications_enabled_off">Disable flashes and notifications for plugin errors.</string>
-                <string name="termux_plugin_error_notifications_enabled_on">Show flashes and notifications for plugin errors. (Default)</string>
+    <!-- Plugin Error Notifications -->
 
-                <!-- Crash Report Notifications -->
-                <string name="termux_crash_report_notifications_enabled_title">Crash Report Notifications</string>
-                <string name="termux_crash_report_notifications_enabled_off">Disable notifications for crash reports.</string>
-                <string name="termux_crash_report_notifications_enabled_on">Show notifications for crash reports. (Default)</string>
+    <!-- Crash Report Notifications -->
 
 
-        <!-- Terminal IO Preferences -->
+    <!-- Terminal IO Preferences -->
         <string name="termux_terminal_io_preferences_title">Terminal I/O</string>
         <string name="termux_terminal_io_preferences_summary">Preferences for terminal I/O</string>
 
@@ -215,43 +149,25 @@
 
 
     <!-- Termux:API App Preferences -->
-    <string name="termux_api_preferences_title">&TERMUX_API_APP_NAME;</string>
-    <string name="termux_api_preferences_summary">Preferences for &TERMUX_API_APP_NAME; app</string>
-
 
 
     <!-- Termux:Float App Preferences -->
-    <string name="termux_float_preferences_title">&TERMUX_FLOAT_APP_NAME;</string>
-    <string name="termux_float_preferences_summary">Preferences for &TERMUX_FLOAT_APP_NAME; app</string>
-
 
 
     <!-- Termux:Tasker App Preferences -->
-    <string name="termux_tasker_preferences_title">&TERMUX_TASKER_APP_NAME;</string>
-    <string name="termux_tasker_preferences_summary">Preferences for &TERMUX_TASKER_APP_NAME; app</string>
-
 
 
     <!-- Termux:Widget App Preferences -->
-    <string name="termux_widget_preferences_title">&TERMUX_WIDGET_APP_NAME;</string>
-    <string name="termux_widget_preferences_summary">Preferences for &TERMUX_WIDGET_APP_NAME; app</string>
-
 
 
     <!-- About Preference -->
-    <string name="about_preference_title">About</string>
 
     <!-- Donate Preference -->
-    <string name="donate_preference_title">Donate</string>
 
 
     <string name="paste_text">Paste</string>
     <string name="copy_text">Copy</string>
     <string name="text_selection_more">More…</string>
-
-
-    <string name="msg_directory_absolute_path">%1$s Directory Absolute Path: \"%2$s\"</string>
-
 
 
     <!-- PackageUtils -->
@@ -260,115 +176,44 @@
     <string name="error_get_package_context_failed_message">Failed to get package context for the \"%1$s\" package.
         This may be because the app package is not installed or it has different APK signature from the current app.</string>
     <string name="error_get_package_context_failed_help_url_message">Check %1$s for more details.</string>
-    <string name="error_get_component_state_failed">Failed to get %1$s/%2$s component state</string>
     <string name="error_enable_component_failed">Failed to enable %1$s/%2$s component</string>
     <string name="error_disable_component_failed">Failed to enable %1$s/%2$s component</string>
 
 
 
     <!-- PermissionUtils -->
-    <string name="message_sudo_please_grant_permissions">Please grant requested permission(s)</string>
     <string name="error_failed_to_request_permissions">Failed to request permissions with request code %1$d: %2$s</string>
     <string name="error_attempted_to_check_for_permissions_not_requested">Attempted to check for permissions that have not been requested in app manifest: %1$s</string>
     <string name="error_attempted_to_ask_for_permissions_not_requested">Attempted to ask for permissions that have not been requested in app manifest: %1$s</string>
     <string name="error_has_not_requested_legacy_external_storage">The \"%1$s\" package is targeting targetSdkVersion %2$d and is running on android sdk %3$d but has not set requestLegacyExternalStorage to true in app manifest</string>
-    <string name="msg_requires_dump_and_package_usage_stats_permissions">Requires `DUMP` and `PACKAGE_USAGE_STATS` permission</string>
-    <string name="error_display_over_other_apps_permission_not_granted">%1$s requires
-        \"Display over other apps\" permission to start activities and services from background on Android >= 10.
-        Grants it from Android Settings -> Apps -> %1$s -> Advanced -> Draw over other apps.
-        The permission name may be different on different devices, like on Xiaomi, its called
-        \"Display pop-up windows while running in the background\", check https://dontkillmyapp.com
-        for device specific issues.</string>
-
 
 
     <!-- TermuxPluginUtils -->
-    <string name="error_allow_external_apps_ungranted">%1$s requires `allow-external-apps`
-        property to be set to `true` in `%2$s` file.</string>
-
 
 
     <!-- ReportActivity -->
-    <string name="title_report_text">Report Text</string>
-    <string name="msg_report_truncated">**Report Truncated**\n\nReport is too large to view here.
-        Use `Save To File` option from options menu (3-dots on top right) and view it in an external text editor app.\n\n##\n\n</string>
-
 
 
     <!-- ShareUtils -->
     <string name="title_share_with">Share With</string>
     <string name="title_open_url_with">Open URL With</string>
     <string name="msg_storage_permission_not_granted">The storage permission not granted.</string>
-    <string name="msg_file_saved_successfully">The %1$s file saved successfully at \"%2$s\"</string>
-
 
 
     <!-- Shell -->
     <string name="error_sending_sigkill_to_process">Sending SIGKILL to process on user request or because android is killing the execution service</string>
-    <string name="error_executable_unset">Executable not set \"%1$s\" for shell command</string>
-    <string name="error_execution_cancelled">Execution has been cancelled since execution service is being killed</string>
     <string name="error_failed_to_execute_termux_session_command">Failed to execute \"%1$s\" termux session command</string>
-    <string name="error_failed_to_execute_app_shell_command">Failed to execute \"%1$s\" app shell command</string>
-    <string name="error_exception_received_while_executing_termux_session_command">Exception received while to executing \"%1$s\" termux session command.\nException: %2$s</string>
-    <string name="error_exception_received_while_executing_app_shell_command">Exception received while to executing \"%1$s\" app shell command.\nException: %2$s</string>
-
 
 
     <!-- TermuxUtils -->
-    <string name="msg_report_issue">
-        If you want to report this issue, then copy its text from the options menu (3-dots on top right) and post
-        an issue on one of the following links.
-        \n\nIf you are posting a Termux app crash report, then please provide details on what you were doing that
-        caused the crash and how to reproduce it, if possible.
-        \n\nIf you are posting an issue on GitHub, then post it in the repository at which the report belongs at.
-        Issues opened or emails sent with **(partial) screenshots** instead of copied text or a file of this report
-        **will likely be automatically closed/deleted**. You may optionally remove any device specific info that
-        you consider private or don\'t want to share or that is not relevant to the issue.
-        \n\nWe do not provide support for any hacking related tools/scripts. Any questions asked about them over email,
-        on GitHub or other official termux community forums **will likely be automatically closed/deleted** and may
-        even result in **temporary or permanent** ban. Check %1$s/wiki/Hacking for details.</string>
-
-    <string name="msg_termux_app_required_by_app">The &TERMUX_APP_NAME; is required by the %1$s app to run termux commands.</string>
-    <string name="error_termux_app_package_context_not_accessible">The &TERMUX_APP_NAME; app (package context) is not accessible.</string>
-    <string name="error_termux_prefix_dir_path_not_accessible">The &TERMUX_APP_NAME; app $PREFIX directory is not accessible by the %1$s app.
-        This may be because you have not installed or setup &TERMUX_APP_NAME; app or
-        &TERMUX_APP_NAME; app and %1$s app both have different APK signatures because you have managed to install both apps from different sources.
-        It may also be because &TERMUX_APP_NAME; $PREFIX directory \"&TERMUX_PREFIX_DIR_PATH;\" does not exist or does not have read,
-        write and execute permissions.</string>
-
 
 
     <!-- Miscellaneous -->
-    <string name="action_yes">Yes</string>
-    <string name="action_no">No</string>
-    <string name="action_copy">Copy</string>
-    <string name="action_share">Share</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="action_save_to_file">Save To File</string>
-
-    <string name="msg_storage_permission_granted_on_request">The storage permission granted by user on request</string>
-    <string name="msg_storage_permission_not_granted_on_request">The storage permission not granted by user on request</string>
-
 
 
     <!-- Launcher Icons -->
-    <string name="action_enable_launcher_icon">Enable Launcher Icon</string>
-    <string name="action_disable_launcher_icon">Disable Launcher Icon</string>
-    <string name="msg_enabling_launcher_icon">Enabling %1$s app launcher icon</string>
-    <string name="msg_disabling_launcher_icon">Disabling %1$s app launcher icon</string>
-    <string name="setting_launcher_icon_title">Launcher Icon Enabled</string>
-    <string name="setting_launcher_icon_enabled_off">Launcher Icon will be disabled.</string>
-    <string name="setting_launcher_icon_enabled_on">Launcher Icon will be enabled. (Default)</string>
-
 
 
     <!-- Log Level -->
-    <string name="log_level_title">Log Level</string>
-    <string name="log_level_off">Off</string>
-    <string name="log_level_normal">Normal</string>
-    <string name="log_level_debug">Debug</string>
-    <string name="log_level_verbose">Verbose</string>
-    <string name="log_level_unknown">*Unknown*</string>
-    <string name="log_level_value">Logcat log level set to \"%1$s\"</string>
 
 </resources>

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.termux.shared.logger.Logger;
 import com.termux.shared.reflection.ReflectionUtils;
 
 import java.lang.reflect.Method;
