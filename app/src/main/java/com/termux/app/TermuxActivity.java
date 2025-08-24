@@ -35,7 +35,6 @@ import com.termux.app.terminal.io.TerminalToolbarViewPager;
 import com.termux.app.terminal.TermuxTerminalViewClient;
 import com.termux.shared.termux.extrakeys.ExtraKeysView;
 import com.termux.shared.termux.interact.TextInputDialogUtils;
-import com.termux.shared.termux.TermuxUtils;
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
 import com.termux.shared.view.ViewUtils;
 import com.termux.terminal.TerminalSession;
@@ -223,18 +222,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             mIsInvalidState = true;
             return;
         }
-
-        // Send the {@link TermuxConstants#BROADCAST_TERMUX_OPENED} broadcast to notify apps that Termux
-        // app has been opened.
-        TermuxUtils.sendTermuxOpenedBroadcast(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        //        logMessage(Log.DEBUG, tag, message);
-
         if (mIsInvalidState) return;
 
         mIsVisible = true;
@@ -247,16 +239,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         if (mPreferences.isTerminalMarginAdjustmentEnabled())
             addTermuxActivityRootViewGlobalLayoutListener();
-
-//        registerTermuxActivityBroadcastReceiver();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        //        logMessage(Log.VERBOSE, tag, message);
-
         if (mIsInvalidState) return;
 
         if (mTermuxTerminalSessionActivityClient != null)
@@ -308,8 +295,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
-        //        logMessage(Log.VERBOSE, tag, message);
-
         super.onSaveInstanceState(savedInstanceState);
         saveTerminalToolbarTextInput(savedInstanceState);
         savedInstanceState.putBoolean(ARG_ACTIVITY_RECREATED, true);
@@ -326,8 +311,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      */
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
-        //        logMessage(Log.DEBUG, tag, message);
-
         mTermuxService = ((TermuxService.LocalBinder) service).service;
 
         setTermuxSessionsListView();
@@ -369,8 +352,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        //        logMessage(Log.DEBUG, tag, message);
-
         // Respect being stopped from the {@link TermuxService} notification action.
         finishActivityIfNotFinishing();
     }
@@ -683,12 +664,12 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     public DrawerLayout getDrawer() {
-        return (DrawerLayout) findViewById(R.id.drawer_layout);
+        return findViewById(R.id.drawer_layout);
     }
 
 
     public ViewPager getTerminalToolbarViewPager() {
-        return (ViewPager) findViewById(R.id.terminal_toolbar_view_pager);
+        return findViewById(R.id.terminal_toolbar_view_pager);
     }
 
     public float getTerminalToolbarDefaultHeight() {

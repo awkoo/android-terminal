@@ -1,13 +1,11 @@
 package com.termux.shared.termux.shell;
 
 import android.content.Context;
-import android.content.Intent;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 
 import com.termux.shared.shell.command.ExecutionCommand;
-import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
