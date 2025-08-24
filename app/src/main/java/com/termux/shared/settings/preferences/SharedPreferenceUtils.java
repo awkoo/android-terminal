@@ -8,8 +8,6 @@ import java.util.Set;
 
 public class SharedPreferenceUtils {
 
-    private static final String LOG_TAG = "SharedPreferenceUtils";
-
     /**
      * Get {@link SharedPreferences} instance of the preferences file 'name' with the operating mode
      * {@link Context#MODE_PRIVATE}. This file will be created in the app package's default
@@ -24,19 +22,19 @@ public class SharedPreferenceUtils {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
-    /**
-     * Get {@link SharedPreferences} instance of the preferences file 'name' with the operating mode
-     * {@link Context#MODE_PRIVATE} and {@link Context#MODE_MULTI_PROCESS}. This file will be
-     * created in the app package's default shared preferences directory.
-     *
-     * @param context The {@link Context} to get the {@link SharedPreferences} instance.
-     * @param name The preferences file basename without extension.
-     * @return The single {@link SharedPreferences} instance that can be used to retrieve and
-     * modify the preference values.
-     */
-    public static SharedPreferences getPrivateAndMultiProcessSharedPreferences(Context context, String name) {
-        return context.getSharedPreferences(name, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
-    }
+//    /**
+//     * Get {@link SharedPreferences} instance of the preferences file 'name' with the operating mode
+//     * {@link Context#MODE_PRIVATE} and {@link Context#MODE_MULTI_PROCESS}. This file will be
+//     * created in the app package's default shared preferences directory.
+//     *
+//     * @param context The {@link Context} to get the {@link SharedPreferences} instance.
+//     * @param name The preferences file basename without extension.
+//     * @return The single {@link SharedPreferences} instance that can be used to retrieve and
+//     * modify the preference values.
+//     */
+//    public static SharedPreferences getPrivateAndMultiProcessSharedPreferences(Context context, String name) {
+//        return context.getSharedPreferences(name, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
+//    }
 
 
 
@@ -393,10 +391,7 @@ public class SharedPreferenceUtils {
 
         try {
             stringValue = sharedPreferences.getString(key, Integer.toString(def));
-            if (stringValue != null)
-                intValue =  Integer.parseInt(stringValue);
-            else
-                intValue = def;
+            intValue =  Integer.parseInt(stringValue);
         } catch (NumberFormatException | ClassCastException e) {
             intValue = def;
         }

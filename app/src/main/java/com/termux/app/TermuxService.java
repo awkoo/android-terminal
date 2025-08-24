@@ -21,14 +21,14 @@ import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.TermuxTerminalSessionServiceClient;
 import com.termux.shared.shell.command.environment.ShellEnvironment;
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
-import com.termux.shared.termux.shell.TermuxShellUtils;
+//import com.termux.shared.termux.shell.TermuxShellUtils;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE;
 import com.termux.shared.termux.shell.TermuxShellManager;
 import com.termux.shared.termux.shell.TermuxSession;
 import com.termux.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import com.termux.shared.notification.NotificationUtils;
-import com.termux.shared.android.PermissionUtils;
+//import com.termux.shared.android.PermissionUtils;
 import com.termux.shared.shell.command.ExecutionCommand;
 import com.termux.shared.shell.command.ExecutionCommand.Runner;
 import com.termux.terminal.TerminalEmulator;
@@ -141,7 +141,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     @Override
     public void onDestroy() {
-        TermuxShellUtils.clearTermuxTMPDIR(true);
+//        TermuxShellUtils.clearTermuxTMPDIR(true);
 
         actionReleaseWakeLock(false);
         if (!mWantsToStop)
@@ -257,9 +257,9 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, TermuxConstants.TERMUX_APP_NAME.toLowerCase());
         mWifiLock.acquire();
 
-        if (!PermissionUtils.checkIfBatteryOptimizationsDisabled(this)) {
-            PermissionUtils.requestDisableBatteryOptimizations(this);
-        }
+//        if (!PermissionUtils.checkIfBatteryOptimizationsDisabled(this)) {
+//            PermissionUtils.requestDisableBatteryOptimizations(this);
+//        }
 
         updateNotification();
     }

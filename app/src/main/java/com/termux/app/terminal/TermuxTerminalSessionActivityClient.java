@@ -479,15 +479,15 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
     public void checkForFontAndColors() {
         try {
-            File colorsFile = TermuxConstants.TERMUX_COLOR_PROPERTIES_FILE;
-            File fontFile = TermuxConstants.TERMUX_FONT_FILE;
+//            File colorsFile = TermuxConstants.TERMUX_COLOR_PROPERTIES_FILE;
+//            File fontFile = TermuxConstants.TERMUX_FONT_FILE;
 
             final Properties props = new Properties();
-            if (colorsFile.isFile()) {
-                try (InputStream in = new FileInputStream(colorsFile)) {
-                    props.load(in);
-                }
-            }
+//            if (colorsFile.isFile()) {
+//                try (InputStream in = new FileInputStream(colorsFile)) {
+//                    props.load(in);
+//                }
+//            }
 
             TerminalColors.COLOR_SCHEME.updateWith(props);
             TerminalSession session = mActivity.getCurrentSession();
@@ -496,7 +496,8 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             }
             updateBackgroundColor();
 
-            final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
+//            final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
+            final Typeface newTypeface = Typeface.MONOSPACE;
             mActivity.getTerminalView().setTypeface(newTypeface);
         } catch (Exception e) {
             //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));

@@ -74,7 +74,6 @@ public class TermuxShellManager {
 
     public synchronized static void onActionBootCompleted(@NonNull Context context, @NonNull Intent intent) {
         TermuxAppSharedPreferences preferences = TermuxAppSharedPreferences.build(context);
-        if (preferences == null) return;
 
         // Ensure any shells started after boot have valid ENV_SHELL_CMD__APP_SHELL_NUMBER_SINCE_BOOT and
         // ENV_SHELL_CMD__TERMINAL_SESSION_NUMBER_SINCE_BOOT exported

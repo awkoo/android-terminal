@@ -1,13 +1,36 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        app:title="@string/termux_terminal_io_preferences_title"
-        app:summary="@string/termux_terminal_io_preferences_summary"
-        app:fragment="com.termux.app.fragments.settings.TerminalIOPreferencesFragment"/>
+    <PreferenceCategory
+        app:key="keyboard"
+        app:title="@string/termux_keyboard_header">
 
-    <Preference
-        app:title="@string/termux_terminal_view_preferences_title"
-        app:summary="@string/termux_terminal_view_preferences_summary"
-        app:fragment="com.termux.app.fragments.settings.TerminalViewPreferencesFragment"/>
+        <SwitchPreferenceCompat
+            app:key="soft_keyboard_enabled"
+            app:defaultValue="true"
+            app:summaryOff="@string/termux_soft_keyboard_enabled_off"
+            app:summaryOn="@string/termux_soft_keyboard_enabled_on"
+            app:title="@string/termux_soft_keyboard_enabled_title" />
+
+        <SwitchPreferenceCompat
+            app:key="soft_keyboard_enabled_only_if_no_hardware"
+            app:defaultValue="false"
+            app:summaryOff="@string/termux_soft_keyboard_enabled_only_if_no_hardware_off"
+            app:summaryOn="@string/termux_soft_keyboard_enabled_only_if_no_hardware_on"
+            app:title="@string/termux_soft_keyboard_enabled_only_if_no_hardware_title" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:key="view"
+        app:title="@string/termux_terminal_view_view_header">
+
+        <SwitchPreferenceCompat
+            app:key="terminal_margin_adjustment"
+            app:defaultValue="true"
+            app:summaryOff="@string/termux_terminal_view_terminal_margin_adjustment_off"
+            app:summaryOn="@string/termux_terminal_view_terminal_margin_adjustment_on"
+            app:title="@string/termux_terminal_view_terminal_margin_adjustment_title" />
+
+    </PreferenceCategory>
 
 </PreferenceScreen>

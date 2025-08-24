@@ -133,11 +133,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      */
     private boolean mIsOnResumeAfterOnCreate = false;
 
-    /**
-     * If activity was restarted like due to call to {@link #recreate()} after receiving
-     * {@link TERMUX_ACTIVITY#ACTION_RELOAD_STYLE}, system dark night mode was changed or activity
-     * was killed by android.
-     */
     private boolean mIsActivityRecreated = false;
 
     /**
@@ -180,12 +175,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         // Load termux shared preferences
         // This will also fail if TermuxConstants.TERMUX_PACKAGE_NAME does not equal applicationId
-        mPreferences = TermuxAppSharedPreferences.build(this, true);
-        if (mPreferences == null) {
-            // An AlertDialog should have shown to kill the app, so we don't continue running activity code
-            mIsInvalidState = true;
-            return;
-        }
+        mPreferences = TermuxAppSharedPreferences.build(this);
 
         setMargins();
 

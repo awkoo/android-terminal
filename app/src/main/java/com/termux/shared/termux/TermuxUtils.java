@@ -13,11 +13,11 @@ import java.util.List;
 
 public class TermuxUtils {
 
-    /** Wrapper for {@link PackageUtils#getContextForPackageOrExitApp(Context, String, boolean, String)}. */
-    public static Context getContextForPackageOrExitApp(@NonNull Context context, String packageName,
-                                                        final boolean exitAppOnError) {
-        return PackageUtils.getContextForPackageOrExitApp(context, packageName, exitAppOnError, TermuxConstants.TERMUX_GITHUB_REPO_URL);
-    }
+//    /** Wrapper for {@link PackageUtils#getContextForPackageOrExitApp(Context, String, boolean, String)}. */
+//    public static Context getContextForPackageOrExitApp(@NonNull Context context, String packageName,
+//                                                        final boolean exitAppOnError) {
+//        return PackageUtils.getContextForPackageOrExitApp(context, packageName, exitAppOnError);
+//    }
 
 
     /**
