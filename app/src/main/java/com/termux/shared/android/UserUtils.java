@@ -54,7 +54,6 @@ public class UserUtils {
                 name = name.replaceAll(":" + uid + "$", ""); // Remove ":<uid>" suffix
             return name;
         } catch (Exception e) {
-//            Logger.logStackTraceWithMessage();
             return null;
         }
     }
@@ -95,18 +94,15 @@ public class UserUtils {
                 os = ReflectionUtils.invokeField(Class.forName(libcoreClassName), "os", null).value;
             } catch (Exception e) {
                 // ClassCastException may be thrown
-//                Logger.logStackTraceWithMessage();
                 return null;
             }
 
             if (os == null) {
-//                Logger.logError(LOG_TAG, "Failed to get BlockGuardOs class obj from Libcore");
                 return null;
             }
 
             clazz = os.getClass().getSuperclass();  // libcore.io.ForwardingOs
             if (clazz == null) {
-//                Logger.logError(LOG_TAG, "Failed to find super class ForwardingOs from object of class " + os.getClass().getName());
                 return null;
             }
 
@@ -116,12 +112,10 @@ public class UserUtils {
                 if (getpwuidMethod == null) return null;
                 structPasswd = ReflectionUtils.invokeMethod(getpwuidMethod, os, uid).value;
             } catch (Exception e) {
-//                Logger.logStackTraceWithMessage("Failed to invoke getpwuid() method of " + clazz.getName() + " class");
                 return null;
             }
 
             if (structPasswd == null) {
-//                Logger.logError(LOG_TAG, "Failed to get StructPasswd obj from call to ForwardingOs.getpwuid()");
                 return null;
             }
 
@@ -130,11 +124,9 @@ public class UserUtils {
                 return (String) ReflectionUtils.invokeField(clazz, "pw_name", structPasswd).value;
             } catch (Exception e) {
                 // ClassCastException may be thrown
-//                Logger.logStackTraceWithMessage("Failed to get \"pw_name\" field value for " + clazz.getName() + " class");
                 return null;
             }
         } catch (Exception e) {
-//            Logger.logStackTraceWithMessage();
             return null;
         }
     }

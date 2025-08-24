@@ -8,7 +8,6 @@ import android.view.Gravity;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -116,17 +115,6 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
     }
 
     /**
-     * Should be called when mActivity.reloadActivityStyling() is called
-     */
-    public void onReloadActivityStyling() {
-        // Show the soft keyboard if required
-        setSoftKeyboardState(false, true);
-
-        // Start terminal cursor blinking if enabled
-        setTerminalCursorBlinkerState(true);
-    }
-
-    /**
      * Should be called when {@link com.termux.view.TerminalView#mEmulator} is set
      */
     @Override
@@ -176,9 +164,6 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
         if (!term.isMouseTrackingActive() && !e.isFromSource(InputDevice.SOURCE_MOUSE)) {
             if (!KeyboardUtils.areDisableSoftKeyboardFlagsSet(mActivity))
                 KeyboardUtils.showSoftKeyboard(mActivity, mActivity.getTerminalView());
-            else {
-//        logMessage(Log.VERBOSE, tag, message);
-            }
         }
     }
 
