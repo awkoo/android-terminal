@@ -139,32 +139,4 @@ public class ResultConfig {
         return resultDirectoryVariablesString.toString();
     }
 
-//    /**
-//     * Get a markdown {@link String} for {@link ResultConfig}.
-//     *
-//     * @param resultConfig The {@link ResultConfig} to convert.
-//     * @return Returns the markdown {@link String}.
-//     */
-//    public static String getResultConfigMarkdownString(final ResultConfig resultConfig) {
-//        if (resultConfig == null) return "null";
-//
-//        StringBuilder markdownString = new StringBuilder();
-//
-//        if (resultConfig.resultPendingIntent != null)
-//            markdownString.append(MarkdownUtils.getSingleLineMarkdownStringEntry("Result PendingIntent Creator", resultConfig.resultPendingIntent.getCreatorPackage(), "-"));
-//        else
-//            markdownString.append("**Result PendingIntent Creator:** -  ");
-//
-//        if (resultConfig.resultDirectoryPath != null) {
-//            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Result Directory Path", resultConfig.resultDirectoryPath, "-"));
-//            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Result Single File", resultConfig.resultSingleFile, "-"));
-//            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Result File Basename", resultConfig.resultFileBasename, "-"));
-//            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Result File Output Format", resultConfig.resultFileOutputFormat, "-"));
-//            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Result File Error Format", resultConfig.resultFileErrorFormat, "-"));
-//            markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Result Files Suffix", resultConfig.resultFilesSuffix, "-"));
-//        }
-//
-//        return markdownString.toString();
-//    }
-
 }

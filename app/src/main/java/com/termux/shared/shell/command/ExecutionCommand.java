@@ -60,14 +60,7 @@ public class ExecutionCommand {
         /** Run command in {@link TerminalSession}. */
         TERMINAL_SESSION("terminal-session"),
 
-        /** Run command in {@link AppShell}. */
         APP_SHELL("app-shell");
-
-        ///** Run command in {@link AdbShell}. */
-        //ADB_SHELL("adb-shell"),
-
-        ///** Run command in {@link RootShell}. */
-        //ROOT_SHELL("root-shell");
 
         private final String name;
 
@@ -173,15 +166,6 @@ public class ExecutionCommand {
     /** If the {@link ExecutionCommand} is meant to start a failsafe terminal session. */
     public boolean isFailsafe;
 
-//    /**
-//     * The {@link ExecutionCommand} custom log level for background {@link AppShell}
-//     * commands. By default, @link com.termux.shared.shell.StreamGobbler} only logs stdout and
-//     * stderr if {@link Logger} `CURRENT_LOG_LEVEL` is >= {@link Logger#LOG_LEVEL_VERBOSE} and
-//     * {@link AppShell} only logs stdin if `CURRENT_LOG_LEVEL` is >=
-//     * {@link Logger#LOG_LEVEL_DEBUG}.
-//     */
-//    public Integer backgroundCustomLogLevel;
-
 
     /** The session action of {@link Runner#TERMINAL_SESSION} commands. */
     public String sessionAction;
@@ -201,11 +185,6 @@ public class ExecutionCommand {
 
     /** The command label for the {@link ExecutionCommand}. */
     public String commandLabel;
-    /** The markdown text for the command description for the {@link ExecutionCommand}. */
-    public String commandDescription;
-    /** The markdown text for the help of command for the {@link ExecutionCommand}. This can be used
-     * to provide useful info to the user if an internal error is raised. */
-    public String commandHelp;
 
 
     /** Defines the {@link Intent} received which started the command. */
@@ -222,8 +201,6 @@ public class ExecutionCommand {
 
     /** Defines if processing results already called for this {@link ExecutionCommand}. */
     public boolean processingResultsAlreadyCalled;
-
-    private static final String LOG_TAG = "ExecutionCommand";
 
 
     public ExecutionCommand(Integer id) {
@@ -243,8 +220,6 @@ public class ExecutionCommand {
     public synchronized boolean setState(ExecutionState newState) {
         // The state transition cannot go back or change if already at {@link ExecutionState#SUCCESS}
         if (newState.getValue() < currentState.getValue() || currentState == ExecutionState.SUCCESS) {
-            getCommandIdAndLabelLogString();
-//        logMessage(Log.ERROR, tag, message);
             return false;
         }
 
@@ -294,11 +269,7 @@ public class ExecutionCommand {
         return setStateFailed(null, code, message, throwablesList);
     }
     public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
-        if (!this.resultData.setStateFailed(type, code, message, throwablesList)) {
-            getCommandIdAndLabelLogString();
-//        logMessage(Log.WARN, tag, message);
-        }
-
+        this.resultData.setStateFailed(type, code, message, throwablesList);
         return setState(ExecutionState.FAILED);
     }
 
@@ -315,13 +286,7 @@ public class ExecutionCommand {
         if (currentState != ExecutionState.FAILED)
             return false;
 
-        if (!resultData.isStateFailed()) {
-            getCommandIdAndLabelLogString();
-//        logMessage(Log.WARN, tag, message);
-            return false;
-        } else {
-            return true;
-        }
+        return resultData.isStateFailed();
     }
 
 
