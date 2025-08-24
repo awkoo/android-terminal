@@ -292,8 +292,14 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         // If the execution command was started for a plugin, only then will the stdout be set
         // Otherwise if command was manually started by the user like by adding a new terminal session,
         // then no need to set stdout
-        TermuxSession newTermuxSession = TermuxSession.execute(this, executionCommand, getTermuxTerminalSessionClient(),
-            this, new ShellEnvironment(), null, false);
+        TermuxSession newTermuxSession = TermuxSession.execute(
+            this,
+            executionCommand,
+            getTermuxTerminalSessionClient(),
+            this,
+            null,
+            false
+        );
         if (newTermuxSession == null) {
             executionCommand.getCommandIdAndLabelLogString();
             return null;

@@ -2,13 +2,6 @@ package com.termux.shared.shell.command.environment;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.termux.shared.shell.ShellUtils;
-import com.termux.shared.shell.command.ExecutionCommand;
-
-import java.io.File;
 import java.util.HashMap;
 
 /**
@@ -21,54 +14,34 @@ import java.util.HashMap;
  * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:packages/modules/SdkExtensions/derive_classpath/derive_classpath.cpp;l=96
  */
 public class ShellEnvironment {
-
     /** Names for common/supported login shell binaries. */
     public static final String[] LOGIN_SHELL_BINARIES = new String[]{"login", "bash", "zsh", "fish", "sh"};
 
-    /** Get shell environment for Android. */
-    @NonNull
-    public HashMap<String, String> getEnvironment(@NonNull Context currentPackageContext, boolean isFailSafe) {
-        HashMap<String, String> environment = new HashMap<>();
+    public static final String ENVNAME_PWD = "PWD";
+    public static final String ENVNAME_HOME = "HOME";
+    public static final String ENVNAME_PATH = "PATH";
+    public static final String ENVNAME_TMPDIR = "TMPDIR";
 
-        environment.put("HOME", currentPackageContext.getFilesDir().getAbsolutePath());
-        environment.put("LANG", "en_US.UTF-8");
-        environment.put("PATH", System.getenv("PATH"));
-        environment.put("TMPDIR", currentPackageContext.getCacheDir().getAbsolutePath());
-        environment.put("COLORTERM", "truecolor");
-        environment.put("TERM", "xterm-256color");
-
-        return environment;
-    }
-
-
-
-    @NonNull
-    public String getDefaultWorkingDirectoryPath(Context context) {
+    public static String getDefaultWorkingPath(Context context) {
         return context.getFilesDir().getAbsolutePath();
     }
 
-
-    @NonNull
-    public String getDefaultBinPath() {
+    public static String getDefaultBinPath() {
         return "/system/bin";
     }
 
-    @NonNull
-    public String[] setupShellCommandArguments(@NonNull String executable, @Nullable String[] arguments) {
-        return ShellUtils.setupShellCommandArguments(executable, arguments);
+    public static String getDefaultTempPath(Context context) {
+        return context.getCacheDir().getAbsolutePath();
     }
 
-    @NonNull
-    public HashMap<String, String> setupShellCommandEnvironment(@NonNull Context currentPackageContext,
-                                                                @NonNull ExecutionCommand executionCommand) {
-        HashMap<String, String> environment = getEnvironment(currentPackageContext, executionCommand.isFailsafe);
-
-        String workingDirectory = executionCommand.workingDirectory;
-        environment.put("PWD",
-            workingDirectory != null && !workingDirectory.isEmpty() ? new File(workingDirectory).getAbsolutePath() : // PWD must be absolute path
-            getDefaultWorkingDirectoryPath(currentPackageContext));
-//        FileUtils.createDirectoryFile(environment.get("HOME"));
-
+    public static HashMap<String, String> getDefaultEnvironment(Context context) {
+        HashMap<String, String> environment = new HashMap<>();
+        environment.put(ENVNAME_PWD, getDefaultWorkingPath(context));
+        environment.put(ENVNAME_HOME, getDefaultWorkingPath(context));
+        environment.put(ENVNAME_PATH, System.getenv("PATH"));
+        environment.put(ENVNAME_TMPDIR, getDefaultTempPath(context));
+        environment.put("COLORTERM", "truecolor");
+        environment.put("TERM", "xterm-256color");
         return environment;
     }
 

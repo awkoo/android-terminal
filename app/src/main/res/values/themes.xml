@@ -54,6 +54,7 @@
       https://github.com/material-components/material-components-android/blob/1.4.0/lib/java/com/google/android/material/theme/res/values/themes.xml#L33
      -->
     <style name="Theme.BaseActivity.Light.DarkActionBar" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red_400</item>
         <item name="colorPrimaryVariant">@color/red_800</item>
@@ -109,6 +110,7 @@
       https://github.com/material-components/material-components-android/blob/1.4.0/lib/java/com/google/android/material/dialog/res/values/themes.xml#L70
      -->
     <style name="ThemeOverlay.BaseDialog.Light" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red_400</item>
         <item name="colorPrimaryVariant">@color/red_800</item>

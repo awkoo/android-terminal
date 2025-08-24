@@ -1,10 +1,11 @@
 package com.termux.shared.termux.shell;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.system.OsConstants;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import com.termux.R;
 import com.termux.shared.shell.command.ExecutionCommand;
@@ -17,6 +18,7 @@ import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSessionClient;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +35,12 @@ public class TermuxSession {
     private final TermuxSessionClient mTermuxSessionClient;
     private final boolean mSetStdoutOnExit;
 
-    private TermuxSession(@NonNull final TerminalSession terminalSession, @NonNull final ExecutionCommand executionCommand,
-                          final TermuxSessionClient termuxSessionClient, final boolean setStdoutOnExit) {
+    private TermuxSession(
+        @NonNull final TerminalSession terminalSession,
+        @NonNull final ExecutionCommand executionCommand,
+        final TermuxSessionClient termuxSessionClient,
+        final boolean setStdoutOnExit
+    ) {
         this.mTerminalSession = terminalSession;
         this.mExecutionCommand = executionCommand;
         this.mTermuxSessionClient = termuxSessionClient;
@@ -51,13 +57,12 @@ public class TermuxSession {
      * If {@link ExecutionCommand#executable} is {@code null}, then a default shell is automatically
      * chosen.
      *
-     * @param currentPackageContext The {@link Context} for operations. This must be the context for
+     * @param context The {@link Context} for operations. This must be the context for
      *                              the current package and not the context of a `sharedUserId` package,
      *                              since environment setup may be dependent on current package.
      * @param executionCommand The {@link ExecutionCommand} containing the information for execution command.
      * @param terminalSessionClient The {@link TerminalSessionClient} interface implementation.
      * @param termuxSessionClient The {@link TermuxSessionClient} interface implementation.
-     * @param shellEnvironmentClient The {@link ShellEnvironment} interface implementation.
      * @param additionalEnvironment The additional shell environment variables to export. Existing
      *                              variables will be overridden.
      * @param setStdoutOnExit If set to {@code true}, then the {@link ResultData#stdout}
@@ -69,21 +74,20 @@ public class TermuxSession {
      *                        since this requires extra processing to get it.
      * @return Returns the {@link TermuxSession}. This will be {@code null} if failed to start the execution command.
      */
-    public static TermuxSession execute(@NonNull final Context currentPackageContext, @NonNull ExecutionCommand executionCommand,
-                                        @NonNull final TerminalSessionClient terminalSessionClient, final TermuxSessionClient termuxSessionClient,
-                                        @NonNull final ShellEnvironment shellEnvironmentClient,
-                                        @Nullable HashMap<String, String> additionalEnvironment,
-                                        final boolean setStdoutOnExit) {
+    public static TermuxSession execute(
+        Context context,
+        ExecutionCommand executionCommand,
+        TerminalSessionClient terminalSessionClient,
+        TermuxSessionClient termuxSessionClient,
+        HashMap<String, String> additionalEnvironment,
+        Boolean setStdoutOnExit
+    ) {
         if (executionCommand.executable != null && executionCommand.executable.isEmpty())
             executionCommand.executable = null;
         if (executionCommand.workingDirectory == null || executionCommand.workingDirectory.isEmpty())
-            executionCommand.workingDirectory = shellEnvironmentClient.getDefaultWorkingDirectoryPath(currentPackageContext);
-        if (executionCommand.workingDirectory.isEmpty())
-            executionCommand.workingDirectory = "/";
+            executionCommand.workingDirectory = ShellEnvironment.getDefaultWorkingPath(context);
 
-        String defaultBinPath = shellEnvironmentClient.getDefaultBinPath();
-        if (defaultBinPath.isEmpty())
-            defaultBinPath = "/system/bin";
+        String defaultBinPath = ShellEnvironment.getDefaultBinPath();
 
         if (executionCommand.executable == null) {
             if (!executionCommand.isFailsafe) {
@@ -97,20 +101,21 @@ public class TermuxSession {
             }
 
             if (executionCommand.executable == null) {
-                // Fall back to system shell as last resort:
-                // Do not start a login shell since ~/.profile may cause startup failure if its invalid.
-                // /system/bin/sh is provided by mksh (not toybox) and does load .mkshrc but for android its set
-                // to /system/etc/mkshrc even though its default is ~/.mkshrc.
-                // So /system/etc/mkshrc must still be valid for failsafe session to start properly.
-                // https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:external/mksh/src/main.c;l=663
-                // https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:external/mksh/src/main.c;l=41
-                // https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:external/mksh/Android.bp;l=114
-                executionCommand.executable = "/system/bin/sh";
+                executionCommand.executable = defaultBinPath + "/sh";
             }
         }
 
         // Setup command args
-        String[] commandArgs = shellEnvironmentClient.setupShellCommandArguments(executionCommand.executable, executionCommand.arguments);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean rootMode = preferences.getBoolean("session_with_root", false);
+        List<String> result = new ArrayList<>();
+        if (rootMode) {
+            result.add(preferences.getString("su_path", defaultBinPath + "/su"));
+            result.add("-s");
+        }
+        result.add(executionCommand.executable);
+        if (executionCommand.arguments != null) Collections.addAll(result, executionCommand.arguments);
+        String[] commandArgs = result.toArray(new String[0]);
 
         executionCommand.executable = commandArgs[0];
         String processName =  ShellUtils.getExecutableBasename(executionCommand.executable);
@@ -125,8 +130,8 @@ public class TermuxSession {
             executionCommand.commandLabel = processName;
 
         // Setup command environment
-        HashMap<String, String> environment = shellEnvironmentClient.setupShellCommandEnvironment(currentPackageContext,
-            executionCommand);
+        HashMap<String, String> environment = ShellEnvironment.getDefaultEnvironment(context);
+        environment.put(ShellEnvironment.ENVNAME_PWD, executionCommand.workingDirectory);
         if (additionalEnvironment != null)
             environment.putAll(additionalEnvironment);
         List<String> environmentList = ShellEnvironmentUtils.convertEnvironmentToEnviron(environment);
@@ -134,7 +139,7 @@ public class TermuxSession {
         String[] environmentArray = environmentList.toArray(new String[0]);
 
         if (!executionCommand.setState(ExecutionCommand.ExecutionState.EXECUTING)) {
-            executionCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), currentPackageContext.getString(R.string.error_failed_to_execute_termux_session_command, executionCommand.getCommandIdAndLabelLogString()));
+            executionCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), context.getString(R.string.error_failed_to_execute_termux_session_command, executionCommand.getCommandIdAndLabelLogString()));
             TermuxSession.processTermuxSessionResult(null, executionCommand);
             return null;
         }
@@ -217,10 +222,10 @@ public class TermuxSession {
      * callback will be called.
      *
      * @param termuxSession The {@link TermuxSession}, which should be set if
-     *                  {@link #execute(Context, ExecutionCommand, TerminalSessionClient, TermuxSessionClient, ShellEnvironment, HashMap, boolean)}
+     *                  {@link #execute(Context, ExecutionCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
      *                   successfully started the process.
      * @param executionCommand The {@link ExecutionCommand}, which should be set if
-     *                          {@link #execute(Context, ExecutionCommand, TerminalSessionClient, TermuxSessionClient, ShellEnvironment, HashMap, boolean)}
+     *                          {@link #execute(Context, ExecutionCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
      *                          failed to start the process.
      */
     private static void processTermuxSessionResult(final TermuxSession termuxSession, ExecutionCommand executionCommand) {
