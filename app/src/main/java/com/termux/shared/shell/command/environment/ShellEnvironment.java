@@ -15,7 +15,7 @@ import java.util.HashMap;
  */
 public class ShellEnvironment {
     /** Names for common/supported login shell binaries. */
-    public static final String[] LOGIN_SHELL_BINARIES = new String[]{"login", "bash", "zsh", "fish", "sh"};
+    public static final String LOGIN_SHELL_BINARIES = "sh";
 
     public static final String ENVNAME_PWD = "PWD";
     public static final String ENVNAME_HOME = "HOME";
@@ -24,10 +24,6 @@ public class ShellEnvironment {
 
     public static String getDefaultWorkingPath(Context context) {
         return context.getFilesDir().getAbsolutePath();
-    }
-
-    public static String getDefaultBinPath() {
-        return "/system/bin";
     }
 
     public static String getDefaultTempPath(Context context) {

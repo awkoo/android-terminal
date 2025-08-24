@@ -194,13 +194,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         }
 
         setTermuxTerminalViewAndClients();
-
         setTerminalToolbarView(savedInstanceState);
-
         setSettingsButtonView();
-
         setNewSessionButtonView();
-
         setToggleKeyboardView();
 
         registerForContextMenu(mTerminalView);

@@ -87,31 +87,17 @@ public class TermuxSession {
         if (executionCommand.workingDirectory == null || executionCommand.workingDirectory.isEmpty())
             executionCommand.workingDirectory = ShellEnvironment.getDefaultWorkingPath(context);
 
-        String defaultBinPath = ShellEnvironment.getDefaultBinPath();
-
-        if (executionCommand.executable == null) {
-            if (!executionCommand.isFailsafe) {
-                for (String shellBinary : ShellEnvironment.LOGIN_SHELL_BINARIES) {
-                    File shellFile = new File(defaultBinPath, shellBinary);
-                    if (shellFile.canExecute()) {
-                        executionCommand.executable = shellFile.getAbsolutePath();
-                        break;
-                    }
-                }
-            }
-
-            if (executionCommand.executable == null) {
-                executionCommand.executable = defaultBinPath + "/sh";
-            }
-        }
+        if (executionCommand.executable == null)
+            executionCommand.executable = ShellEnvironment.LOGIN_SHELL_BINARIES;
 
         // Setup command args
+        List<String> result = new ArrayList<>();
+        // root
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean rootMode = preferences.getBoolean("session_with_root", false);
-        List<String> result = new ArrayList<>();
         if (rootMode) {
-            result.add(preferences.getString("su_path", defaultBinPath + "/su"));
-            result.add("-s");
+            result.add(preferences.getString("su_path", "su"));
+            result.add("-c");
         }
         result.add(executionCommand.executable);
         if (executionCommand.arguments != null) Collections.addAll(result, executionCommand.arguments);
