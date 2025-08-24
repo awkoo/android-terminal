@@ -116,7 +116,7 @@ public class ResultData implements Serializable {
 
     public int getErrCode() {
         if (errorsList != null && errorsList.size() > 0)
-            return errorsList.get(errorsList.size() - 1).getCode();
+            return errorsList.getLast().getCode();
         else
             return Errno.ERRNO_SUCCESS.getCode();
     }

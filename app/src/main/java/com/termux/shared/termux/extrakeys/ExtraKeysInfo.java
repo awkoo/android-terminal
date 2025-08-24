@@ -195,18 +195,13 @@ public class ExtraKeysInfo {
 
     @NonNull
     public static ExtraKeysConstants.ExtraKeyDisplayMap getCharDisplayMapForStyle(String style) {
-        switch (style) {
-            case "arrows-only":
-                return EXTRA_KEY_DISPLAY_MAPS.ARROWS_ONLY_CHAR_DISPLAY;
-            case "arrows-all":
-                return EXTRA_KEY_DISPLAY_MAPS.LOTS_OF_ARROWS_CHAR_DISPLAY;
-            case "all":
-                return EXTRA_KEY_DISPLAY_MAPS.FULL_ISO_CHAR_DISPLAY;
-            case "none":
-                return new ExtraKeysConstants.ExtraKeyDisplayMap();
-            default:
-                return EXTRA_KEY_DISPLAY_MAPS.DEFAULT_CHAR_DISPLAY;
-        }
+        return switch (style) {
+            case "arrows-only" -> EXTRA_KEY_DISPLAY_MAPS.ARROWS_ONLY_CHAR_DISPLAY;
+            case "arrows-all" -> EXTRA_KEY_DISPLAY_MAPS.LOTS_OF_ARROWS_CHAR_DISPLAY;
+            case "all" -> EXTRA_KEY_DISPLAY_MAPS.FULL_ISO_CHAR_DISPLAY;
+            case "none" -> new ExtraKeysConstants.ExtraKeyDisplayMap();
+            default -> EXTRA_KEY_DISPLAY_MAPS.DEFAULT_CHAR_DISPLAY;
+        };
     }
 
 }

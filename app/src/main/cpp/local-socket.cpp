@@ -156,7 +156,7 @@ bool checkJniException(JNIEnv *env) {
 }
 
 string getJniResultString(const int retvalParam, const int errnoParam,
-                          string errmsgParam, const int intDataParam) {
+                          const string& errmsgParam, const int intDataParam) {
     return "retval=" + to_string(retvalParam) + ", errno=" + to_string(errnoParam) +
            ", errmsg=\"" + errmsgParam + "\"" + ", intData=" + to_string(intDataParam);
 }
@@ -203,10 +203,10 @@ jobject getJniResult(JNIEnv *env, jstring title, const int retvalParam, const in
 }
 
 jobject getJniResult(JNIEnv *env, jstring title, const int retvalParam, string errmsgPrefixParam) {
-    return getJniResult(env, title, retvalParam, 0, errmsgPrefixParam, 0);
+    return getJniResult(env, title, retvalParam, 0, std::move(errmsgPrefixParam), 0);
 }
 
-jobject getJniResult(JNIEnv *env, jstring title, const int retvalParam, const int errnoParam, string errmsgPrefixParam) {
+jobject getJniResult(JNIEnv *env, jstring title, const int retvalParam, const int errnoParam, const string& errmsgPrefixParam) {
     return getJniResult(env, title, retvalParam, errnoParam, errmsgPrefixParam + ": " + string(strerror(errnoParam)), 0);
 }
 
@@ -220,7 +220,7 @@ jobject getJniResult(JNIEnv *env, jstring title) {
 
 
 /* Set int fieldName field for clazz to value. */
-string setIntField(JNIEnv *env, jobject obj, jclass clazz, const string fieldName, const int value) {
+string setIntField(JNIEnv *env, jobject obj, jclass clazz, const string& fieldName, const int value) {
     jfieldID field = env->GetFieldID(clazz, fieldName.c_str(), "I");
     if (checkJniException(env)) return JNI_EXCEPTION;
     if (!field) {
@@ -235,7 +235,7 @@ string setIntField(JNIEnv *env, jobject obj, jclass clazz, const string fieldNam
 }
 
 /* Set String fieldName field for clazz to value. */
-string setStringField(JNIEnv *env, jobject obj, jclass clazz, const string fieldName, const string value) {
+string setStringField(JNIEnv *env, jobject obj, jclass clazz, const string& fieldName, const string& value) {
     jfieldID field = env->GetFieldID(clazz, fieldName.c_str(), "Ljava/lang/String;");
     if (checkJniException(env)) return JNI_EXCEPTION;
     if (!field) {

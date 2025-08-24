@@ -2,7 +2,6 @@ package com.termux.shared.termux.extrakeys;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
@@ -264,7 +263,7 @@ public final class ExtraKeysView extends GridLayout {
     /** Set {@link #mSpecialButtonsKeys}. Must not be {@code null}. */
     public void setSpecialButtons(@NonNull Map<SpecialButton, SpecialButtonState> specialButtons) {
         mSpecialButtons = specialButtons;
-        mSpecialButtonsKeys = this.mSpecialButtons.keySet().stream().map(SpecialButton::getKey).collect(Collectors.toSet());
+        mSpecialButtonsKeys = this.mSpecialButtons.keySet().stream().map(SpecialButton::key).collect(Collectors.toSet());
     }
 
 
@@ -365,7 +364,7 @@ public final class ExtraKeysView extends GridLayout {
     /** Get the default map that can be used for {@link #mSpecialButtons}. */
     @NonNull
     public Map<SpecialButton, SpecialButtonState> getDefaultSpecialButtons(ExtraKeysView extraKeysView) {
-        return new HashMap<SpecialButton, SpecialButtonState>() {{
+        return new HashMap<>() {{
             put(SpecialButton.CTRL, new SpecialButtonState(extraKeysView));
             put(SpecialButton.ALT, new SpecialButtonState(extraKeysView));
             put(SpecialButton.SHIFT, new SpecialButtonState(extraKeysView));

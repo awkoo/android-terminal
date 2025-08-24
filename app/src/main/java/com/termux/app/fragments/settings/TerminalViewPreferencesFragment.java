@@ -66,12 +66,10 @@ class TerminalViewPreferencesDataStore extends PreferenceDataStore {
     public boolean getBoolean(String key, boolean defValue) {
         if (mPreferences == null) return false;
 
-        switch (key) {
-            case "terminal_margin_adjustment":
-                return mPreferences.isTerminalMarginAdjustmentEnabled();
-            default:
-                return false;
-        }
+        return switch (key) {
+            case "terminal_margin_adjustment" -> mPreferences.isTerminalMarginAdjustmentEnabled();
+            default -> false;
+        };
     }
 
 }

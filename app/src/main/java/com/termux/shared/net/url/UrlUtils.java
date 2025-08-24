@@ -73,29 +73,18 @@ public class UrlUtils {
     public static String getUrlPart(String urlString, UrlPart urlPart) {
         URL url = getUrl(urlString);
         if (url == null) return null;
-        switch (urlPart) {
-            case AUTHORITY:
-                return url.getAuthority();
-            case FILE:
-                return url.getFile();
-            case HOST:
-                return url.getHost();
-            case REF:
-            case FRAGMENT:
-                return url.getRef();
-            case PATH:
-                return url.getPath();
-            case PORT:
-                return String.valueOf(url.getPort());
-            case PROTOCOL:
-                return url.getProtocol();
-            case QUERY:
-                return url.getQuery();
-            case USER_INFO:
-                return url.getUserInfo();
-            default:
-                return null;
-        }
+        return switch (urlPart) {
+            case AUTHORITY -> url.getAuthority();
+            case FILE -> url.getFile();
+            case HOST -> url.getHost();
+            case REF, FRAGMENT -> url.getRef();
+            case PATH -> url.getPath();
+            case PORT -> String.valueOf(url.getPort());
+            case PROTOCOL -> url.getProtocol();
+            case QUERY -> url.getQuery();
+            case USER_INFO -> url.getUserInfo();
+            default -> null;
+        };
     }
 
     /** Remove "https://www.", "https://", "www.", etc */

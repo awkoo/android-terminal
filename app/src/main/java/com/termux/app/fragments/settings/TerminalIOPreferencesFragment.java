@@ -69,14 +69,12 @@ class TerminalIOPreferencesDataStore extends PreferenceDataStore {
     public boolean getBoolean(String key, boolean defValue) {
         if (mPreferences == null) return false;
 
-        switch (key) {
-            case "soft_keyboard_enabled":
-                return mPreferences.isSoftKeyboardEnabled();
-            case "soft_keyboard_enabled_only_if_no_hardware":
-                return mPreferences.isSoftKeyboardEnabledOnlyIfNoHardware();
-            default:
-                return false;
-        }
+        return switch (key) {
+            case "soft_keyboard_enabled" -> mPreferences.isSoftKeyboardEnabled();
+            case "soft_keyboard_enabled_only_if_no_hardware" ->
+                    mPreferences.isSoftKeyboardEnabledOnlyIfNoHardware();
+            default -> false;
+        };
     }
 
 }

@@ -106,23 +106,24 @@ public class ActivityUtils {
             if (activityResultLauncher != null) {
                 activityResultLauncher.launch(intent);
             } else {
-                if (context == null) {
-                    error = ActivityErrno.ERRNO_STARTING_ACTIVITY_WITH_NULL_CONTEXT.getError(activityName);
-                    if (logErrorMessage)
-                        error.logErrorAndShowToast(null, LOG_TAG);
-                    return error;
+                switch (context) {
+                    case null -> {
+                        error = ActivityErrno.ERRNO_STARTING_ACTIVITY_WITH_NULL_CONTEXT.getError(activityName);
+                        if (logErrorMessage)
+                            error.logErrorAndShowToast(null, LOG_TAG);
+                        return error;
+                    }
+                    case AppCompatActivity appCompatActivity ->
+                        appCompatActivity.startActivityForResult(intent, requestCode);
+                    case Activity activity -> activity.startActivityForResult(intent, requestCode);
+                    default -> {
+                        error = FunctionErrno.ERRNO_PARAMETER_NOT_INSTANCE_OF.getError("context", "startActivityForResult", "Activity or AppCompatActivity");
+                        if (logErrorMessage)
+                            error.logErrorAndShowToast(showErrorMessage ? context : null, LOG_TAG);
+                        return error;
+                    }
                 }
 
-                if (context instanceof AppCompatActivity)
-                    ((AppCompatActivity) context).startActivityForResult(intent, requestCode);
-                else if (context instanceof Activity)
-                    ((Activity) context).startActivityForResult(intent, requestCode);
-                else {
-                    error = FunctionErrno.ERRNO_PARAMETER_NOT_INSTANCE_OF.getError("context", "startActivityForResult", "Activity or AppCompatActivity");
-                    if (logErrorMessage)
-                        error.logErrorAndShowToast(showErrorMessage ? context : null, LOG_TAG);
-                    return error;
-                }
             }
         } catch (Exception e) {
             error = ActivityErrno.ERRNO_START_ACTIVITY_FOR_RESULT_FAILED_WITH_EXCEPTION.getError(e, activityName, e.getMessage());

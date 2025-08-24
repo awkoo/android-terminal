@@ -1,7 +1,5 @@
 package com.termux.shared.reflection;
 
-import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 

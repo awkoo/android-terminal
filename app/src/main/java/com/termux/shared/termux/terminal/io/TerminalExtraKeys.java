@@ -1,6 +1,5 @@
 package com.termux.shared.termux.terminal.io;
 
-import android.os.Build;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -10,7 +9,6 @@ import com.google.android.material.button.MaterialButton;
 import com.termux.shared.termux.extrakeys.ExtraKeyButton;
 import com.termux.shared.termux.extrakeys.ExtraKeysView;
 import com.termux.shared.termux.extrakeys.SpecialButton;
-import com.termux.terminal.TerminalSession;
 import com.termux.view.TerminalView;
 
 import static com.termux.shared.termux.extrakeys.ExtraKeysConstants.PRIMARY_KEY_CODES_FOR_STRINGS;
@@ -33,13 +31,13 @@ public class TerminalExtraKeys implements ExtraKeysView.IExtraKeysView {
             boolean shiftDown = false;
             boolean fnDown = false;
             for (String key : keys) {
-                if (SpecialButton.CTRL.getKey().equals(key)) {
+                if (SpecialButton.CTRL.key().equals(key)) {
                     ctrlDown = true;
-                } else if (SpecialButton.ALT.getKey().equals(key)) {
+                } else if (SpecialButton.ALT.key().equals(key)) {
                     altDown = true;
-                } else if (SpecialButton.SHIFT.getKey().equals(key)) {
+                } else if (SpecialButton.SHIFT.key().equals(key)) {
                     shiftDown = true;
-                } else if (SpecialButton.FN.getKey().equals(key)) {
+                } else if (SpecialButton.FN.key().equals(key)) {
                     fnDown = true;
                 } else {
                     onTerminalExtraKeyButtonClick(view, key, ctrlDown, altDown, shiftDown, fnDown);
@@ -65,9 +63,7 @@ public class TerminalExtraKeys implements ExtraKeysView.IExtraKeysView {
             mTerminalView.onKeyDown(keyCode, keyEvent);
         } else {
             // not a control char
-            key.codePoints().forEach(codePoint -> {
-                mTerminalView.inputCodePoint(TerminalView.KEY_EVENT_SOURCE_VIRTUAL_KEYBOARD, codePoint, ctrlDown, altDown);
-            });
+            key.codePoints().forEach(codePoint -> mTerminalView.inputCodePoint(TerminalView.KEY_EVENT_SOURCE_VIRTUAL_KEYBOARD, codePoint, ctrlDown, altDown));
         }
     }
 

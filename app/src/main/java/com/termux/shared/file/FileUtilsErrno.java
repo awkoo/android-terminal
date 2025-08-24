@@ -96,7 +96,7 @@ public class FileUtilsErrno extends Errno {
 
 
     /** Defines the {@link Errno} mapping to get a shorter version of {@link FileUtilsErrno}. */
-    public static final Map<Errno, Errno> ERRNO_SHORT_MAPPING = new HashMap<Errno, Errno>() {{
+    public static final Map<Errno, Errno> ERRNO_SHORT_MAPPING = new HashMap<>() {{
         put(ERRNO_FILE_NOT_FOUND_AT_PATH, ERRNO_FILE_NOT_FOUND_AT_PATH_SHORT);
 
         put(ERRNO_NON_REGULAR_FILE_FOUND, ERRNO_NON_REGULAR_FILE_FOUND_SHORT);

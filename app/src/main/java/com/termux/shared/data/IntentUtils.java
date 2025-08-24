@@ -128,30 +128,20 @@ public class IntentUtils {
             bundleString.append(key).append(": `");
 
             Object value = bundle.get(key);
-            if (value instanceof int[]) {
-                bundleString.append(Arrays.toString((int[]) value));
-            } else if (value instanceof byte[]) {
-                bundleString.append(Arrays.toString((byte[]) value));
-            } else if (value instanceof boolean[]) {
-                bundleString.append(Arrays.toString((boolean[]) value));
-            } else if (value instanceof short[]) {
-                bundleString.append(Arrays.toString((short[]) value));
-            } else if (value instanceof long[]) {
-                bundleString.append(Arrays.toString((long[]) value));
-            } else if (value instanceof float[]) {
-                bundleString.append(Arrays.toString((float[]) value));
-            } else if (value instanceof double[]) {
-                bundleString.append(Arrays.toString((double[]) value));
-            } else if (value instanceof String[]) {
-                bundleString.append(Arrays.toString((String[]) value));
-            } else if (value instanceof CharSequence[]) {
-                bundleString.append(Arrays.toString((CharSequence[]) value));
-            } else if (value instanceof Parcelable[]) {
-                bundleString.append(Arrays.toString((Parcelable[]) value));
-            } else if (value instanceof Bundle) {
-                bundleString.append(getBundleString((Bundle) value));
-            } else {
-                bundleString.append(value);
+            switch (value) {
+                case int[] ints -> bundleString.append(Arrays.toString(ints));
+                case byte[] bytes -> bundleString.append(Arrays.toString(bytes));
+                case boolean[] booleans -> bundleString.append(Arrays.toString(booleans));
+                case short[] shorts -> bundleString.append(Arrays.toString(shorts));
+                case long[] longs -> bundleString.append(Arrays.toString(longs));
+                case float[] floats -> bundleString.append(Arrays.toString(floats));
+                case double[] doubles -> bundleString.append(Arrays.toString(doubles));
+                case String[] strings -> bundleString.append(Arrays.toString(strings));
+                case CharSequence[] charSequences ->
+                    bundleString.append(Arrays.toString(charSequences));
+                case Parcelable[] parcelables -> bundleString.append(Arrays.toString(parcelables));
+                case Bundle bundle1 -> bundleString.append(getBundleString(bundle1));
+                case null, default -> bundleString.append(value);
             }
 
             bundleString.append("`");

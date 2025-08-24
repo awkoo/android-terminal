@@ -15,7 +15,6 @@ import android.os.PowerManager;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 

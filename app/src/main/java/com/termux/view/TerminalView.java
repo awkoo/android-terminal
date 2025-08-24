@@ -1,14 +1,12 @@
 package com.termux.view;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
@@ -35,7 +33,6 @@ import android.view.inputmethod.InputConnection;
 import android.widget.Scroller;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import com.termux.terminal.KeyHandler;
 import com.termux.terminal.TerminalEmulator;
@@ -1411,12 +1408,9 @@ public final class TerminalView extends View {
     /**
      * Define functions required for long hold toolbar.
      */
-    private final Runnable mShowFloatingToolbar = new Runnable() {
-        @Override
-        public void run() {
-            if (getTextSelectionActionMode() != null) {
-                getTextSelectionActionMode().hide(0);  // hide off.
-            }
+    private final Runnable mShowFloatingToolbar = () -> {
+        if (getTextSelectionActionMode() != null) {
+            getTextSelectionActionMode().hide(0);  // hide off.
         }
     };
 

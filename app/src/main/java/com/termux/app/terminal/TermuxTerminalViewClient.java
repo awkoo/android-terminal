@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -166,7 +167,7 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
             LinkedHashSet<CharSequence> urlSet = TermuxUrlUtils.extractUrls(wordAtTap);
 
             if (!urlSet.isEmpty()) {
-                String url = (String) urlSet.iterator().next();
+                String url = (String) urlSet.getFirst();
                 ShareUtils.openUrl(mActivity, url);
                 return;
             }
@@ -318,11 +319,8 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
     public boolean readExtraKeysSpecialButton(SpecialButton specialButton) {
         if (mActivity.getExtraKeysView() == null) return false;
         Boolean state = mActivity.getExtraKeysView().readSpecialButton(specialButton, true);
-        if (state == null) {
-            //        logMessage(Log.ERROR, tag, message);
-            return false;
-        }
-        return state;
+        //        logMessage(Log.ERROR, tag, message);
+        return Objects.requireNonNullElse(state, false);
     }
 
     @Override
@@ -445,8 +443,8 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
                 int codePointLowerCase = Character.toLowerCase(codePoint);
                 for (int i = shortcuts.size() - 1; i >= 0; i--) {
                     KeyboardShortcut shortcut = shortcuts.get(i);
-                    if (codePointLowerCase == shortcut.codePoint) {
-                        switch (shortcut.shortcutAction) {
+                    if (codePointLowerCase == shortcut.codePoint()) {
+                        switch (shortcut.shortcutAction()) {
                             case TermuxPropertyConstants.ACTION_SHORTCUT_CREATE_SESSION:
                                 mTermuxTerminalSessionActivityClient.addNewSession(false, null);
                                 return true;
@@ -584,26 +582,23 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
             }
         }
 
-        mActivity.getTerminalView().setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                // Force show soft keyboard if TerminalView or toolbar text input view has
-                // focus and close it if they don't
-                boolean textInputViewHasFocus = false;
-                final EditText textInputView =  mActivity.findViewById(R.id.terminal_toolbar_text_input);
-                if (textInputView != null) textInputViewHasFocus = textInputView.hasFocus();
+        mActivity.getTerminalView().setOnFocusChangeListener((view, hasFocus) -> {
+            // Force show soft keyboard if TerminalView or toolbar text input view has
+            // focus and close it if they don't
+            boolean textInputViewHasFocus = false;
+            final EditText textInputView =  mActivity.findViewById(R.id.terminal_toolbar_text_input);
+            if (textInputView != null) textInputViewHasFocus = textInputView.hasFocus();
 
-                if (hasFocus || textInputViewHasFocus) {
-                    if (mShowSoftKeyboardIgnoreOnce) {
-                        mShowSoftKeyboardIgnoreOnce = false; return;
-                    }
-                    //        logMessage(Log.VERBOSE, tag, message);
-                } else {
-                    //        logMessage(Log.VERBOSE, tag, message);
+            if (hasFocus || textInputViewHasFocus) {
+                if (mShowSoftKeyboardIgnoreOnce) {
+                    mShowSoftKeyboardIgnoreOnce = false; return;
                 }
-
-                KeyboardUtils.setSoftKeyboardVisibility(getShowSoftKeyboardRunnable(), mActivity, mActivity.getTerminalView(), hasFocus || textInputViewHasFocus);
+                //        logMessage(Log.VERBOSE, tag, message);
+            } else {
+                //        logMessage(Log.VERBOSE, tag, message);
             }
+
+            KeyboardUtils.setSoftKeyboardVisibility(getShowSoftKeyboardRunnable(), mActivity, mActivity.getTerminalView(), hasFocus || textInputViewHasFocus);
         });
 
         // Do not force show soft keyboard if termux-reload-settings command was run with hardware keyboard
@@ -622,9 +617,7 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
 
     private Runnable getShowSoftKeyboardRunnable() {
         if (mShowSoftKeyboardRunnable == null) {
-            mShowSoftKeyboardRunnable = () -> {
-                KeyboardUtils.showSoftKeyboard(mActivity, mActivity.getTerminalView());
-            };
+            mShowSoftKeyboardRunnable = () -> KeyboardUtils.showSoftKeyboard(mActivity, mActivity.getTerminalView());
         }
         return mShowSoftKeyboardRunnable;
     }

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.PopupWindow;
 
 import com.termux.R;
 import com.termux.view.TerminalView;
-import com.termux.view.support.PopupWindowCompatGingerbread;
 
 @SuppressLint("ViewConstructor")
 public class TextSelectionHandleView extends View {

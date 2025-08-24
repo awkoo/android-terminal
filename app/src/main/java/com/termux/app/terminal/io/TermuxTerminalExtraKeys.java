@@ -83,24 +83,29 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
     @SuppressLint("RtlHardcoded")
     @Override
     public void onTerminalExtraKeyButtonClick(View view, String key, boolean ctrlDown, boolean altDown, boolean shiftDown, boolean fnDown) {
-        if ("KEYBOARD".equals(key)) {
-            if(mTermuxTerminalViewClient != null)
-                mTermuxTerminalViewClient.onToggleSoftKeyboardRequest();
-        } else if ("DRAWER".equals(key)) {
-            DrawerLayout drawerLayout = mTermuxTerminalViewClient.getActivity().getDrawer();
-            if (drawerLayout.isDrawerOpen(Gravity.LEFT))
-                drawerLayout.closeDrawer(Gravity.LEFT);
-            else
-                drawerLayout.openDrawer(Gravity.LEFT);
-        } else if ("PASTE".equals(key)) {
-            if(mTermuxTerminalSessionActivityClient != null)
-                mTermuxTerminalSessionActivityClient.onPasteTextFromClipboard(null);
-        }  else if ("SCROLL".equals(key)) {
-            TerminalView terminalView = mTermuxTerminalViewClient.getActivity().getTerminalView();
-            if (terminalView != null && terminalView.mEmulator != null)
-                terminalView.mEmulator.toggleAutoScrollDisabled();
-        } else {
-            super.onTerminalExtraKeyButtonClick(view, key, ctrlDown, altDown, shiftDown, fnDown);
+        switch (key) {
+            case "KEYBOARD" -> {
+                if (mTermuxTerminalViewClient != null)
+                    mTermuxTerminalViewClient.onToggleSoftKeyboardRequest();
+            }
+            case "DRAWER" -> {
+                DrawerLayout drawerLayout = mTermuxTerminalViewClient.getActivity().getDrawer();
+                if (drawerLayout.isDrawerOpen(Gravity.LEFT))
+                    drawerLayout.closeDrawer(Gravity.LEFT);
+                else
+                    drawerLayout.openDrawer(Gravity.LEFT);
+            }
+            case "PASTE" -> {
+                if (mTermuxTerminalSessionActivityClient != null)
+                    mTermuxTerminalSessionActivityClient.onPasteTextFromClipboard(null);
+            }
+            case "SCROLL" -> {
+                TerminalView terminalView = mTermuxTerminalViewClient.getActivity().getTerminalView();
+                if (terminalView != null && terminalView.mEmulator != null)
+                    terminalView.mEmulator.toggleAutoScrollDisabled();
+            }
+            case null, default ->
+                super.onTerminalExtraKeyButtonClick(view, key, ctrlDown, altDown, shiftDown, fnDown);
         }
     }
 

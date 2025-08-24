@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
-import android.os.Build;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.view.WindowInsetsCompat;
 
 public class KeyboardUtils {

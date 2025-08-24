@@ -25,7 +25,6 @@
 
 package com.termux.shared.file.filesystem;
 
-import android.os.Build;
 import android.system.StructStat;
 
 import androidx.annotation.NonNull;
