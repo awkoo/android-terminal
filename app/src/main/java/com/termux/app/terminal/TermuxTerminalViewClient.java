@@ -240,7 +240,7 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
             } else if (unicodeChar == 'r'/* rename */) {
                 mTermuxTerminalSessionActivityClient.renameSession(currentSession);
             } else if (unicodeChar == 'c'/* create */) {
-                mTermuxTerminalSessionActivityClient.addNewSession(false, null);
+                mTermuxTerminalSessionActivityClient.addNewSession(null);
             } else if (unicodeChar == 'u' /* urls */) {
                 showUrlSelection();
             } else if (unicodeChar == 'v') {
@@ -445,7 +445,7 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
                     if (codePointLowerCase == shortcut.codePoint()) {
                         switch (shortcut.shortcutAction()) {
                             case TermuxPropertyConstants.ACTION_SHORTCUT_CREATE_SESSION:
-                                mTermuxTerminalSessionActivityClient.addNewSession(false, null);
+                                mTermuxTerminalSessionActivityClient.addNewSession(null);
                                 return true;
                             case TermuxPropertyConstants.ACTION_SHORTCUT_NEXT_SESSION:
                                 mTermuxTerminalSessionActivityClient.switchToSession(true);

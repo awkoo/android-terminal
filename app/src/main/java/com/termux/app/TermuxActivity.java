@@ -317,11 +317,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (mTermuxService.isTermuxSessionsEmpty()) {
             if (mIsVisible) {
                 try {
-                    boolean launchFailsafe = false;
-                    if (intent != null && intent.getExtras() != null) {
-                        launchFailsafe = intent.getExtras().getBoolean(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
-                    }
-                    mTermuxTerminalSessionActivityClient.addNewSession(launchFailsafe, null);
+//                    boolean launchFailsafe = false;
+//                    if (intent != null && intent.getExtras() != null) {
+//                        launchFailsafe = intent.getExtras().getBoolean(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
+//                    }
+                    mTermuxTerminalSessionActivityClient.addNewSession(null);
                 } catch (WindowManager.BadTokenException e) {
                     // Activity finished - ignore.
                 }
@@ -335,8 +335,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             // each time.
             if (!mIsActivityRecreated && intent != null && Intent.ACTION_RUN.equals(intent.getAction())) {
                 // Android 7.1 app shortcut from res/xml/shortcuts.xml.
-                boolean isFailSafe = intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
-                mTermuxTerminalSessionActivityClient.addNewSession(isFailSafe, null);
+//                boolean isFailSafe = intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
+                mTermuxTerminalSessionActivityClient.addNewSession(null);
             } else {
                 mTermuxTerminalSessionActivityClient.setCurrentSession(mTermuxTerminalSessionActivityClient.getCurrentStoredSessionOrLast());
             }
@@ -474,11 +474,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     private void setNewSessionButtonView() {
         View newSessionButton = findViewById(R.id.new_session_button);
-        newSessionButton.setOnClickListener(v -> mTermuxTerminalSessionActivityClient.addNewSession(false, null));
+        newSessionButton.setOnClickListener(v -> mTermuxTerminalSessionActivityClient.addNewSession(null));
         newSessionButton.setOnLongClickListener(v -> {
             TextInputDialogUtils.textInput(TermuxActivity.this, R.string.title_create_named_session, null,
-                R.string.action_create_named_session_confirm, text -> mTermuxTerminalSessionActivityClient.addNewSession(false, text),
-                R.string.action_new_session_failsafe, text -> mTermuxTerminalSessionActivityClient.addNewSession(true, text),
+                R.string.action_create_named_session_confirm, text -> mTermuxTerminalSessionActivityClient.addNewSession(text),
+                R.string.action_new_session_failsafe, text -> mTermuxTerminalSessionActivityClient.addNewSession(text),
                 -1, null, null);
             return true;
         });

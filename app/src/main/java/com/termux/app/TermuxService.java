@@ -267,13 +267,24 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     /**
      * Create a {@link TermuxSession}.
-     * Currently called by {@link TermuxTerminalSessionActivityClient#addNewSession(boolean, String)} to add a new {@link TermuxSession}.
+     * Currently called by {@link TermuxTerminalSessionActivityClient#addNewSession(String)} to add a new {@link TermuxSession}.
      */
     @Nullable
-    public TermuxSession createTermuxSession(String executablePath, String[] arguments, String stdin,
-                                             String workingDirectory, boolean isFailSafe, String sessionName) {
-        ExecutionCommand executionCommand = new ExecutionCommand(TermuxShellManager.getNextShellId(),
-            executablePath, arguments, stdin, workingDirectory, Runner.TERMINAL_SESSION.getName(), isFailSafe);
+    public TermuxSession createTermuxSession(
+        String executablePath,
+        String[] arguments,
+        String stdin,
+        String workingDirectory,
+        String sessionName
+    ) {
+        ExecutionCommand executionCommand = new ExecutionCommand(
+            TermuxShellManager.getNextShellId(),
+            executablePath,
+            arguments,
+            stdin,
+            workingDirectory,
+            Runner.TERMINAL_SESSION.getName()
+        );
         executionCommand.shellName = sessionName;
         return createTermuxSession(executionCommand);
     }

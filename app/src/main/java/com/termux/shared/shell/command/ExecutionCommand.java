@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.termux.shared.data.IntentUtils;
-import com.termux.shared.shell.command.result.ResultConfig;
 import com.termux.shared.shell.command.result.ResultData;
 import com.termux.shared.errors.Error;
 import com.termux.shared.logger.Logger;
@@ -163,9 +162,6 @@ public class ExecutionCommand {
     /** The {@link Runner} for the {@link ExecutionCommand}. */
     public String runner;
 
-    /** If the {@link ExecutionCommand} is meant to start a failsafe terminal session. */
-    public boolean isFailsafe;
-
 
     /** The session action of {@link Runner#TERMINAL_SESSION} commands. */
     public String sessionAction;
@@ -190,10 +186,6 @@ public class ExecutionCommand {
     /** Defines the {@link Intent} received which started the command. */
     public Intent commandIntent;
 
-    /** Defines the {@link ResultConfig} for the {@link ExecutionCommand} containing information
-     * on how to handle the result. */
-    public final ResultConfig resultConfig = new ResultConfig();
-
     /** Defines the {@link ResultData} for the {@link ExecutionCommand} containing information
      * of the result. */
     public final ResultData resultData = new ResultData();
@@ -202,12 +194,14 @@ public class ExecutionCommand {
     /** Defines if processing results already called for this {@link ExecutionCommand}. */
     public boolean processingResultsAlreadyCalled;
 
-
-    public ExecutionCommand(Integer id) {
-        this.id = id;
-    }
-
-    public ExecutionCommand(Integer id, String executable, String[] arguments, String stdin, String workingDirectory, String runner, boolean isFailsafe) {
+    public ExecutionCommand(
+        Integer id,
+        String executable,
+        String[] arguments,
+        String stdin,
+        String workingDirectory,
+        String runner
+    ) {
         this.id = id;
         this.executable = executable;
         this.arguments = arguments;
@@ -326,14 +320,10 @@ public class ExecutionCommand {
         logString.append("\n").append(executionCommand.getArgumentsLogString());
         logString.append("\n").append(executionCommand.getWorkingDirectoryLogString());
         logString.append("\n").append(executionCommand.getRunnerLogString());
-        logString.append("\n").append(executionCommand.getIsFailsafeLogString());
 
         if (Runner.APP_SHELL.equalsRunner(executionCommand.runner)) {
             if (logStdin && (!ignoreNull || !DataUtils.isNullOrEmpty(executionCommand.stdin)))
                 logString.append("\n").append(executionCommand.getStdinLogString());
-
-//            if (!ignoreNull || executionCommand.backgroundCustomLogLevel != null)
-//                logString.append("\n").append(executionCommand.getBackgroundCustomLogLevelLogString());
         }
 
         if (!ignoreNull || executionCommand.sessionAction != null)
@@ -425,10 +415,6 @@ public class ExecutionCommand {
 
     public String getRunnerLogString() {
         return Logger.getSingleLineLogStringEntry("Runner", runner, "-");
-    }
-
-    public String getIsFailsafeLogString() {
-        return "isFailsafe: `" + isFailsafe + "`";
     }
 
     public String getStdinLogString() {

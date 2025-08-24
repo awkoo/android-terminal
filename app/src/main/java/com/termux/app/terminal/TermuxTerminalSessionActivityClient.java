@@ -347,7 +347,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         }
     }
 
-    public void addNewSession(boolean isFailSafe, String sessionName) {
+    public void addNewSession(String sessionName) {
         TermuxService service = mActivity.getTermuxService();
         if (service == null) return;
 
@@ -357,14 +357,12 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         } else {
             TerminalSession currentSession = mActivity.getCurrentSession();
 
-            String workingDirectory;
-            if (currentSession == null) {
-                workingDirectory = mActivity.getFilesDir().getAbsolutePath();
-            } else {
+            String workingDirectory = null;
+            if (currentSession != null) {
                 workingDirectory = currentSession.getCwd();
             }
 
-            TermuxSession newTermuxSession = service.createTermuxSession(null, null, null, workingDirectory, isFailSafe, sessionName);
+            TermuxSession newTermuxSession = service.createTermuxSession(null, null, null, workingDirectory, sessionName);
             if (newTermuxSession == null) return;
 
             TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
