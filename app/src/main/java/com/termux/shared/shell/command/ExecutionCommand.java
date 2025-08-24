@@ -438,10 +438,6 @@ public class ExecutionCommand {
             return Logger.getMultiLineLogStringEntry("Stdin", stdin, "-");
     }
 
-//    public String getBackgroundCustomLogLevelLogString() {
-//        return "Background Custom Log Level: `" + backgroundCustomLogLevel + "`";
-//    }
-
     public String getSessionActionLogString() {
         return Logger.getSingleLineLogStringEntry("Session Action", sessionAction, "-");
     }
