@@ -22,12 +22,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.termux.R;
-import com.termux.app.terminal.TermuxActivityRootView;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.io.TermuxTerminalExtraKeys;
+import com.termux.databinding.ActivityTermuxBinding;
 import com.termux.shared.activity.ActivityUtils;
 import com.termux.shared.data.DataUtils;
-import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_ACTIVITY;
 import com.termux.app.activities.SettingsActivity;
 import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
 import com.termux.app.terminal.TermuxSessionsListViewController;
@@ -46,6 +45,8 @@ import com.termux.view.TerminalViewClient;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -60,6 +61,8 @@ import androidx.viewpager.widget.ViewPager;
  * about memory leaks.
  */
 public final class TermuxActivity extends AppCompatActivity implements ServiceConnection {
+
+    ActivityTermuxBinding binding;
 
     /**
      * The connection to the {@link TermuxService}. Requested in {@link #onCreate(Bundle)} with a call to
@@ -95,15 +98,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      */
     private TermuxAppSharedProperties mProperties;
 
-    /**
-     * The root view of the {@link TermuxActivity}.
-     */
-    TermuxActivityRootView mTermuxActivityRootView;
 
     /**
      * The space at the bottom of {@link @mTermuxActivityRootView} of the {@link TermuxActivity}.
      */
-    View mTermuxActivityBottomSpaceView;
+//    View mTermuxActivityBottomSpaceView;
 
     /**
      * The terminal extra keys view.
@@ -139,8 +138,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
      */
     private boolean mIsInvalidState;
 
-    private int mNavBarHeight;
-
     private float mTerminalToolbarDefaultHeight;
 
 
@@ -159,6 +156,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        binding = ActivityTermuxBinding.inflate(getLayoutInflater());
         mIsOnResumeAfterOnCreate = true;
 
         if (savedInstanceState != null)
@@ -177,21 +175,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         mPreferences = TermuxAppSharedPreferences.build(this);
 
         setMargins();
-
-        mTermuxActivityRootView = findViewById(R.id.activity_termux_root_view);
-        mTermuxActivityRootView.setActivity(this);
-        mTermuxActivityBottomSpaceView = findViewById(R.id.activity_termux_bottom_space_view);
-        mTermuxActivityRootView.setOnApplyWindowInsetsListener(new TermuxActivityRootView.WindowInsetsListener());
-
-        View content = findViewById(android.R.id.content);
-        content.setOnApplyWindowInsetsListener((v, insets) -> {
-            mNavBarHeight = insets.getSystemWindowInsetBottom();
-            return insets;
-        });
-
-        if (mProperties.isUsingFullScreen()) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
 
         setTermuxTerminalViewAndClients();
         setTerminalToolbarView(savedInstanceState);
@@ -216,8 +199,16 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                     R.string.error_termux_service_start_failed_bg : R.string.error_termux_service_start_failed_general),
                 true);
             mIsInvalidState = true;
-            return;
         }
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+            int keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            int navBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+            params.bottomMargin = Math.max(keyboardHeight, navBarHeight);
+            v.setLayoutParams(params);
+            return WindowInsetsCompat.CONSUMED;
+        });
     }
 
     @Override
@@ -233,8 +224,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (mTermuxTerminalViewClient != null)
             mTermuxTerminalViewClient.onStart();
 
-        if (mPreferences.isTerminalMarginAdjustmentEnabled())
-            addTermuxActivityRootViewGlobalLayoutListener();
+//        if (mPreferences.isTerminalMarginAdjustmentEnabled())
+//            addTermuxActivityRootViewGlobalLayoutListener();
     }
 
     @Override
@@ -265,7 +256,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (mTermuxTerminalViewClient != null)
             mTermuxTerminalViewClient.onStop();
 
-        removeTermuxActivityRootViewGlobalLayoutListener();
+//        removeTermuxActivityRootViewGlobalLayoutListener();
 
         getDrawer().closeDrawers();
     }
@@ -317,10 +308,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         if (mTermuxService.isTermuxSessionsEmpty()) {
             if (mIsVisible) {
                 try {
-//                    boolean launchFailsafe = false;
-//                    if (intent != null && intent.getExtras() != null) {
-//                        launchFailsafe = intent.getExtras().getBoolean(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
-//                    }
                     mTermuxTerminalSessionActivityClient.addNewSession(null);
                 } catch (WindowManager.BadTokenException e) {
                     // Activity finished - ignore.
@@ -370,17 +357,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         int marginHorizontal = mProperties.getTerminalMarginHorizontal();
         int marginVertical = mProperties.getTerminalMarginVertical();
         ViewUtils.setLayoutMarginsInDp(relativeLayout, marginHorizontal, marginVertical, marginHorizontal, marginVertical);
-    }
-
-
-
-    public void addTermuxActivityRootViewGlobalLayoutListener() {
-        getTermuxActivityRootView().getViewTreeObserver().addOnGlobalLayoutListener(getTermuxActivityRootView());
-    }
-
-    public void removeTermuxActivityRootViewGlobalLayoutListener() {
-        if (getTermuxActivityRootView() != null)
-            getTermuxActivityRootView().getViewTreeObserver().removeOnGlobalLayoutListener(getTermuxActivityRootView());
     }
 
 
@@ -634,18 +610,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         }
     }
 
-
-    public int getNavBarHeight() {
-        return mNavBarHeight;
-    }
-
-    public TermuxActivityRootView getTermuxActivityRootView() {
-        return mTermuxActivityRootView;
-    }
-
-    public View getTermuxActivityBottomSpaceView() {
-        return mTermuxActivityBottomSpaceView;
-    }
 
     public ExtraKeysView getExtraKeysView() {
         return mExtraKeysView;
