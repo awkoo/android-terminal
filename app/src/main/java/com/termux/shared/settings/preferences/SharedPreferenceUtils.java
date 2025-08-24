@@ -22,21 +22,6 @@ public class SharedPreferenceUtils {
         return context.getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
-//    /**
-//     * Get {@link SharedPreferences} instance of the preferences file 'name' with the operating mode
-//     * {@link Context#MODE_PRIVATE} and {@link Context#MODE_MULTI_PROCESS}. This file will be
-//     * created in the app package's default shared preferences directory.
-//     *
-//     * @param context The {@link Context} to get the {@link SharedPreferences} instance.
-//     * @param name The preferences file basename without extension.
-//     * @return The single {@link SharedPreferences} instance that can be used to retrieve and
-//     * modify the preference values.
-//     */
-//    public static SharedPreferences getPrivateAndMultiProcessSharedPreferences(Context context, String name) {
-//        return context.getSharedPreferences(name, Context.MODE_PRIVATE | Context.MODE_MULTI_PROCESS);
-//    }
-
-
 
     /**
      * Get a {@code boolean} from {@link SharedPreferences}.
@@ -49,7 +34,6 @@ public class SharedPreferenceUtils {
      */
     public static boolean getBoolean(SharedPreferences sharedPreferences, String key, boolean def) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -57,7 +41,6 @@ public class SharedPreferenceUtils {
             return sharedPreferences.getBoolean(key, def);
         }
         catch (ClassCastException e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return def;
         }
     }
@@ -75,7 +58,6 @@ public class SharedPreferenceUtils {
     @SuppressLint("ApplySharedPref")
     public static void setBoolean(SharedPreferences sharedPreferences, String key, boolean value, boolean commitToFile) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -99,7 +81,6 @@ public class SharedPreferenceUtils {
      */
     public static float getFloat(SharedPreferences sharedPreferences, String key, float def) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -107,7 +88,6 @@ public class SharedPreferenceUtils {
             return sharedPreferences.getFloat(key, def);
         }
         catch (ClassCastException e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return def;
         }
     }
@@ -125,7 +105,6 @@ public class SharedPreferenceUtils {
     @SuppressLint("ApplySharedPref")
     public static void setFloat(SharedPreferences sharedPreferences, String key, float value, boolean commitToFile) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -148,7 +127,6 @@ public class SharedPreferenceUtils {
      */
     public static int getInt(SharedPreferences sharedPreferences, String key, int def) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -156,7 +134,6 @@ public class SharedPreferenceUtils {
             return sharedPreferences.getInt(key, def);
         }
         catch (ClassCastException e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return def;
         }
     }
@@ -174,7 +151,6 @@ public class SharedPreferenceUtils {
     @SuppressLint("ApplySharedPref")
     public static void setInt(SharedPreferences sharedPreferences, String key, int value, boolean commitToFile) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -202,7 +178,6 @@ public class SharedPreferenceUtils {
     public static int getAndIncrementInt(SharedPreferences sharedPreferences, String key, int def,
                                          boolean commitToFile, Integer resetValue) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -229,7 +204,6 @@ public class SharedPreferenceUtils {
      */
     public static long getLong(SharedPreferences sharedPreferences, String key, long def) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -237,7 +211,6 @@ public class SharedPreferenceUtils {
             return sharedPreferences.getLong(key, def);
         }
         catch (ClassCastException e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return def;
         }
     }
@@ -255,7 +228,6 @@ public class SharedPreferenceUtils {
     @SuppressLint("ApplySharedPref")
     public static void setLong(SharedPreferences sharedPreferences, String key, long value, boolean commitToFile) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -279,7 +251,6 @@ public class SharedPreferenceUtils {
      */
     public static String getString(SharedPreferences sharedPreferences, String key, String def, boolean defIfEmpty) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -291,7 +262,6 @@ public class SharedPreferenceUtils {
                 return value;
         }
         catch (ClassCastException e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return def;
         }
     }
@@ -309,7 +279,6 @@ public class SharedPreferenceUtils {
     @SuppressLint("ApplySharedPref")
     public static void setString(SharedPreferences sharedPreferences, String key, String value, boolean commitToFile) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -332,7 +301,6 @@ public class SharedPreferenceUtils {
      */
     public static Set<String> getStringSet(SharedPreferences sharedPreferences, String key, Set<String> def) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -340,7 +308,6 @@ public class SharedPreferenceUtils {
             return sharedPreferences.getStringSet(key, def);
         }
         catch (ClassCastException e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
             return def;
         }
     }
@@ -358,7 +325,6 @@ public class SharedPreferenceUtils {
     @SuppressLint("ApplySharedPref")
     public static void setStringSet(SharedPreferences sharedPreferences, String key, Set<String> value, boolean commitToFile) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 
@@ -382,7 +348,6 @@ public class SharedPreferenceUtils {
      */
     public static int getIntStoredAsString(SharedPreferences sharedPreferences, String key, int def) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return def;
         }
 
@@ -412,7 +377,6 @@ public class SharedPreferenceUtils {
     @SuppressLint("ApplySharedPref")
     public static void setIntStoredAsString(SharedPreferences sharedPreferences, String key, int value, boolean commitToFile) {
         if (sharedPreferences == null) {
-            //        logMessage(Log.ERROR, tag, message);
             return;
         }
 

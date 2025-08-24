@@ -412,7 +412,6 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
 
                 // Volume control.
                 case 'v':
-                    resultingCodePoint = -1;
                     AudioManager audio = (AudioManager) mActivity.getSystemService(Context.AUDIO_SERVICE);
                     audio.adjustSuggestedStreamVolume(AudioManager.ADJUST_SAME, AudioManager.USE_DEFAULT_STREAM_TYPE, AudioManager.FLAG_SHOW_UI);
                     break;
@@ -591,11 +590,9 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
 
             if (hasFocus || textInputViewHasFocus) {
                 if (mShowSoftKeyboardIgnoreOnce) {
-                    mShowSoftKeyboardIgnoreOnce = false; return;
+                    mShowSoftKeyboardIgnoreOnce = false;
+                    return;
                 }
-                //        logMessage(Log.VERBOSE, tag, message);
-            } else {
-                //        logMessage(Log.VERBOSE, tag, message);
             }
 
             KeyboardUtils.setSoftKeyboardVisibility(getShowSoftKeyboardRunnable(), mActivity, mActivity.getTerminalView(), hasFocus || textInputViewHasFocus);
@@ -629,9 +626,6 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
             // If set/update the cursor blinking rate is successful, then enable cursor blinker
             if (mActivity.getTerminalView().setTerminalCursorBlinkerRate(mActivity.getProperties().getTerminalCursorBlinkRate()))
                 mActivity.getTerminalView().setTerminalCursorBlinkerState(true, true);
-            else {
-//        logMessage(Log.ERROR, tag, message);
-            }
         } else {
             // Disable cursor blinker
             mActivity.getTerminalView().setTerminalCursorBlinkerState(false, true);

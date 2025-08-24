@@ -14,14 +14,9 @@ public class AppSharedPreferences {
 
     /** The {@link SharedPreferences} that ideally should be created with {@link SharedPreferenceUtils#getPrivateSharedPreferences(Context, String)}. */
     protected final SharedPreferences mSharedPreferences;
-
-//    /** The {@link SharedPreferences}that ideally should be created with {@link SharedPreferenceUtils#getPrivateAndMultiProcessSharedPreferences(Context, String)}. */
-//    protected final SharedPreferences mMultiProcessSharedPreferences;
-
     protected AppSharedPreferences(@NonNull Context context, @Nullable SharedPreferences sharedPreferences) {
         mContext = context;
         mSharedPreferences = sharedPreferences;
-//        mMultiProcessSharedPreferences = multiProcessSharedPreferences;
     }
 
 

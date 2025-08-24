@@ -28,11 +28,6 @@ public class TermuxShellManager {
      */
     public final List<TermuxSession> mTermuxSessions = new ArrayList<>();
 
-//    /**
-//     * The background TermuxTasks which this service manages.
-//     */
-//    public final List<AppShell> mTermuxTasks = new ArrayList<>();
-
     /**
      * The {@link ExecutionCommand.Runner#APP_SHELL} number after app process was started/restarted.
      */
@@ -53,13 +48,10 @@ public class TermuxShellManager {
      * Initialize the {@link #shellManager}.
      *
      * @param context The {@link Context} for operations.
-     * @return Returns the {@link TermuxShellManager}.
      */
-    public static TermuxShellManager init(@NonNull Context context) {
+    public static void init(@NonNull Context context) {
         if (shellManager == null)
             shellManager = new TermuxShellManager(context);
-
-        return shellManager;
     }
 
     /**
@@ -71,16 +63,6 @@ public class TermuxShellManager {
         return shellManager;
     }
 
-
-    public synchronized static void onActionBootCompleted(@NonNull Context context, @NonNull Intent intent) {
-        TermuxAppSharedPreferences preferences = TermuxAppSharedPreferences.build(context);
-
-        // Ensure any shells started after boot have valid ENV_SHELL_CMD__APP_SHELL_NUMBER_SINCE_BOOT and
-        // ENV_SHELL_CMD__TERMINAL_SESSION_NUMBER_SINCE_BOOT exported
-        preferences.resetAppShellNumberSinceBoot();
-        preferences.resetTerminalSessionNumberSinceBoot();
-    }
-
     public static void onAppExit(@NonNull Context context) {
         // Ensure any shells started after boot have valid ENV_SHELL_CMD__APP_SHELL_NUMBER_SINCE_APP_START and
         // ENV_SHELL_CMD__TERMINAL_SESSION_NUMBER_SINCE_APP_START exported
@@ -90,26 +72,6 @@ public class TermuxShellManager {
 
     public static synchronized int getNextShellId() {
         return SHELL_ID++;
-    }
-
-    public static synchronized int getAndIncrementAppShellNumberSinceAppStart() {
-        // Keep value at MAX_VALUE on integer overflow and not 0, since not first shell
-        int curValue = APP_SHELL_NUMBER_SINCE_APP_START;
-        if (curValue < 0) curValue = Integer.MAX_VALUE;
-
-        APP_SHELL_NUMBER_SINCE_APP_START = curValue + 1;
-        if (APP_SHELL_NUMBER_SINCE_APP_START < 0) APP_SHELL_NUMBER_SINCE_APP_START = Integer.MAX_VALUE;
-        return curValue;
-    }
-
-    public static synchronized int getAndIncrementTerminalSessionNumberSinceAppStart() {
-        // Keep value at MAX_VALUE on integer overflow and not 0, since not first shell
-        int curValue = TERMINAL_SESSION_NUMBER_SINCE_APP_START;
-        if (curValue < 0) curValue = Integer.MAX_VALUE;
-
-        TERMINAL_SESSION_NUMBER_SINCE_APP_START = curValue + 1;
-        if (TERMINAL_SESSION_NUMBER_SINCE_APP_START < 0) TERMINAL_SESSION_NUMBER_SINCE_APP_START = Integer.MAX_VALUE;
-        return curValue;
     }
 
 }

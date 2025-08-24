@@ -16,7 +16,6 @@ import android.os.PowerManager;
 import androidx.annotation.Nullable;
 
 import com.termux.R;
-import com.termux.app.event.SystemEventReceiver;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.TermuxTerminalSessionServiceClient;
 import com.termux.shared.shell.command.environment.ShellEnvironment;
@@ -100,8 +99,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         mShellManager = TermuxShellManager.getShellManager();
 
         runStartForeground();
-
-        SystemEventReceiver.registerPackageUpdateEvents(this);
     }
 
     @SuppressLint("Wakelock")
@@ -126,9 +123,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
                 case TERMUX_SERVICE.ACTION_WAKE_UNLOCK:
                     actionReleaseWakeLock(true);
                     break;
-//                case TERMUX_SERVICE.ACTION_SERVICE_EXECUTE:
-//                    actionServiceExecute(intent);
-//                    break;
                 default:
                     break;
             }
@@ -141,15 +135,11 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     @Override
     public void onDestroy() {
-//        TermuxShellUtils.clearTermuxTMPDIR(true);
-
         actionReleaseWakeLock(false);
         if (!mWantsToStop)
             killAllTermuxExecutionCommands();
 
         TermuxShellManager.onAppExit(this);
-
-        SystemEventReceiver.unregisterPackageUpdateEvents(this);
 
         runStopForeground();
     }
@@ -257,10 +247,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, TermuxConstants.TERMUX_APP_NAME.toLowerCase());
         mWifiLock.acquire();
 
-//        if (!PermissionUtils.checkIfBatteryOptimizationsDisabled(this)) {
-//            PermissionUtils.requestDisableBatteryOptimizations(this);
-//        }
-
         updateNotification();
     }
 
@@ -280,117 +266,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         if (updateNotification)
             updateNotification();
     }
-
-//    /** Process {@link TERMUX_SERVICE#ACTION_SERVICE_EXECUTE} intent to execute a shell command in
-//     * a foreground TermuxSession or in a background TermuxTask. */
-//    private void actionServiceExecute(Intent intent) {
-//        if (intent == null) return;
-//
-//        ExecutionCommand executionCommand = new ExecutionCommand(TermuxShellManager.getNextShellId());
-//
-//        executionCommand.executableUri = intent.getData();
-//
-//        // If EXTRA_RUNNER is passed, use that, otherwise check EXTRA_BACKGROUND and default to Runner.TERMINAL_SESSION
-//        executionCommand.runner = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_RUNNER,
-//            (intent.getBooleanExtra(TERMUX_SERVICE.EXTRA_BACKGROUND, false) ? Runner.APP_SHELL.getName() : Runner.TERMINAL_SESSION.getName()));
-//        if (Runner.runnerOf(executionCommand.runner) == null) {
-//            String errmsg = this.getString(R.string.error_termux_service_invalid_execution_command_runner, executionCommand.runner);
-//            executionCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), errmsg);
-//            return;
-//        }
-//
-//        if (executionCommand.executableUri != null) {
-//            executionCommand.executableUri.getPath();
-//            executionCommand.executableUri.getFragment();
-//            // Get full path including fragment (anything after last "#")
-//            executionCommand.executable = UriUtils.getUriFilePathWithFragment(executionCommand.executableUri);
-//            executionCommand.arguments = IntentUtils.getStringArrayExtraIfSet(intent, TERMUX_SERVICE.EXTRA_ARGUMENTS, null);
-//            if (Runner.APP_SHELL.equalsRunner(executionCommand.runner))
-//                executionCommand.stdin = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_STDIN, null);
-//        }
-//
-//        executionCommand.workingDirectory = this.getFilesDir().getAbsolutePath();
-//        executionCommand.isFailsafe = intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
-//        executionCommand.sessionAction = intent.getStringExtra(TERMUX_SERVICE.EXTRA_SESSION_ACTION);
-//        executionCommand.shellName = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_SHELL_NAME, null);
-//        executionCommand.shellCreateMode = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_SHELL_CREATE_MODE, null);
-//        executionCommand.commandLabel = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_COMMAND_LABEL, "Execution Intent Command");
-//        executionCommand.commandDescription = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_COMMAND_DESCRIPTION, null);
-//        executionCommand.commandHelp = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_COMMAND_HELP, null);
-//        executionCommand.resultConfig.resultPendingIntent = intent.getParcelableExtra(TERMUX_SERVICE.EXTRA_PENDING_INTENT);
-//        executionCommand.resultConfig.resultDirectoryPath = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_RESULT_DIRECTORY, null);
-//        if (executionCommand.resultConfig.resultDirectoryPath != null) {
-//            executionCommand.resultConfig.resultSingleFile = intent.getBooleanExtra(TERMUX_SERVICE.EXTRA_RESULT_SINGLE_FILE, false);
-//            executionCommand.resultConfig.resultFileBasename = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_RESULT_FILE_BASENAME, null);
-//            executionCommand.resultConfig.resultFileOutputFormat = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_RESULT_FILE_OUTPUT_FORMAT, null);
-//            executionCommand.resultConfig.resultFileErrorFormat = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_RESULT_FILE_ERROR_FORMAT, null);
-//            executionCommand.resultConfig.resultFilesSuffix = IntentUtils.getStringExtraIfSet(intent, TERMUX_SERVICE.EXTRA_RESULT_FILES_SUFFIX, null);
-//        }
-//
-//        if (executionCommand.shellCreateMode == null)
-//            executionCommand.shellCreateMode = ShellCreateMode.ALWAYS.getMode();
-//
-//        if (Runner.APP_SHELL.equalsRunner(executionCommand.runner))
-//            executeTermuxTaskCommand(executionCommand);
-//        else if (Runner.TERMINAL_SESSION.equalsRunner(executionCommand.runner))
-//            executeTermuxSessionCommand(executionCommand);
-//        else {
-//            String errmsg = getString(R.string.error_termux_service_unsupported_execution_command_runner, executionCommand.runner);
-//            executionCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), errmsg);
-//        }
-//    }
-
-
-
-
-
-//    /** Execute a shell command in background TermuxTask. */
-//    private void executeTermuxTaskCommand(ExecutionCommand executionCommand) {
-//        if (executionCommand == null) return;
-//
-//         Transform executable path to shell/session name, e.g. "/bin/do-something.sh" => "do-something.sh".
-//        if (executionCommand.shellName == null && executionCommand.executable != null)
-//            executionCommand.shellName = ShellUtils.getExecutableBasename(executionCommand.executable);
-//    }
-
-//    /** Callback received when a TermuxTask finishes. */
-//    @Override
-//    public void onAppShellExited(final AppShell termuxTask) {
-//        new Handler().post(() -> {
-//            if (termuxTask != null) {
-//                mShellManager.mTermuxTasks.remove(termuxTask);
-//            }
-//            updateNotification();
-//        });
-//    }
-
-
-
-
-
-//    /** Execute a shell command in a foreground {@link TermuxSession}. */
-//    private void executeTermuxSessionCommand(ExecutionCommand executionCommand) {
-//        if (executionCommand == null) return;
-//
-//        // Transform executable path to shell/session name, e.g. "/bin/do-something.sh" => "do-something.sh".
-//        if (executionCommand.shellName == null && executionCommand.executable != null)
-//            executionCommand.shellName = ShellUtils.getExecutableBasename(executionCommand.executable);
-//
-//        TermuxSession newTermuxSession = null;
-//        ShellCreateMode shellCreateMode = processShellCreateMode(executionCommand);
-//        if (shellCreateMode == null) return;
-//        if (ShellCreateMode.NO_SHELL_WITH_NAME.equals(shellCreateMode)) {
-//            newTermuxSession = getTermuxSessionForShellName(executionCommand.shellName);
-//        }
-//
-//        if (newTermuxSession == null)
-//            newTermuxSession = createTermuxSession(executionCommand);
-//        if (newTermuxSession == null) return;
-//
-//        handleSessionAction(DataUtils.getIntFromString(executionCommand.sessionAction,
-//            TERMUX_SERVICE.VALUE_EXTRA_SESSION_ACTION_SWITCH_TO_NEW_SESSION_AND_OPEN_ACTIVITY),
-//            newTermuxSession.getTerminalSession());
-//    }
 
     /**
      * Create a {@link TermuxSession}.
@@ -467,63 +342,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
 
 
-//    private ShellCreateMode processShellCreateMode(@NonNull ExecutionCommand executionCommand) {
-//        if (ShellCreateMode.ALWAYS.equalsMode(executionCommand.shellCreateMode))
-//            return ShellCreateMode.ALWAYS; // Default
-//        else if (ShellCreateMode.NO_SHELL_WITH_NAME.equalsMode(executionCommand.shellCreateMode))
-//            if (DataUtils.isNullOrEmpty(executionCommand.shellName)) {
-//                return null;
-//            } else {
-//               return ShellCreateMode.NO_SHELL_WITH_NAME;
-//            }
-//        else {
-//            return null;
-//        }
-//    }
-
-//    /** Process session action for new session. */
-//    private void handleSessionAction(int sessionAction, TerminalSession newTerminalSession) {
-//        switch (sessionAction) {
-//            case TERMUX_SERVICE.VALUE_EXTRA_SESSION_ACTION_SWITCH_TO_NEW_SESSION_AND_OPEN_ACTIVITY:
-//                setCurrentStoredTerminalSession(newTerminalSession);
-//                if (mTermuxTerminalSessionActivityClient != null)
-//                    mTermuxTerminalSessionActivityClient.setCurrentSession(newTerminalSession);
-//                startTermuxActivity();
-//                break;
-//            case TERMUX_SERVICE.VALUE_EXTRA_SESSION_ACTION_KEEP_CURRENT_SESSION_AND_OPEN_ACTIVITY:
-//                if (getTermuxSessionsSize() == 1)
-//                    setCurrentStoredTerminalSession(newTerminalSession);
-//                startTermuxActivity();
-//                break;
-//            case TERMUX_SERVICE.VALUE_EXTRA_SESSION_ACTION_SWITCH_TO_NEW_SESSION_AND_DONT_OPEN_ACTIVITY:
-//                setCurrentStoredTerminalSession(newTerminalSession);
-//                if (mTermuxTerminalSessionActivityClient != null)
-//                    mTermuxTerminalSessionActivityClient.setCurrentSession(newTerminalSession);
-//                break;
-//            case TERMUX_SERVICE.VALUE_EXTRA_SESSION_ACTION_KEEP_CURRENT_SESSION_AND_DONT_OPEN_ACTIVITY:
-//                if (getTermuxSessionsSize() == 1)
-//                    setCurrentStoredTerminalSession(newTerminalSession);
-//                break;
-//            default:
-//                handleSessionAction(TERMUX_SERVICE.VALUE_EXTRA_SESSION_ACTION_SWITCH_TO_NEW_SESSION_AND_OPEN_ACTIVITY, newTerminalSession);
-//                break;
-//        }
-//    }
-
-//    /** Launch the {@link }TermuxActivity} to bring it to foreground. */
-//    private void startTermuxActivity() {
-//        // For android >= 10, apps require Display over other apps permission to start foreground activities
-//        // from background (services). If it is not granted, then TermuxSessions that are started will
-//        // show in Termux notification but will not run until user manually clicks the notification.
-//        if (PermissionUtils.validateDisplayOverOtherAppsPermissionForPostAndroid10(this, true)) {
-//            TermuxActivity.startTermuxActivity(this);
-//        }
-//    }
-
-
-
-
-
     /** If {@link TermuxActivity} has not bound to the {@link TermuxService} yet or is destroyed, then
      * interface functions requiring the activity should not be available to the terminal sessions,
      * so we just return the {@link #mTermuxTerminalSessionServiceClient}. Once {@link TermuxActivity} bind
@@ -579,11 +397,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
         // Set notification text
         int sessionCount = getTermuxSessionsSize();
-//        int taskCount = mShellManager.mTermuxTasks.size();
         String notificationText = sessionCount + " session" + (sessionCount == 1 ? "" : "s");
-//        if (taskCount > 0) {
-//            notificationText += ", " + taskCount + " task" + (taskCount == 1 ? "" : "s");
-//        }
 
         final boolean wakeLockHeld = mWakeLock != null;
         if (wakeLockHeld) notificationText += " (wake lock held)";
@@ -701,18 +515,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         }
         return null;
     }
-
-//    public synchronized TermuxSession getTermuxSessionForShellName(String name) {
-//        if (DataUtils.isNullOrEmpty(name)) return null;
-//        TermuxSession termuxSession;
-//        for (int i = 0, len = mShellManager.mTermuxSessions.size(); i < len; i++) {
-//            termuxSession = mShellManager.mTermuxSessions.get(i);
-//            String shellName = termuxSession.getExecutionCommand().shellName;
-//            if (shellName != null && shellName.equals(name))
-//                return termuxSession;
-//        }
-//        return null;
-//    }
 
 
 
