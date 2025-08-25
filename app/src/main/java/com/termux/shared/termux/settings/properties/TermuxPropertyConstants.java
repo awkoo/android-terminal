@@ -504,22 +504,4 @@ public final class TermuxPropertyConstants {
         KEY_EXTRA_KEYS_TEXT_ALL_CAPS
     ));
 
-    /**
-     * Defines the set for keys loaded by termux that have default inverted boolean behaviour with false as default.
-     * "false" -> true
-     * "true" -> false
-     * default: false
-     */
-    public static final Set<String> TERMUX_DEFAULT_INVERETED_FALSE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST = new HashSet<>(Arrays.asList(
-    ));
-
-    /**
-     * Defines the set for keys loaded by termux that have default inverted boolean behaviour with true as default.
-     * "false" -> true
-     * "true" -> false
-     * default: true
-     */
-    public static final Set<String> TERMUX_DEFAULT_INVERETED_TRUE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST = new HashSet<>(Arrays.asList(
-    ));
-
 }
