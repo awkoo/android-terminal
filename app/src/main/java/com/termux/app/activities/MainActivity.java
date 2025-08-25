@@ -98,12 +98,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     private TermuxAppSharedProperties mProperties;
 
-
-    /**
-     * The space at the bottom of {@link @mTermuxActivityRootView} of the {@link MainActivity}.
-     */
-//    View mTermuxActivityBottomSpaceView;
-
     /**
      * The terminal extra keys view.
      */
@@ -175,7 +169,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         mPreferences = TermuxAppSharedPreferences.build(this);
 
         setMargins();
-
         setTermuxTerminalViewAndClients();
         setTerminalToolbarView(savedInstanceState);
         setSettingsButtonView();
@@ -313,7 +306,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             // each time.
             if (!mIsActivityRecreated && intent != null && Intent.ACTION_RUN.equals(intent.getAction())) {
                 // Android 7.1 app shortcut from res/xml/shortcuts.xml.
-//                boolean isFailSafe = intent.getBooleanExtra(TERMUX_ACTIVITY.EXTRA_FAILSAFE_SESSION, false);
                 mTermuxTerminalSessionActivityClient.addNewSession(null);
             } else {
                 mTermuxTerminalSessionActivityClient.setCurrentSession(mTermuxTerminalSessionActivityClient.getCurrentStoredSessionOrLast());

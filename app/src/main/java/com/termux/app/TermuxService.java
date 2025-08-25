@@ -26,7 +26,6 @@ import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE;
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
 import com.termux.shared.termux.shell.TermuxSession;
-import com.termux.shared.termux.shell.TermuxShellManager;
 import com.termux.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import com.termux.terminal.TerminalEmulator;
 import com.termux.terminal.TerminalSession;
@@ -37,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A service holding a list of {@link TermuxSession} in {@link TermuxShellManager#mTermuxSessions} and background
+ * A service holding a list of {@link TermuxSession} in {@link TermuxService#mTermuxSessions} and background
  * showing a foreground notification while running so that it is not terminated.
  * The user interacts with the session through {@link MainActivity}, but this service may outlive
  * the activity when the user or the system disposes of the activity. In that case the user may
@@ -54,7 +53,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     /**
      * This service is only bound from inside the same process and never uses IPC.
      */
-    class LocalBinder extends Binder {
+    public class LocalBinder extends Binder {
         public final TermuxService service = TermuxService.this;
     }
 
@@ -80,9 +79,10 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     private TermuxAppSharedProperties mProperties;
 
     /**
-     * Termux app shell manager
+     * Terminal sessions
      */
-    private TermuxShellManager mShellManager;
+    public final List<TermuxSession> mTermuxSessions = new ArrayList<>();
+    private static int SHELL_ID = 0;
 
     /**
      * The wake lock and wifi lock are always acquired and released together.
@@ -96,8 +96,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         // Get Termux app SharedProperties without loading from disk since TermuxApplication handles
         // load and MainActivity handles reloads
         mProperties = TermuxAppSharedProperties.getProperties();
-
-        mShellManager = TermuxShellManager.getShellManager();
 
         runStartForeground();
     }
@@ -140,8 +138,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         if (!mWantsToStop)
             killAllTermuxExecutionCommands();
 
-        TermuxShellManager.onAppExit(this);
-
         runStopForeground();
     }
 
@@ -172,7 +168,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
      * Make service leave foreground mode.
      */
     private void runStopForeground() {
-        stopForeground(true);
+        stopForeground(Service.STOP_FOREGROUND_REMOVE);
     }
 
     /**
@@ -231,13 +227,13 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     private synchronized void killAllTermuxExecutionCommands() {
         boolean processResult;
 
-        List<TermuxSession> termuxSessions = new ArrayList<>(mShellManager.mTermuxSessions);
+        List<TermuxSession> termuxSessions = new ArrayList<>(mTermuxSessions);
 
         for (int i = 0; i < termuxSessions.size(); i++) {
             processResult = mWantsToStop;
             termuxSessions.get(i).killIfExecuting(this, processResult);
             if (!processResult)
-                mShellManager.mTermuxSessions.remove(termuxSessions.get(i));
+                mTermuxSessions.remove(termuxSessions.get(i));
         }
     }
 
@@ -255,7 +251,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
         // http://tools.android.com/tech-docs/lint-in-studio-2-3#TOC-WifiManager-Leak
         WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, TermuxConstants.TERMUX_APP_NAME.toLowerCase());
+        mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, TermuxConstants.TERMUX_APP_NAME.toLowerCase());
         mWifiLock.acquire();
 
         updateNotification();
@@ -293,7 +289,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         String sessionName
     ) {
         ExecutionCommand executionCommand = new ExecutionCommand(
-            TermuxShellManager.getNextShellId(),
+            SHELL_ID++,
             executablePath,
             arguments,
             stdin,
@@ -328,12 +324,9 @@ public final class TermuxService extends Service implements TermuxSession.Termux
             null,
             false
         );
-        if (newTermuxSession == null) {
-            executionCommand.getCommandIdAndLabelLogString();
-            return null;
-        }
+        if (newTermuxSession == null) return null;
 
-        mShellManager.mTermuxSessions.add(newTermuxSession);
+        mTermuxSessions.add(newTermuxSession);
 
         // Notify {@link TermuxSessionsListViewController} that sessions list has been updated if
         // activity in is foreground
@@ -352,7 +345,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         int index = getIndexOfSession(sessionToRemove);
 
         if (index >= 0)
-            mShellManager.mTermuxSessions.get(index).finish();
+            mTermuxSessions.get(index).finish();
 
         return index;
     }
@@ -363,7 +356,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     @Override
     public void onTermuxSessionExited(final TermuxSession termuxSession) {
         if (termuxSession != null) {
-            mShellManager.mTermuxSessions.remove(termuxSession);
+            mTermuxSessions.remove(termuxSession);
 
             // Notify {@link TermuxSessionsListViewController} that sessions list has been updated if
             // activity in is foreground
@@ -403,8 +396,8 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     public synchronized void setTermuxTerminalSessionClient(TermuxTerminalSessionActivityClient termuxTerminalSessionActivityClient) {
         mTermuxTerminalSessionActivityClient = termuxTerminalSessionActivityClient;
 
-        for (int i = 0; i < mShellManager.mTermuxSessions.size(); i++)
-            mShellManager.mTermuxSessions.get(i).getTerminalSession().updateTerminalSessionClient(mTermuxTerminalSessionActivityClient);
+        for (int i = 0; i < mTermuxSessions.size(); i++)
+            mTermuxSessions.get(i).getTerminalSession().updateTerminalSessionClient(mTermuxTerminalSessionActivityClient);
     }
 
     /**
@@ -413,8 +406,8 @@ public final class TermuxService extends Service implements TermuxSession.Termux
      * clients do not hold an activity references.
      */
     public synchronized void unsetTermuxTerminalSessionClient() {
-        for (int i = 0; i < mShellManager.mTermuxSessions.size(); i++)
-            mShellManager.mTermuxSessions.get(i).getTerminalSession().updateTerminalSessionClient(mTermuxTerminalSessionServiceClient);
+        for (int i = 0; i < mTermuxSessions.size(); i++)
+            mTermuxSessions.get(i).getTerminalSession().updateTerminalSessionClient(mTermuxTerminalSessionServiceClient);
 
         mTermuxTerminalSessionActivityClient = null;
     }
@@ -443,10 +436,17 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
 
         // Build the notification
-        Notification.Builder builder = NotificationUtils.geNotificationBuilder(this,
-            TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_ID, priority,
-            TermuxConstants.TERMUX_APP_NAME, notificationText, null,
-            contentIntent, null, NotificationUtils.NOTIFICATION_MODE_SILENT);
+        Notification.Builder builder = NotificationUtils.geNotificationBuilder(
+            this,
+            TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_ID,
+            priority,
+            TermuxConstants.TERMUX_APP_NAME,
+            notificationText,
+            null,
+            contentIntent,
+            null,
+            NotificationUtils.NOTIFICATION_MODE_SILENT
+        );
         if (builder == null) return null;
 
         // No need to show a timestamp:
@@ -487,7 +487,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
      * Update the shown foreground service notification after making any changes that affect it.
      */
     private synchronized void updateNotification() {
-        if (mWakeLock == null && mShellManager.mTermuxSessions.isEmpty()) {
+        if (mWakeLock == null && mTermuxSessions.isEmpty()) {
             // Exit if we are updating after the user disabled all locks with no sessions or tasks running.
             requestStopService();
         } else {
@@ -497,21 +497,21 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
 
     public synchronized boolean isTermuxSessionsEmpty() {
-        return mShellManager.mTermuxSessions.isEmpty();
+        return mTermuxSessions.isEmpty();
     }
 
     public synchronized int getTermuxSessionsSize() {
-        return mShellManager.mTermuxSessions.size();
+        return mTermuxSessions.size();
     }
 
     public synchronized List<TermuxSession> getTermuxSessions() {
-        return mShellManager.mTermuxSessions;
+        return mTermuxSessions;
     }
 
     @Nullable
     public synchronized TermuxSession getTermuxSession(int index) {
-        if (index >= 0 && index < mShellManager.mTermuxSessions.size())
-            return mShellManager.mTermuxSessions.get(index);
+        if (index >= 0 && index < mTermuxSessions.size())
+            return mTermuxSessions.get(index);
         else return null;
     }
 
@@ -519,23 +519,23 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     public synchronized TermuxSession getTermuxSessionForTerminalSession(TerminalSession terminalSession) {
         if (terminalSession == null) return null;
 
-        for (int i = 0; i < mShellManager.mTermuxSessions.size(); i++) {
-            if (mShellManager.mTermuxSessions.get(i).getTerminalSession().equals(terminalSession))
-                return mShellManager.mTermuxSessions.get(i);
+        for (int i = 0; i < mTermuxSessions.size(); i++) {
+            if (mTermuxSessions.get(i).getTerminalSession().equals(terminalSession))
+                return mTermuxSessions.get(i);
         }
 
         return null;
     }
 
     public synchronized TermuxSession getLastTermuxSession() {
-        return mShellManager.mTermuxSessions.isEmpty() ? null : mShellManager.mTermuxSessions.getLast();
+        return mTermuxSessions.isEmpty() ? null : mTermuxSessions.getLast();
     }
 
     public synchronized int getIndexOfSession(TerminalSession terminalSession) {
         if (terminalSession == null) return -1;
 
-        for (int i = 0; i < mShellManager.mTermuxSessions.size(); i++) {
-            if (mShellManager.mTermuxSessions.get(i).getTerminalSession().equals(terminalSession))
+        for (int i = 0; i < mTermuxSessions.size(); i++) {
+            if (mTermuxSessions.get(i).getTerminalSession().equals(terminalSession))
                 return i;
         }
         return -1;
@@ -543,8 +543,8 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     public synchronized TerminalSession getTerminalSessionForHandle(String sessionHandle) {
         TerminalSession terminalSession;
-        for (int i = 0, len = mShellManager.mTermuxSessions.size(); i < len; i++) {
-            terminalSession = mShellManager.mTermuxSessions.get(i).getTerminalSession();
+        for (int i = 0, len = mTermuxSessions.size(); i < len; i++) {
+            terminalSession = mTermuxSessions.get(i).getTerminalSession();
             if (terminalSession.mHandle.equals(sessionHandle))
                 return terminalSession;
         }

@@ -104,7 +104,7 @@ public final class TermuxConstants {
     /**
      * Termux app unique notification id used by {@link TERMUX_APP.TERMUX_SERVICE}
      */
-    public static final int TERMUX_APP_NOTIFICATION_ID = 0;
+    public static final int TERMUX_APP_NOTIFICATION_ID = 1;
 //    /** Termux app unique notification id used by {@link TERMUX_APP.RUN_COMMAND_SERVICE} */
 //    public static final int TERMUX_RUN_COMMAND_NOTIFICATION_ID = 1338;
 

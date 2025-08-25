@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
-import com.termux.shared.termux.shell.TermuxShellManager;
 
 public class TermuxApplication extends Application {
 
@@ -17,6 +16,6 @@ public class TermuxApplication extends Application {
         TermuxAppSharedProperties.init(context);
 
         // Init app wide shell manager
-        TermuxShellManager.init(context);
+//        TermuxShellManager.init();
     }
 }
