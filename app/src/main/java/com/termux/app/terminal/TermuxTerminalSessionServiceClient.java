@@ -15,8 +15,6 @@ import com.termux.terminal.TerminalSessionClient;
  */
 public class TermuxTerminalSessionServiceClient extends TermuxTerminalSessionClientBase {
 
-    private static final String LOG_TAG = "TermuxTerminalSessionServiceClient";
-
     private final TermuxService mService;
 
     public TermuxTerminalSessionServiceClient(TermuxService service) {

@@ -43,8 +43,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
     private int mBellSoundId;
 
-    private static final String LOG_TAG = "TermuxTerminalSessionActivityClient";
-
     public TermuxTerminalSessionActivityClient(MainActivity activity) {
         this.mActivity = activity;
     }
@@ -97,14 +95,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         // Bell is not played in background anyways
         // Related: https://stackoverflow.com/a/28708351/14686958
         releaseBellSoundPool();
-    }
-
-    /**
-     * Should be called when mActivity.reloadActivityStyling() is called
-     */
-    public void onReloadActivityStyling() {
-        // Set terminal fonts and colors
-        checkForFontAndColors();
     }
 
 
