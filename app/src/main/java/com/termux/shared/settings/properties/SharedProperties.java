@@ -76,17 +76,6 @@ public class SharedProperties {
             .build();
 
     /**
-     * Defines the bidirectional map for inverted boolean values and their internal values
-     */
-    public static final ImmutableBiMap<String, Boolean> MAP_GENERIC_INVERTED_BOOLEAN =
-        new ImmutableBiMap.Builder<String, Boolean>()
-            .put("true", false)
-            .put("false", true)
-            .build();
-
-    private static final String LOG_TAG = "SharedProperties";
-
-    /**
      * Constructor for the SharedProperties class.
      *
      * @param context                The Context for operations.
@@ -267,7 +256,7 @@ public class SharedProperties {
      * @return Returns the {@link File} object for Termux:Float app properties.
      */
     public static File getPropertiesFileFromList(List<String> propertiesFilePaths, @NonNull String logTag) {
-        if (propertiesFilePaths == null || propertiesFilePaths.size() == 0)
+        if (propertiesFilePaths == null || propertiesFilePaths.isEmpty())
             return null;
 
         for (String propertiesFilePath : propertiesFilePaths) {
@@ -278,101 +267,9 @@ public class SharedProperties {
             if (fileType == FileType.REGULAR) {
                 if (propertiesFile.canRead())
                     return propertiesFile;
-                else {
-//        logMessage(Log.WARN, tag, message);
-                }
-            } else if (fileType != FileType.NO_EXIST) {
-                //        logMessage(Log.WARN, tag, message);
             }
         }
-
-        //        logMessage(Log.DEBUG, tag, message);
         return null;
-    }
-
-
-    public static String getProperty(Context context, File propertiesFile, String key, String def) {
-        return getProperty(context, propertiesFile, key, def, null);
-    }
-
-    /**
-     * A static function to get the {@link String} value for the {@link Properties} key read from
-     * the propertiesFile file.
-     *
-     * @param context                The {@link Context} for the {@link #getPropertiesFromFile(Context, File, SharedPropertiesParser)} call.
-     * @param propertiesFile         The {@link File} to read the {@link Properties} from.
-     * @param key                    The key to read.
-     * @param def                    The default value.
-     * @param sharedPropertiesParser The implementation of the {@link SharedPropertiesParser} interface.
-     * @return Returns the {@link String} object. This will be {@code null} if key is not found.
-     */
-    public static String getProperty(Context context, File propertiesFile, String key, String def, @Nullable SharedPropertiesParser sharedPropertiesParser) {
-        return (String) getDefaultIfNull(getDefaultIfNull(getPropertiesFromFile(context, propertiesFile, sharedPropertiesParser), new Properties()).get(key), def);
-    }
-
-    /**
-     * A static function to get the internal {@link Object} value for the {@link String} value for
-     * the {@link Properties} key read from the propertiesFile file.
-     *
-     * @param context                The {@link Context} for the {@link #getPropertiesFromFile(Context, File, SharedPropertiesParser)} call.
-     * @param propertiesFile         The {@link File} to read the {@link Properties} from.
-     * @param key                    The key to read.
-     * @param sharedPropertiesParser The implementation of the {@link SharedPropertiesParser} interface.
-     * @return Returns the {@link String} Object returned by the call to
-     * {@link SharedPropertiesParser#getInternalPropertyValueFromValue(Context, String, String)}.
-     */
-    public static Object getInternalProperty(Context context, File propertiesFile, String key, @NonNull SharedPropertiesParser sharedPropertiesParser) {
-        String value = (String) getDefaultIfNull(getPropertiesFromFile(context, propertiesFile, sharedPropertiesParser), new Properties()).get(key);
-
-        // Call the {@link SharedPropertiesParser#getInternalPropertyValueFromValue(Context,String,String)}
-        // interface method to get the internal value to return.
-        return sharedPropertiesParser.getInternalPropertyValueFromValue(context, key, value);
-    }
-
-
-    public static boolean isPropertyValueTrue(Context context, File propertiesFile, String key, boolean logErrorOnInvalidValue) {
-        return isPropertyValueTrue(context, propertiesFile, key, logErrorOnInvalidValue, null);
-    }
-
-    /**
-     * A static function to check if the value is {@code true} for {@link Properties} key read from
-     * the propertiesFile file.
-     *
-     * @param context                The {@link Context} for the {@link #getPropertiesFromFile(Context, File, SharedPropertiesParser)} call.
-     * @param propertiesFile         The {@link File} to read the {@link Properties} from.
-     * @param key                    The key to read.
-     * @param logErrorOnInvalidValue If {@code true}, then an error will be logged if key value
-     *                               was found in {@link Properties} but was invalid.
-     * @param sharedPropertiesParser The implementation of the {@link SharedPropertiesParser} interface.
-     * @return Returns the {@code true} if the {@link Properties} key {@link String} value equals "true",
-     * regardless of case. If the key does not exist in the file or does not equal "true", then
-     * {@code false} will be returned.
-     */
-    public static boolean isPropertyValueTrue(Context context, File propertiesFile, String key, boolean logErrorOnInvalidValue, @Nullable SharedPropertiesParser sharedPropertiesParser) {
-        return (boolean) getBooleanValueForStringValue(key, (String) getProperty(context, propertiesFile, key, null, sharedPropertiesParser), false, logErrorOnInvalidValue, LOG_TAG);
-    }
-
-
-    public static boolean isPropertyValueFalse(Context context, File propertiesFile, String key, boolean logErrorOnInvalidValue) {
-        return isPropertyValueFalse(context, propertiesFile, key, logErrorOnInvalidValue, null);
-    }
-
-    /**
-     * A static function to check if the value is {@code false} for {@link Properties} key read from
-     * the propertiesFile file.
-     *
-     * @param context                The {@link Context} for the {@link #getPropertiesFromFile(Context, File, SharedPropertiesParser)} call.
-     * @param propertiesFile         The {@link File} to read the {@link Properties} from.
-     * @param key                    The key to read.
-     * @param logErrorOnInvalidValue If {@code true}, then an error will be logged if key value
-     *                               was found in {@link Properties} but was invalid.
-     * @param sharedPropertiesParser The implementation of the {@link SharedPropertiesParser} interface.
-     * @return Returns the {@code true} if the {@link Properties} key {@link String} value equals "false",
-     * regardless of case. If the key does not exist in the file or does not equal "false", then
-     * {@code true} will be returned.
-     */
-    public static boolean isPropertyValueFalse(Context context, File propertiesFile, String key, boolean logErrorOnInvalidValue, @Nullable SharedPropertiesParser sharedPropertiesParser) {
-        return (boolean) getInvertedBooleanValueForStringValue(key, (String) getProperty(context, propertiesFile, key, null, sharedPropertiesParser), true, logErrorOnInvalidValue, LOG_TAG);
     }
 
 
@@ -389,16 +286,10 @@ public class SharedProperties {
      */
     public static boolean putToMap(HashMap<String, Object> map, String key, Object value) {
 
-        if (map == null) {
-            //        logMessage(Log.ERROR, tag, message);
-            return false;
-        }
+        if (map == null) return false;
 
         // null keys are not allowed to be stored in mMap
-        if (key == null) {
-            //        logMessage(Log.ERROR, tag, message);
-            return false;
-        }
+        if (key == null) return false;
 
         boolean put = false;
         if (value != null) {
@@ -414,7 +305,6 @@ public class SharedProperties {
             map.put(key, value);
             return true;
         } else {
-            //        logMessage(Log.ERROR, tag, message);
             return false;
         }
     }
@@ -428,29 +318,20 @@ public class SharedProperties {
      * @param properties The {@link Properties} object to add value to.
      * @param key        The key for which to add the value to the properties.
      * @param value      The {@link String} to add to the properties.
-     * @return Returns {@code true} if value was successfully added, otherwise {@code false}.
      */
-    public static boolean putToProperties(Properties properties, String key, String value) {
+    public static void putToProperties(Properties properties, String key, String value) {
 
-        if (properties == null) {
-            //        logMessage(Log.ERROR, tag, message);
-            return false;
-        }
+        if (properties == null) return;
 
         // null keys are not allowed to be stored in mMap
-        if (key == null) {
-            //        logMessage(Log.ERROR, tag, message);
-            return false;
-        }
+        if (key == null) return;
 
         if (value != null) {
             properties.put(key, value);
-            return true;
         } else {
             properties.remove(key);
         }
 
-        return true;
     }
 
     public static Properties getPropertiesCopy(Properties inputProperties) {
@@ -497,21 +378,6 @@ public class SharedProperties {
     }
 
     /**
-     * Get the inverted boolean value for the {@link String} value.
-     *
-     * @param value                  The {@link String} value to convert.
-     * @param def                    The default {@link boolean} value to return.
-     * @param logErrorOnInvalidValue If {@code true}, then an error will be logged if {@code value}
-     *                               was not {@code null} and was invalid.
-     * @param logTag                 If log tag to use for logging errors.
-     * @return Returns {@code true} or {@code false} if value is the literal string "false" or "true" respectively,
-     * regardless of case. Otherwise returns default value.
-     */
-    public static boolean getInvertedBooleanValueForStringValue(String key, String value, boolean def, boolean logErrorOnInvalidValue, String logTag) {
-        return (boolean) getDefaultIfNotInMap(key, MAP_GENERIC_INVERTED_BOOLEAN, toLowerCase(value), def, logErrorOnInvalidValue, logTag);
-    }
-
-    /**
      * Get the value for the {@code inputValue} {@link Object} key from a {@link BiMap<>}, otherwise
      * default value if key not found in {@code map}.
      *
@@ -529,18 +395,18 @@ public class SharedProperties {
     public static Object getDefaultIfNotInMap(String key, @NonNull BiMap<?, ?> map, Object inputValue, Object defaultOutputValue, boolean logErrorOnInvalidValue, String logTag) {
         Object outputValue = map.get(inputValue);
         if (outputValue == null) {
-            Object defaultInputValue = map.inverse().get(defaultOutputValue);
+//            Object defaultInputValue = map.inverse().get(defaultOutputValue);
             //        logMessage(Log.ERROR, tag, message);
-            if (defaultInputValue == null)
-                map.values();
+//            if (defaultInputValue == null)
+//                map.values();
 
-            if (logErrorOnInvalidValue && inputValue != null) {
-                if (key != null) {
+//            if (logErrorOnInvalidValue && inputValue != null) {
+//                if (key != null) {
 //        logMessage(Log.ERROR, tag, message);
-                } else {
+//                } else {
 //        logMessage(Log.ERROR, tag, message);
-                }
-            }
+//                }
+//            }
 
             return defaultOutputValue;
         } else {
@@ -565,13 +431,13 @@ public class SharedProperties {
      */
     public static int getDefaultIfNotInRange(String key, int value, int def, int min, int max, boolean logErrorOnInvalidValue, boolean ignoreErrorIfValueZero, String logTag) {
         if (value < min || value > max) {
-            if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
-                if (key != null) {
+//            if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
+//                if (key != null) {
 //        logMessage(Log.ERROR, tag, message);
-                } else {
+//                } else {
 //        logMessage(Log.ERROR, tag, message);
-                }
-            }
+//                }
+//            }
             return def;
         } else {
             return value;
@@ -595,28 +461,17 @@ public class SharedProperties {
      */
     public static float getDefaultIfNotInRange(String key, float value, float def, float min, float max, boolean logErrorOnInvalidValue, boolean ignoreErrorIfValueZero, String logTag) {
         if (value < min || value > max) {
-            if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
-                if (key != null) {
+//            if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
+//                if (key != null) {
 //        logMessage(Log.ERROR, tag, message);
-                } else {
+//                } else {
 //        logMessage(Log.ERROR, tag, message);
-                }
-            }
+//                }
+//            }
             return def;
         } else {
             return value;
         }
-    }
-
-    /**
-     * Get the object itself if it is not {@code null}, otherwise default.
-     *
-     * @param object The {@link Object} to check.
-     * @param def    The default {@link Object}.
-     * @return Returns {@code object} if it is not {@code null}, otherwise returns {@code def}.
-     */
-    public static <T> T getDefaultIfNull(@Nullable T object, @Nullable T def) {
-        return (object == null) ? def : object;
     }
 
     /**
