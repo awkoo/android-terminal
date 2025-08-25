@@ -143,12 +143,12 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     private static final int CONTEXT_MENU_SELECT_URL_ID = 0;
     private static final int CONTEXT_MENU_SHARE_TRANSCRIPT_ID = 1;
-    private static final int CONTEXT_MENU_SHARE_SELECTED_TEXT = 10;
-    private static final int CONTEXT_MENU_AUTOFILL_USERNAME = 11;
-    private static final int CONTEXT_MENU_AUTOFILL_PASSWORD = 2;
-    private static final int CONTEXT_MENU_RESET_TERMINAL_ID = 3;
-    private static final int CONTEXT_MENU_KILL_PROCESS_ID = 4;
-    private static final int CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON = 6;
+    private static final int CONTEXT_MENU_SHARE_SELECTED_TEXT = 2;
+    private static final int CONTEXT_MENU_AUTOFILL_USERNAME = 3;
+    private static final int CONTEXT_MENU_AUTOFILL_PASSWORD = 4;
+    private static final int CONTEXT_MENU_RESET_TERMINAL_ID = 5;
+    private static final int CONTEXT_MENU_KILL_PROCESS_ID = 6;
+    private static final int CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON = 7;
     private static final int CONTEXT_MENU_SETTINGS_ID = 8;
 
     private static final String ARG_TERMINAL_TOOLBAR_TEXT_INPUT = "terminal_toolbar_text_input";
@@ -223,9 +223,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         if (mTermuxTerminalViewClient != null)
             mTermuxTerminalViewClient.onStart();
-
-//        if (mPreferences.isTerminalMarginAdjustmentEnabled())
-//            addTermuxActivityRootViewGlobalLayoutListener();
     }
 
     @Override
@@ -255,9 +252,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
         if (mTermuxTerminalViewClient != null)
             mTermuxTerminalViewClient.onStop();
-
-//        removeTermuxActivityRootViewGlobalLayoutListener();
-
         getDrawer().closeDrawers();
     }
 
