@@ -430,10 +430,18 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         View newSessionButton = findViewById(R.id.new_session_button);
         newSessionButton.setOnClickListener(v -> mTermuxTerminalSessionActivityClient.addNewSession(null));
         newSessionButton.setOnLongClickListener(v -> {
-            TextInputDialogUtils.textInput(MainActivity.this, R.string.title_create_named_session, null,
-                R.string.action_create_named_session_confirm, text -> mTermuxTerminalSessionActivityClient.addNewSession(text),
-                R.string.action_new_session_failsafe, text -> mTermuxTerminalSessionActivityClient.addNewSession(text),
-                -1, null, null);
+            TextInputDialogUtils.textInput(
+                MainActivity.this,
+                R.string.title_create_named_session,
+                null,
+                R.string.action_create_named_session_confirm,
+                text -> mTermuxTerminalSessionActivityClient.addNewSession(text),
+                -1,
+                null,
+                -1,
+                null,
+                null
+            );
             return true;
         });
     }

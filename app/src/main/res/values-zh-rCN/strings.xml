@@ -35,10 +35,10 @@
     <string name="title_select_url_dialog">点击复制URL或者长按打开</string>
     <string name="msg_max_terminals_reached">在新建之前关闭现有的</string>
     <string name="copy_text">复制</string>
-    <string name="title_rename_session">设置会话名</string>
-    <string name="action_rename_session_confirm">设置</string>
-    <string name="title_create_named_session">重命名会话</string>
-    <string name="action_create_named_session_confirm">创建</string>
+    <string name="title_rename_session">重命名会话</string>
+    <string name="action_rename_session_confirm">确认</string>
+    <string name="title_create_named_session">新建会话</string>
+    <string name="action_create_named_session_confirm">确认</string>
     <string name="action_toggle_soft_keyboard">键盘</string>
     <string name="msg_enabling_terminal_toolbar">正在开启工具栏</string>
     <string name="msg_disabling_terminal_toolbar">正在关闭工具栏</string>
@@ -57,7 +57,7 @@
     <string name="title_confirm_kill_process">确认要强制杀死当前会话吗？</string>
     <string name="termux_terminal_io_preferences_title">Terminal I/O</string>
     <string name="termux_terminal_io_preferences_summary">Preferences for terminal I/O</string>
-    <string name="text_selection_more">更多...</string>
+    <string name="text_selection_more">更多…</string>
     <string name="termux_keyboard_header">键盘</string>
     <string name="action_toggle_keep_screen_on">保持屏幕开启</string>
     <string name="title_shell">Shell</string>
