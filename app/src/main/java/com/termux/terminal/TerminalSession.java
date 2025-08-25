@@ -1,20 +1,22 @@
 package com.termux.terminal;
 
-import android.annotation.SuppressLint;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
 
+import androidx.annotation.NonNull;
+
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
+import java.lang.ref.WeakReference;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -78,7 +80,7 @@ public final class TerminalSession extends TerminalOutput {
      */
     public String mSessionName;
 
-    final Handler mMainThreadHandler = new MainThreadHandler();
+    final Handler mMainThreadHandler = new MainThreadHandler(this);
 
     private final String mShellPath;
     private final String mCwd;
@@ -86,8 +88,6 @@ public final class TerminalSession extends TerminalOutput {
     private final String[] mEnv;
     private final Integer mTranscriptRows;
 
-
-    private static final String LOG_TAG = "TerminalSession";
 
     public TerminalSession(String shellPath, String cwd, String[] args, String[] env, Integer transcriptRows, TerminalSessionClient client) {
         this.mShellPath = shellPath;
@@ -142,40 +142,48 @@ public final class TerminalSession extends TerminalOutput {
         mShellPid = processId[0];
         mClient.setTerminalShellPid(this, mShellPid);
 
-        final FileDescriptor terminalFileDescriptorWrapped = wrapFileDescriptor(mTerminalFileDescriptor, mClient);
+//        final FileDescriptor terminalFileDescriptorWrapped = wrapFileDescriptor(mTerminalFileDescriptor, mClient);
+        final ParcelFileDescriptor terminalFD;
+        try {
+            terminalFD = ParcelFileDescriptor.fromFd(mTerminalFileDescriptor);
+            new Thread("TermSessionInputReader[pid=" + mShellPid + "]") {
+                @Override
+                public void run() {
+                    try (InputStream termIn = new ParcelFileDescriptor.AutoCloseInputStream(terminalFD)) {
+                        final byte[] buffer = new byte[4096];
+                        while (true) {
+                            int read = termIn.read(buffer);
+                            if (read == -1) return;
+                            if (!mProcessToTerminalIOQueue.write(buffer, 0, read)) return;
+                            mMainThreadHandler.sendEmptyMessage(MSG_NEW_INPUT);
+                        }
+                    } catch (Exception e) {
+                        // Ignore, just shutting down.
+                    }
+                }
+            }.start();
 
-        new Thread("TermSessionInputReader[pid=" + mShellPid + "]") {
-            @Override
-            public void run() {
-                try (InputStream termIn = new FileInputStream(terminalFileDescriptorWrapped)) {
+            new Thread("TermSessionOutputWriter[pid=" + mShellPid + "]") {
+                @Override
+                public void run() {
                     final byte[] buffer = new byte[4096];
-                    while (true) {
-                        int read = termIn.read(buffer);
-                        if (read == -1) return;
-                        if (!mProcessToTerminalIOQueue.write(buffer, 0, read)) return;
-                        mMainThreadHandler.sendEmptyMessage(MSG_NEW_INPUT);
+                    try (FileOutputStream termOut = new ParcelFileDescriptor.AutoCloseOutputStream(terminalFD)) {
+                        while (true) {
+                            int bytesToWrite = mTerminalToProcessIOQueue.read(buffer, true);
+                            if (bytesToWrite == -1) return;
+                            termOut.write(buffer, 0, bytesToWrite);
+                        }
+                    } catch (IOException e) {
+                        // Ignore.
                     }
-                } catch (Exception e) {
-                    // Ignore, just shutting down.
                 }
-            }
-        }.start();
-
-        new Thread("TermSessionOutputWriter[pid=" + mShellPid + "]") {
-            @Override
-            public void run() {
-                final byte[] buffer = new byte[4096];
-                try (FileOutputStream termOut = new FileOutputStream(terminalFileDescriptorWrapped)) {
-                    while (true) {
-                        int bytesToWrite = mTerminalToProcessIOQueue.read(buffer, true);
-                        if (bytesToWrite == -1) return;
-                        termOut.write(buffer, 0, bytesToWrite);
-                    }
-                } catch (IOException e) {
-                    // Ignore.
-                }
-            }
-        }.start();
+            }.start();
+        } catch (Exception e) {
+            byte[] byteToWrite = Objects.requireNonNull(e.getMessage()).getBytes();
+            mEmulator.append(byteToWrite, byteToWrite.length);
+            notifyScreenUpdate();
+            mClient.onSessionFinished(this);
+        }
 
         new Thread("TermSessionWaiter[pid=" + mShellPid + "]") {
             @Override
@@ -338,64 +346,53 @@ public final class TerminalSession extends TerminalOutput {
             if (!cwdSymlink.equals(outputPathWithTrailingSlash)) {
                 return outputPath;
             }
-        } catch (IOException | SecurityException e) {
-//            Logger.logStackTraceWithMessage(mClient, LOG_TAG, "Error getting current directory", e);
-        }
+        } catch (IOException | SecurityException ignored) {}
         return null;
     }
 
-    private static FileDescriptor wrapFileDescriptor(int fileDescriptor, TerminalSessionClient client) {
-        FileDescriptor result = new FileDescriptor();
-        try {
-            Field descriptorField;
-            try {
-                descriptorField = FileDescriptor.class.getDeclaredField("descriptor");
-            } catch (NoSuchFieldException e) {
-                // For desktop java:
-                descriptorField = FileDescriptor.class.getDeclaredField("fd");
-            }
-            descriptorField.setAccessible(true);
-            descriptorField.set(result, fileDescriptor);
-        } catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException e) {
-//            Logger.logStackTraceWithMessage(client, LOG_TAG, "Error accessing FileDescriptor#descriptor private field", e);
-            System.exit(1);
-        }
-        return result;
-    }
+    private static class MainThreadHandler extends Handler {
 
-    @SuppressLint("HandlerLeak")
-    class MainThreadHandler extends Handler {
+        private final WeakReference<TerminalSession> terminalSessionWeakReference;
+        MainThreadHandler(TerminalSession terminalSession) {
+            super(Looper.getMainLooper());
+            terminalSessionWeakReference = new WeakReference<>(terminalSession);
+        }
 
         final byte[] mReceiveBuffer = new byte[4 * 1024];
 
         @Override
-        public void handleMessage(Message msg) {
-            int bytesRead = mProcessToTerminalIOQueue.read(mReceiveBuffer, false);
+        public void handleMessage(@NonNull Message msg) {
+            TerminalSession session = terminalSessionWeakReference.get();
+            int bytesRead = session.mProcessToTerminalIOQueue.read(mReceiveBuffer, false);
             if (bytesRead > 0) {
-                mEmulator.append(mReceiveBuffer, bytesRead);
-                notifyScreenUpdate();
+                session.mEmulator.append(mReceiveBuffer, bytesRead);
+                session.notifyScreenUpdate();
             }
 
             if (msg.what == MSG_PROCESS_EXITED) {
                 int exitCode = (Integer) msg.obj;
-                cleanupResources(exitCode);
+                session.cleanupResources(exitCode);
 
-                String exitDescription = "\r\n[Process completed";
-                if (exitCode > 0) {
-                    // Non-zero process exit.
-                    exitDescription += " (code " + exitCode + ")";
-                } else if (exitCode < 0) {
-                    // Negated signal.
-                    exitDescription += " (signal " + (-exitCode) + ")";
-                }
-                exitDescription += " - press Enter]";
+                byte[] bytesToWrite = getBytesToWrite(exitCode);
+                session.mEmulator.append(bytesToWrite, bytesToWrite.length);
+                session.notifyScreenUpdate();
 
-                byte[] bytesToWrite = exitDescription.getBytes(StandardCharsets.UTF_8);
-                mEmulator.append(bytesToWrite, bytesToWrite.length);
-                notifyScreenUpdate();
-
-                mClient.onSessionFinished(TerminalSession.this);
+                session.mClient.onSessionFinished(session);
             }
+        }
+
+        private static byte[] getBytesToWrite(int exitCode) {
+            String exitDescription = "\r\n[Process completed";
+            if (exitCode > 0) {
+                // Non-zero process exit.
+                exitDescription += " (code " + exitCode + ")";
+            } else if (exitCode < 0) {
+                // Negated signal.
+                exitDescription += " (signal " + (-exitCode) + ")";
+            }
+            exitDescription += " - press Enter]";
+
+            return exitDescription.getBytes(StandardCharsets.UTF_8);
         }
 
     }
