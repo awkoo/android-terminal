@@ -1,11 +1,10 @@
 package com.termux.app;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
 
-public class TermuxApplication extends Application {
+public class Application extends android.app.Application {
 
     public void onCreate() {
         super.onCreate();

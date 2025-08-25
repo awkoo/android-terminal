@@ -4,7 +4,7 @@ import android.app.Service;
 
 import androidx.annotation.NonNull;
 
-import com.termux.app.TermuxService;
+import com.termux.app.TerminalService;
 import com.termux.shared.termux.shell.TermuxSession;
 import com.termux.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import com.termux.terminal.TerminalSession;
@@ -15,9 +15,9 @@ import com.termux.terminal.TerminalSessionClient;
  */
 public class TermuxTerminalSessionServiceClient extends TermuxTerminalSessionClientBase {
 
-    private final TermuxService mService;
+    private final TerminalService mService;
 
-    public TermuxTerminalSessionServiceClient(TermuxService service) {
+    public TermuxTerminalSessionServiceClient(TerminalService service) {
         this.mService = service;
     }
 

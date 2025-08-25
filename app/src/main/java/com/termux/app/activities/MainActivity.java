@@ -27,10 +27,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.termux.R;
-import com.termux.app.TermuxService;
+import com.termux.app.TerminalService;
 import com.termux.app.terminal.TermuxSessionsListViewController;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.TermuxTerminalViewClient;
@@ -65,11 +66,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     ActivityTermuxBinding binding;
 
     /**
-     * The connection to the {@link TermuxService}. Requested in {@link #onCreate(Bundle)} with a call to
+     * The connection to the {@link TerminalService}. Requested in {@link #onCreate(Bundle)} with a call to
      * {@link #bindService(Intent, ServiceConnection, int)}, and obtained and stored in
      * {@link #onServiceConnected(ComponentName, IBinder)}.
      */
-    TermuxService mTermuxService;
+    TerminalService mTerminalService;
 
     /**
      * The {@link TerminalView} shown in  {@link MainActivity} that displays the terminal.
@@ -161,7 +162,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         reloadProperties();
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_termux);
 
         // Load termux shared preferences
@@ -178,8 +178,8 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         registerForContextMenu(mTerminalView);
 
         try {
-            // Start the {@link TermuxService} and make it run regardless of who is bound to it
-            Intent serviceIntent = new Intent(this, TermuxService.class);
+            // Start the {@link TerminalService} and make it run regardless of who is bound to it
+            Intent serviceIntent = new Intent(this, TerminalService.class);
             startService(serviceIntent);
 
             // Attempt to bind to the service, this will call the {@link #onServiceConnected(ComponentName, IBinder)}
@@ -254,10 +254,10 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         if (mIsInvalidState) return;
 
-        if (mTermuxService != null) {
+        if (mTerminalService != null) {
             // Do not leave service and session clients with references to activity.
-            mTermuxService.unsetTermuxTerminalSessionClient();
-            mTermuxService = null;
+            mTerminalService.unsetTermuxTerminalSessionClient();
+            mTerminalService = null;
         }
 
         try {
@@ -282,14 +282,14 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
-        mTermuxService = ((TermuxService.LocalBinder) service).service;
+        mTerminalService = ((TerminalService.LocalBinder) service).service;
 
         setTermuxSessionsListView();
 
         final Intent intent = getIntent();
         setIntent(null);
 
-        if (mTermuxService.isTermuxSessionsEmpty()) {
+        if (mTerminalService.isTermuxSessionsEmpty()) {
             if (mIsVisible) {
                 try {
                     mTermuxTerminalSessionActivityClient.addNewSession(null);
@@ -313,12 +313,12 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         }
 
         // Update the {@link TerminalSession} and {@link TerminalEmulator} clients.
-        mTermuxService.setTermuxTerminalSessionClient(mTermuxTerminalSessionActivityClient);
+        mTerminalService.setTermuxTerminalSessionClient(mTermuxTerminalSessionActivityClient);
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        // Respect being stopped from the {@link TermuxService} notification action.
+        // Respect being stopped from the {@link TerminalService} notification action.
         finishActivityIfNotFinishing();
     }
 
@@ -357,7 +357,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     private void setTermuxSessionsListView() {
         ListView termuxSessionsListView = findViewById(R.id.terminal_sessions_list);
-        mTermuxSessionListViewController = new TermuxSessionsListViewController(this, mTermuxService.getTermuxSessions());
+        mTermuxSessionListViewController = new TermuxSessionsListViewController(this, mTerminalService.getTermuxSessions());
         termuxSessionsListView.setAdapter(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemLongClickListener(mTermuxSessionListViewController);
@@ -638,8 +638,8 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
 
-    public TermuxService getTermuxService() {
-        return mTermuxService;
+    public TerminalService getTermuxService() {
+        return mTerminalService;
     }
 
     public TerminalView getTerminalView() {

@@ -14,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.termux.R;
+import com.termux.app.TerminalService;
 import com.termux.app.activities.MainActivity;
-import com.termux.app.TermuxService;
 import com.termux.shared.interact.ShareUtils;
 import com.termux.shared.termux.interact.TextInputDialogUtils;
 import com.termux.shared.termux.settings.properties.TermuxPropertyConstants;
@@ -122,7 +122,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
     @Override
     public void onSessionFinished(@NonNull TerminalSession finishedSession) {
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
 
         if (service == null || service.wantsToStop()) {
             // The service wants to stop as soon as possible.
@@ -210,7 +210,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
     @Override
     public void setTerminalShellPid(@NonNull TerminalSession terminalSession, int pid) {
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
         TermuxSession termuxSession = service.getTermuxSessionForTerminalSession(terminalSession);
@@ -291,7 +291,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     }
 
     public void switchToSession(boolean forward) {
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
         TerminalSession currentTerminalSession = mActivity.getCurrentSession();
@@ -309,7 +309,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     }
 
     public void switchToSession(int index) {
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
         TermuxSession termuxSession = service.getTermuxSession(index);
@@ -330,7 +330,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     private void renameSession(TerminalSession sessionToRename, String text) {
         if (sessionToRename == null) return;
         sessionToRename.mSessionName = text;
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service != null) {
             TermuxSession termuxSession = service.getTermuxSessionForTerminalSession(sessionToRename);
             if (termuxSession != null)
@@ -339,7 +339,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     }
 
     public void addNewSession(String sessionName) {
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
         if (service.getTermuxSessionsSize() >= MAX_SESSIONS) {
@@ -382,7 +382,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             return stored;
         } else {
             // Else return the last session currently running
-            TermuxService service = mActivity.getTermuxService();
+            TerminalService service = mActivity.getTermuxService();
             if (service == null) return null;
 
             TermuxSession termuxSession = service.getLastTermuxSession();
@@ -401,7 +401,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             return null;
 
         // Check if the session handle found matches one of the currently running sessions
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return null;
 
         return service.getTerminalSessionForHandle(sessionHandle);
@@ -409,7 +409,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
     public void removeFinishedSession(TerminalSession finishedSession) {
         // Return pressed with finished session - remove it.
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
         int index = service.removeTermuxSession(finishedSession);
@@ -434,7 +434,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
     public void checkAndScrollToSession(TerminalSession session) {
         if (!mActivity.isVisible()) return;
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
         final int indexOfSession = service.getIndexOfSession(session);
@@ -449,7 +449,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
 
     String toToastTitle(TerminalSession session) {
-        TermuxService service = mActivity.getTermuxService();
+        TerminalService service = mActivity.getTermuxService();
         if (service == null) return null;
 
         final int indexOfSession = service.getIndexOfSession(session);

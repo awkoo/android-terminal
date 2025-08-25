@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A service holding a list of {@link TermuxSession} in {@link TermuxService#mTermuxSessions} and background
+ * A service holding a list of {@link TermuxSession} in {@link TerminalService#mTermuxSessions} and background
  * showing a foreground notification while running so that it is not terminated.
  * The user interacts with the session through {@link MainActivity}, but this service may outlive
  * the activity when the user or the system disposes of the activity. In that case the user may
@@ -48,13 +48,13 @@ import java.util.Objects;
  * Optionally may hold a wake and a wifi lock, in which case that is shown in the notification - see
  * {@link #buildNotification()}.
  */
-public final class TermuxService extends Service implements TermuxSession.TermuxSessionClient {
+public final class TerminalService extends Service implements TermuxSession.TermuxSessionClient {
 
     /**
      * This service is only bound from inside the same process and never uses IPC.
      */
     public class LocalBinder extends Binder {
-        public final TermuxService service = TermuxService.this;
+        public final TerminalService service = TerminalService.this;
     }
 
     private final IBinder mBinder = new LocalBinder();
@@ -93,14 +93,13 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     @Override
     public void onCreate() {
-        // Get Termux app SharedProperties without loading from disk since TermuxApplication handles
+        // Get Termux app SharedProperties without loading from disk since Application handles
         // load and MainActivity handles reloads
         mProperties = TermuxAppSharedProperties.getProperties();
 
         runStartForeground();
     }
 
-    @SuppressLint("Wakelock")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Run again in case service is already started and onCreate() is not called
@@ -218,7 +217,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
      * Note that if don't kill the processes started by plugins which **expect** the result back
      * and notify their creators that they have been killed, then they may get stuck waiting for
      * the results forever like in case of commands started by Termux:Tasker or RUN_COMMAND intent,
-     * since once TermuxService has been killed, no result will be sent back. They may still get
+     * since once TerminalService has been killed, no result will be sent back. They may still get
      * stuck if termux app process gets killed, so for this case reasonable timeout values should
      * be used, like in Tasker for the Termux:Tasker actions.
      * <p>
@@ -241,7 +240,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     /**
      * Process action to acquire Power and Wi-Fi WakeLocks.
      */
-    @SuppressLint({"WakelockTimeout", "BatteryLife"})
+    @SuppressLint("WakelockTimeout")
     private void actionAcquireWakeLock() {
         if (mWakeLock != null) return;
 
@@ -360,16 +359,16 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
 
     /**
-     * If {@link MainActivity} has not bound to the {@link TermuxService} yet or is destroyed, then
+     * If {@link MainActivity} has not bound to the {@link TerminalService} yet or is destroyed, then
      * interface functions requiring the activity should not be available to the terminal sessions,
      * so we just return the {@link #mTermuxTerminalSessionServiceClient}. Once {@link MainActivity} bind
      * callback is received, it should call {@link #setTermuxTerminalSessionClient} to set the
-     * {@link TermuxService#mTermuxTerminalSessionActivityClient} so that further terminal sessions are directly
+     * {@link TerminalService#mTermuxTerminalSessionActivityClient} so that further terminal sessions are directly
      * passed the {@link TermuxTerminalSessionActivityClient} object which fully implements the
      * {@link TerminalSessionClient} interface.
      *
      * @return Returns the {@link TermuxTerminalSessionActivityClient} if {@link MainActivity} has bound with
-     * {@link TermuxService}, otherwise {@link TermuxTerminalSessionServiceClient}.
+     * {@link TerminalService}, otherwise {@link TermuxTerminalSessionServiceClient}.
      */
     public synchronized TermuxTerminalSessionClientBase getTermuxTerminalSessionClient() {
         return Objects.requireNonNullElse(mTermuxTerminalSessionActivityClient, mTermuxTerminalSessionServiceClient);
@@ -377,7 +376,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     /**
      * This should be called when {@link MainActivity#onServiceConnected} is called to set the
-     * {@link TermuxService#mTermuxTerminalSessionActivityClient} variable and update the {@link TerminalSession}
+     * {@link TerminalService#mTermuxTerminalSessionActivityClient} variable and update the {@link TerminalSession}
      * and {@link TerminalEmulator} clients in case they were passed {@link TermuxTerminalSessionServiceClient}
      * earlier.
      *
@@ -393,7 +392,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     /**
      * This should be called when {@link MainActivity} has been destroyed and in {@link #onUnbind(Intent)}
-     * so that the {@link TermuxService} and {@link TerminalSession} and {@link TerminalEmulator}
+     * so that the {@link TerminalService} and {@link TerminalSession} and {@link TerminalEmulator}
      * clients do not hold an activity references.
      */
     public synchronized void unsetTermuxTerminalSessionClient() {
@@ -413,7 +412,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         if (wakeLockHeld) notificationText = getString(R.string.notification_title_sessions_wakelock, sessionCount);
         else notificationText = getString(R.string.notification_title_sessions, sessionCount);
 
-        Intent exitIntent = new Intent(this, TermuxService.class).setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
+        Intent exitIntent = new Intent(this, TerminalService.class).setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
         PendingIntent exitPendingIntent = PendingIntent.getService(this, 0, exitIntent, PendingIntent.FLAG_IMMUTABLE);
         Notification.Action exitAction = new Notification.Action.Builder(
             Icon.createWithResource(this, android.R.drawable.ic_delete),
@@ -422,7 +421,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         ).build();
 
         String newWakeAction = wakeLockHeld ? TERMUX_SERVICE.ACTION_WAKE_UNLOCK : TERMUX_SERVICE.ACTION_WAKE_LOCK;
-        Intent toggleWakeLockIntent = new Intent(this, TermuxService.class).setAction(newWakeAction);
+        Intent toggleWakeLockIntent = new Intent(this, TerminalService.class).setAction(newWakeAction);
         String actionTitle = getString(wakeLockHeld ? R.string.notification_action_wake_unlock : R.string.notification_action_wake_lock);
         Icon actionIcon = Icon.createWithResource(this,
             wakeLockHeld ? android.R.drawable.ic_lock_idle_lock : android.R.drawable.ic_lock_lock

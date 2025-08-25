@@ -62,7 +62,7 @@
     <string name="notification_action_wake_unlock">Release wakelock</string>
 
 
-    <!-- TermuxService -->
+    <!-- TerminalService -->
 
 
     <!-- Termux RunCommandService -->

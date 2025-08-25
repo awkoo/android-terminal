@@ -30,7 +30,7 @@
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
-        android:name=".app.TermuxApplication"
+        android:name=".app.Application"
         android:banner="@drawable/banner"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
@@ -83,7 +83,7 @@
 
 
         <service
-            android:name=".app.TermuxService"
+            android:name=".app.TerminalService"
             android:exported="false"
             android:foregroundServiceType="specialUse" />
 
