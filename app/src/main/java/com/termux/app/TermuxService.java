@@ -2,12 +2,13 @@ package com.termux.app;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.graphics.drawable.Icon;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
@@ -19,7 +20,6 @@ import com.termux.R;
 import com.termux.app.activities.MainActivity;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.TermuxTerminalSessionServiceClient;
-import com.termux.shared.notification.NotificationUtils;
 import com.termux.shared.shell.command.ExecutionCommand;
 import com.termux.shared.shell.command.ExecutionCommand.Runner;
 import com.termux.shared.termux.TermuxConstants;
@@ -412,75 +412,54 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         mTermuxTerminalSessionActivityClient = null;
     }
 
-
     private Notification buildNotification() {
-        Resources res = getResources();
-
-        // Set pending intent to be launched when notification is clicked
         Intent notificationIntent = MainActivity.newInstance(this);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
-
-        // Set notification text
         int sessionCount = getTermuxSessionsSize();
-        String notificationText = sessionCount + " session" + (sessionCount == 1 ? "" : "s");
-
+        String notificationText;
         final boolean wakeLockHeld = mWakeLock != null;
-        if (wakeLockHeld) notificationText += " (wake lock held)";
+        if (wakeLockHeld) notificationText = getString(R.string.notification_title_sessions_wakelock, sessionCount);
+        else notificationText = getString(R.string.notification_title_sessions, sessionCount);
 
-
-        // Set notification priority
-        // If holding a wake or wifi lock consider the notification of high priority since it's using power,
-        // otherwise use a low priority
-        int priority = (wakeLockHeld) ? Notification.PRIORITY_HIGH : Notification.PRIORITY_LOW;
-
-
-        // Build the notification
-        Notification.Builder builder = NotificationUtils.geNotificationBuilder(
-            this,
-            TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_ID,
-            priority,
-            TermuxConstants.TERMUX_APP_NAME,
-            notificationText,
-            null,
-            contentIntent,
-            null,
-            NotificationUtils.NOTIFICATION_MODE_SILENT
-        );
-        if (builder == null) return null;
-
-        // No need to show a timestamp:
-        builder.setShowWhen(false);
-
-        // Set notification icon
-        builder.setSmallIcon(R.drawable.ic_service_notification);
-
-        // Set background color for small notification icon
-        builder.setColor(0xFF607D8B);
-
-        // TermuxSessions are always ongoing
-        builder.setOngoing(true);
-
-
-        // Set Exit button action
         Intent exitIntent = new Intent(this, TermuxService.class).setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
-        builder.addAction(android.R.drawable.ic_delete, res.getString(R.string.notification_action_exit), PendingIntent.getService(this, 0, exitIntent, PendingIntent.FLAG_IMMUTABLE));
+        PendingIntent exitPendingIntent = PendingIntent.getService(this, 0, exitIntent, PendingIntent.FLAG_IMMUTABLE);
+        Notification.Action exitAction = new Notification.Action.Builder(
+            Icon.createWithResource(this, android.R.drawable.ic_delete),
+            getString(R.string.notification_action_exit),
+            exitPendingIntent
+        ).build();
 
-
-        // Set Wakelock button actions
         String newWakeAction = wakeLockHeld ? TERMUX_SERVICE.ACTION_WAKE_UNLOCK : TERMUX_SERVICE.ACTION_WAKE_LOCK;
         Intent toggleWakeLockIntent = new Intent(this, TermuxService.class).setAction(newWakeAction);
-        String actionTitle = res.getString(wakeLockHeld ? R.string.notification_action_wake_unlock : R.string.notification_action_wake_lock);
-        int actionIcon = wakeLockHeld ? android.R.drawable.ic_lock_idle_lock : android.R.drawable.ic_lock_lock;
-        builder.addAction(actionIcon, actionTitle, PendingIntent.getService(this, 0, toggleWakeLockIntent, PendingIntent.FLAG_IMMUTABLE));
+        String actionTitle = getString(wakeLockHeld ? R.string.notification_action_wake_unlock : R.string.notification_action_wake_lock);
+        Icon actionIcon = Icon.createWithResource(this,
+            wakeLockHeld ? android.R.drawable.ic_lock_idle_lock : android.R.drawable.ic_lock_lock
+        );
+        PendingIntent toggleWakeLockPendingIntent = PendingIntent.getService(this, 0, toggleWakeLockIntent, PendingIntent.FLAG_IMMUTABLE);
+        Notification.Action toggleWakeLockAction = new Notification.Action.Builder(
+            actionIcon, actionTitle, toggleWakeLockPendingIntent
+        ).build();
 
-
-        return builder.build();
+        return new Notification.Builder(this, TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(notificationText)
+            .setContentIntent(contentIntent)
+            .setShowWhen(false)
+            .setSmallIcon(R.drawable.ic_service_notification)
+            .setOngoing(true)
+            .addAction(exitAction)
+            .addAction(toggleWakeLockAction)
+            .build();
     }
 
     private void setupNotificationChannel() {
-        NotificationUtils.setupNotificationChannel(this, TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_ID,
-            TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel channel = new NotificationChannel(
+            TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_ID,
+            TermuxConstants.TERMUX_APP_NOTIFICATION_CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_LOW
+        );
+        manager.createNotificationChannel(channel);
     }
 
     /**

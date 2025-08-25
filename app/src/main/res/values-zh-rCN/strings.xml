@@ -74,4 +74,6 @@
     <string name="su_path">su可执行文件路径</string>
     <string name="termux_terminal_view_terminal_margin_adjustment_title">Terminal Margin Adjustment</string>
     <string name="termux_terminal_view_terminal_margin_adjustment_off">Terminal margin adjustment will be disabled.</string>
+    <string name="notification_title_sessions">%1$d个会话正在运行</string>
+    <string name="notification_title_sessions_wakelock">%1$d个会话正在运行（已获取唤醒锁）</string>
 </resources>

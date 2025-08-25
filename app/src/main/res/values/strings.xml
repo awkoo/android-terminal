@@ -182,6 +182,8 @@
     <string name="title_shell">Shell</string>
     <string name="title_init_session_with_root">Init session with root user</string>
     <string name="su_path">The path to the executable su</string>
+    <string name="notification_title_sessions">%1$d sessions running</string>
+    <string name="notification_title_sessions_wakelock">%1$d sessions running (wakelock held)</string>
 
 
     <!-- TermuxUtils -->
