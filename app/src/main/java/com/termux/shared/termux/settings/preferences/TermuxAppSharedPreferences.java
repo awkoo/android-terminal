@@ -1,27 +1,27 @@
 package com.termux.shared.termux.settings.preferences;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.TypedValue;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
-import com.termux.shared.settings.preferences.AppSharedPreferences;
 import com.termux.shared.settings.preferences.SharedPreferenceUtils;
 import com.termux.shared.termux.TermuxConstants;
 import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.settings.preferences.TermuxPreferenceConstants.TERMUX_APP;
 
-public class TermuxAppSharedPreferences extends AppSharedPreferences {
+public class TermuxAppSharedPreferences {
 
+    /** The {@link SharedPreferences} that ideally should be created with {@link SharedPreferenceUtils#getPrivateSharedPreferences(Context, String)}. */
+    private final SharedPreferences mSharedPreferences;
     private int MIN_FONTSIZE;
     private int MAX_FONTSIZE;
     private int DEFAULT_FONTSIZE;
 
     private TermuxAppSharedPreferences(@NonNull Context context) {
-        super(context,
-            SharedPreferenceUtils.getPrivateSharedPreferences(context,
-                TermuxConstants.TERMUX_DEFAULT_PREFERENCES_FILE_BASENAME_WITHOUT_EXTENSION));
-
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         setFontVariables(context);
     }
 
