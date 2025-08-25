@@ -14,8 +14,5 @@ public class TermuxApplication extends Application {
 
         // Init app wide SharedProperties loaded from termux.properties
         TermuxAppSharedProperties.init(context);
-
-        // Init app wide shell manager
-//        TermuxShellManager.init();
     }
 }

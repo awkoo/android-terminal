@@ -21,13 +21,11 @@ public class TermuxAppSharedProperties extends TermuxSharedProperties {
      * Initialize the {@link #properties} and load properties from disk.
      *
      * @param context The {@link Context} for operations.
-     * @return Returns the {@link TermuxAppSharedProperties}.
      */
-    public static TermuxAppSharedProperties init(@NonNull Context context) {
+    public static void init(@NonNull Context context) {
         if (properties == null)
             properties = new TermuxAppSharedProperties(context);
 
-        return properties;
     }
 
     /**
