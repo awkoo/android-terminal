@@ -283,7 +283,6 @@ public class LocalServerSocket implements Closeable {
                     LocalClientSocket clientSocket = null;
                     try {
                         // Listen for new client socket connections
-                        clientSocket = null;
                         clientSocket = accept();
                         // If server socket is closed, then stop listener thread.
                         if (clientSocket == null)
@@ -316,10 +315,8 @@ public class LocalServerSocket implements Closeable {
                 }
             } catch (Exception ignored) {
             } finally {
-                try {
-                    close();
-                } catch (Exception ignored) {
-                }
+                try {close();}
+                catch (Exception ignored) {}
             }
 
             //        logMessage(Log.VERBOSE, tag, message);

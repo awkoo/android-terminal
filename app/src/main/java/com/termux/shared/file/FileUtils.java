@@ -338,7 +338,6 @@ public class FileUtils {
              * exception added to the Error that's returned by this function.
              * https://github.com/google/guava/blob/v30.1.1/guava/src/com/google/common/io/MoreFiles.java#L775
              */
-            //noinspection UnstableApiUsage
             com.google.common.io.MoreFiles.deleteRecursively(file.toPath(), RecursiveDeleteOption.ALLOW_INSECURE);
 
             // If file still exists after deleting it
