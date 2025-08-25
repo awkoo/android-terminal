@@ -122,7 +122,6 @@ public class SharedProperties {
             Object internalValue;
             for (String key : propertiesList) {
                 value = properties.getProperty(key); // value will be null if key does not exist in propertiesFile
-                // Logger.logVerbose(LOG_TAG, key + " : " + value);
 
                 // Call the {@link SharedPropertiesParser#getInternalPropertyValueFromValue(Context,String,String)}
                 // interface method to get the internal value to store in the {@link #mMap}.
@@ -222,20 +221,15 @@ public class SharedProperties {
     public static Properties getPropertiesFromFile(Context context, File propertiesFile, @Nullable SharedPropertiesParser sharedPropertiesParser) {
         Properties properties = new Properties();
 
-        if (propertiesFile == null) {
-//            Logger.logWarn(LOG_TAG, "Not loading properties since file is null");
-            return properties;
-        }
+        if (propertiesFile == null) return properties;
 
         try {
             try (FileInputStream in = new FileInputStream(propertiesFile)) {
-//                Logger.logVerbose(LOG_TAG, "Loading properties from \"" + propertiesFile.getAbsolutePath() + "\" file");
                 properties.load(new InputStreamReader(in, StandardCharsets.UTF_8));
             }
         } catch (Exception e) {
             if (context != null)
                 Toast.makeText(context, "Could not open properties file \"" + propertiesFile.getAbsolutePath() + "\": " + e.getMessage(), Toast.LENGTH_LONG).show();
-//            Logger.logStackTraceWithMessage("Error loading properties file \"" + propertiesFile.getAbsolutePath() + "\"");
             return null;
         }
 
@@ -252,10 +246,9 @@ public class SharedProperties {
      * be followed for potential security reasons.
      *
      * @param propertiesFilePaths The {@link List<String>} containing properties file paths.
-     * @param logTag              If log tag to use for logging errors.
      * @return Returns the {@link File} object for Termux:Float app properties.
      */
-    public static File getPropertiesFileFromList(List<String> propertiesFilePaths, @NonNull String logTag) {
+    public static File getPropertiesFileFromList(List<String> propertiesFilePaths) {
         if (propertiesFilePaths == null || propertiesFilePaths.isEmpty())
             return null;
 
@@ -395,19 +388,6 @@ public class SharedProperties {
     public static Object getDefaultIfNotInMap(String key, @NonNull BiMap<?, ?> map, Object inputValue, Object defaultOutputValue, boolean logErrorOnInvalidValue, String logTag) {
         Object outputValue = map.get(inputValue);
         if (outputValue == null) {
-//            Object defaultInputValue = map.inverse().get(defaultOutputValue);
-            //        logMessage(Log.ERROR, tag, message);
-//            if (defaultInputValue == null)
-//                map.values();
-
-//            if (logErrorOnInvalidValue && inputValue != null) {
-//                if (key != null) {
-//        logMessage(Log.ERROR, tag, message);
-//                } else {
-//        logMessage(Log.ERROR, tag, message);
-//                }
-//            }
-
             return defaultOutputValue;
         } else {
             return outputValue;
@@ -431,13 +411,6 @@ public class SharedProperties {
      */
     public static int getDefaultIfNotInRange(String key, int value, int def, int min, int max, boolean logErrorOnInvalidValue, boolean ignoreErrorIfValueZero, String logTag) {
         if (value < min || value > max) {
-//            if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
-//                if (key != null) {
-//        logMessage(Log.ERROR, tag, message);
-//                } else {
-//        logMessage(Log.ERROR, tag, message);
-//                }
-//            }
             return def;
         } else {
             return value;
@@ -461,13 +434,6 @@ public class SharedProperties {
      */
     public static float getDefaultIfNotInRange(String key, float value, float def, float min, float max, boolean logErrorOnInvalidValue, boolean ignoreErrorIfValueZero, String logTag) {
         if (value < min || value > max) {
-//            if (logErrorOnInvalidValue && (!ignoreErrorIfValueZero || value != 0)) {
-//                if (key != null) {
-//        logMessage(Log.ERROR, tag, message);
-//                } else {
-//        logMessage(Log.ERROR, tag, message);
-//                }
-//            }
             return def;
         } else {
             return value;

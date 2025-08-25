@@ -44,7 +44,7 @@ public abstract class TermuxSharedProperties {
         // Properties files must be searched everytime since no file may exist when constructor is
         // called or a higher priority file may have been created afterward. Otherwise, if no file
         // was found, then default props would keep loading, since mSharedProperties would be null. #2836
-        mPropertiesFile = SharedProperties.getPropertiesFileFromList(mPropertiesFilePaths, LOG_TAG);
+        mPropertiesFile = SharedProperties.getPropertiesFileFromList(mPropertiesFilePaths);
         mSharedProperties = null;
         mSharedProperties = new SharedProperties(mContext, mPropertiesFile, mPropertiesList, mSharedPropertiesParser);
 
