@@ -132,9 +132,14 @@ public class TermuxSession {
             return null;
         }
 
-        TerminalSession terminalSession = new TerminalSession(executionCommand.executable,
-            executionCommand.workingDirectory, executionCommand.arguments, environmentArray,
-            executionCommand.terminalTranscriptRows, terminalSessionClient);
+        TerminalSession terminalSession = new TerminalSession(
+            executionCommand.executable,
+            executionCommand.workingDirectory,
+            executionCommand.arguments,
+            environmentArray,
+            executionCommand.terminalTranscriptRows,
+            terminalSessionClient
+        );
 
         if (executionCommand.shellName != null) {
             terminalSession.mSessionName = executionCommand.shellName;

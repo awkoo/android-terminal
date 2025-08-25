@@ -297,15 +297,6 @@ public final class TermuxService extends Service implements TermuxSession.Termux
             Runner.TERMINAL_SESSION.getName()
         );
         executionCommand.shellName = sessionName;
-        return createTermuxSession(executionCommand);
-    }
-
-    /**
-     * Create a {@link TermuxSession}.
-     */
-    @Nullable
-    public synchronized TermuxSession createTermuxSession(ExecutionCommand executionCommand) {
-        if (executionCommand == null) return null;
         if (!Runner.TERMINAL_SESSION.equalsRunner(executionCommand.runner)) {
             return null;
         }
