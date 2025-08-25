@@ -10,10 +10,10 @@ public class Logger {
     /**
      * The maximum size of the log entry payload that can be written to the logger. An attempt to
      * write more than this amount will result in a truncated log entry.
-     *
+     * <p>
      * The limit is 4068 but this includes log tag and log level prefix "D/" before log tag and ": "
      * suffix after it.
-     *
+     * <p>
      * #define LOGGER_ENTRY_MAX_PAYLOAD 4068
      * https://cs.android.com/android/_/android/platform/system/core/+/android10-release:liblog/include/log/log_read.h;l=127
      */
@@ -69,7 +69,6 @@ public class Logger {
     }
 
 
-
     public static String getStackTracesString(String label, String[] stackTraceStringArray) {
         if (label == null) label = "StackTraces:";
         StringBuilder stackTracesString = new StringBuilder(label);
@@ -112,14 +111,14 @@ public class Logger {
         if (object != null)
             return label + ": `" + object + "`";
         else
-            return  label + ": "  +  def;
+            return label + ": " + def;
     }
 
     public static String getMultiLineLogStringEntry(String label, Object object, String def) {
         if (object != null)
             return label + ":\n```\n" + object + "\n```\n";
         else
-            return  label + ": "  +  def;
+            return label + ": " + def;
     }
 
 }

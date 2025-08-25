@@ -12,9 +12,9 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import com.termux.R;
 import com.termux.terminal.TerminalBuffer;
 import com.termux.terminal.WcWidth;
-import com.termux.R;
 import com.termux.view.TerminalView;
 
 public class TextSelectionCursorController implements CursorController {
@@ -105,7 +105,7 @@ public class TextSelectionCursorController implements CursorController {
             }
         }
     }
-    
+
     public void setActionModeCallBacks() {
         final ActionMode.Callback callback = new ActionMode.Callback() {
             @Override
@@ -364,18 +364,24 @@ public class TextSelectionCursorController implements CursorController {
         sel[3] = mSelX2;
     }
 
-    /** Get the currently selected text. */
+    /**
+     * Get the currently selected text.
+     */
     public String getSelectedText() {
         return terminalView.mEmulator.getSelectedText(mSelX1, mSelY1, mSelX2, mSelY2);
     }
 
-    /** Get the selected text stored before "MORE" button was pressed on the context menu. */
+    /**
+     * Get the selected text stored before "MORE" button was pressed on the context menu.
+     */
     @Nullable
     public String getStoredSelectedText() {
         return mStoredSelectedText;
     }
 
-    /** Unset the selected text stored before "MORE" button was pressed on the context menu. */
+    /**
+     * Unset the selected text stored before "MORE" button was pressed on the context menu.
+     */
     public void unsetStoredSelectedText() {
         mStoredSelectedText = null;
     }

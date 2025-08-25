@@ -2,9 +2,9 @@ package com.termux.terminal;
 
 /**
  * Implementation of wcwidth(3) for Unicode 15.
- *
+ * <p>
  * Implementation from https://github.com/jquast/wcwidth but we return 0 for unprintable characters.
- *
+ * <p>
  * IMPORTANT:
  * Must be kept in sync with the following:
  * https://github.com/termux/wcwidth
@@ -510,7 +510,9 @@ public final class WcWidth {
         return false;
     }
 
-    /** Return the terminal display width of a code point: 0, 1 || 2. */
+    /**
+     * Return the terminal display width of a code point: 0, 1 || 2.
+     */
     public static int width(int ucs) {
         if (ucs == 0 ||
             ucs == 0x034F ||
@@ -532,7 +534,9 @@ public final class WcWidth {
         return intable(WIDE_EASTASIAN, ucs) ? 2 : 1;
     }
 
-    /** The width at an index position in a java char array. */
+    /**
+     * The width at an index position in a java char array.
+     */
     public static int width(char[] chars, int index) {
         char c = chars[index];
         return Character.isHighSurrogate(c) ? width(Character.toCodePoint(c, chars[index + 1])) : width(c);
@@ -547,7 +551,7 @@ public final class WcWidth {
             return 0;
 
         int count = 0;
-        for (int i = start; i < end && i < chars.length;) {
+        for (int i = start; i < end && i < chars.length; ) {
             if (Character.isHighSurrogate(chars[i])) {
                 if (width(Character.toCodePoint(chars[i], chars[i + 1])) <= 0) {
                     count++;

@@ -7,14 +7,16 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
+import com.termux.shared.data.DataUtils;
 import com.termux.shared.settings.preferences.SharedPreferenceUtils;
 import com.termux.shared.termux.TermuxConstants;
-import com.termux.shared.data.DataUtils;
 import com.termux.shared.termux.settings.preferences.TermuxPreferenceConstants.TERMUX_APP;
 
 public class TermuxAppSharedPreferences {
 
-    /** The {@link SharedPreferences} that ideally should be created with {@link SharedPreferenceUtils#getPrivateSharedPreferences(Context, String)}. */
+    /**
+     * The {@link SharedPreferences} that ideally should be created with {@link SharedPreferenceUtils#getPrivateSharedPreferences(Context, String)}.
+     */
     private final SharedPreferences mSharedPreferences;
     private int MIN_FONTSIZE;
     private int MAX_FONTSIZE;
@@ -37,7 +39,6 @@ public class TermuxAppSharedPreferences {
         Context termuxPackageContext = context.getApplicationContext();
         return new TermuxAppSharedPreferences(termuxPackageContext);
     }
-
 
 
     public boolean shouldShowTerminalToolbar() {
@@ -75,7 +76,6 @@ public class TermuxAppSharedPreferences {
     public void setKeepScreenOn(boolean value) {
         SharedPreferenceUtils.setBoolean(mSharedPreferences, TERMUX_APP.KEY_KEEP_SCREEN_ON, value, false);
     }
-
 
 
     public static int[] getDefaultFontSizes(Context context) {
@@ -124,7 +124,6 @@ public class TermuxAppSharedPreferences {
 
         setFontSize(fontSize);
     }
-
 
 
     public String getCurrentSession() {

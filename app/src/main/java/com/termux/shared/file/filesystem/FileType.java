@@ -1,6 +1,8 @@
 package com.termux.shared.file.filesystem;
 
-/** The {@link Enum} that defines file types. */
+/**
+ * The {@link Enum} that defines file types.
+ */
 public enum FileType {
 
     NO_EXIST("no exist", 0),    // 00000000

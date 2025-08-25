@@ -29,19 +29,18 @@ public class ReflectionUtils {
         }
     }
 
-    /** Check if android hidden API reflection restrictions are bypassed. */
+    /**
+     * Check if android hidden API reflection restrictions are bypassed.
+     */
     public static boolean areHiddenAPIReflectionRestrictionsBypassed() {
         return HIDDEN_API_REFLECTION_RESTRICTIONS_BYPASSED;
     }
 
 
-
-
-
     /**
      * Get a {@link Field} for the specified class.
      *
-     * @param clazz The {@link Class} for which to return the field.
+     * @param clazz     The {@link Class} for which to return the field.
      * @param fieldName The name of the {@link Field}.
      * @return Returns the {@link Field} if getting the it was successful, otherwise {@code null}.
      */
@@ -57,8 +56,9 @@ public class ReflectionUtils {
     }
 
 
-
-    /** Class that represents result of invoking a field. */
+    /**
+     * Class that represents result of invoking a field.
+     */
     public static class FieldInvokeResult {
         public boolean success;
         public Object value;
@@ -70,12 +70,12 @@ public class ReflectionUtils {
 
     /**
      * Get a value for a {@link Field} of an object for the specified class.
-     *
+     * <p>
      * Trying to access {@code null} fields will result in {@link NoSuchFieldException}.
      *
-     * @param clazz The {@link Class} to which the object belongs to.
+     * @param clazz     The {@link Class} to which the object belongs to.
      * @param fieldName The name of the {@link Field}.
-     * @param object The {@link Object} instance from which to get the field value.
+     * @param object    The {@link Object} instance from which to get the field value.
      * @return Returns the {@link FieldInvokeResult} of invoking the field. The
      * {@link FieldInvokeResult#success} will be {@code true} if invoking the field was successful,
      * otherwise {@code false}. The {@link FieldInvokeResult#value} will contain the field
@@ -93,9 +93,6 @@ public class ReflectionUtils {
     }
 
 
-
-
-
     /**
      * Wrapper for {@link #getDeclaredMethod(Class, String, Class[])} without parameters.
      */
@@ -107,8 +104,8 @@ public class ReflectionUtils {
     /**
      * Get a {@link Method} for the specified class with the specified parameters.
      *
-     * @param clazz The {@link Class} for which to return the method.
-     * @param methodName The name of the {@link Method}.
+     * @param clazz          The {@link Class} for which to return the method.
+     * @param methodName     The name of the {@link Method}.
      * @param parameterTypes The parameter types of the method.
      * @return Returns the {@link Method} if getting the it was successful, otherwise {@code null}.
      */
@@ -124,7 +121,6 @@ public class ReflectionUtils {
     }
 
 
-
     /**
      * Wrapper for {@link #invokeVoidMethod(Method, Object, Object...)} without arguments.
      */
@@ -137,8 +133,8 @@ public class ReflectionUtils {
      * {@code void}.
      *
      * @param method The {@link Method} to invoke.
-     * @param obj The {@link Object} the method should be invoked from.
-     * @param args The arguments to pass to the method.
+     * @param obj    The {@link Object} the method should be invoked from.
+     * @param args   The arguments to pass to the method.
      * @return Returns {@code true} if invoking the method was successful, otherwise {@code false}.
      */
     public static boolean invokeVoidMethod(@NonNull Method method, Object obj, Object... args) {
@@ -152,8 +148,9 @@ public class ReflectionUtils {
     }
 
 
-
-    /** Class that represents result of invoking a method that has a non-void return type. */
+    /**
+     * Class that represents result of invoking a method that has a non-void return type.
+     */
     public static class MethodInvokeResult {
         public boolean success;
         public Object value;
@@ -176,8 +173,8 @@ public class ReflectionUtils {
      * Invoke a {@link Method} on the specified object with the specified arguments.
      *
      * @param method The {@link Method} to invoke.
-     * @param obj The {@link Object} the method should be invoked from.
-     * @param args The arguments to pass to the method.
+     * @param obj    The {@link Object} the method should be invoked from.
+     * @param args   The arguments to pass to the method.
      * @return Returns the {@link MethodInvokeResult} of invoking the method. The
      * {@link MethodInvokeResult#success} will be {@code true} if invoking the method was successful,
      * otherwise {@code false}. The {@link MethodInvokeResult#value} will contain the {@link Object}
@@ -192,7 +189,6 @@ public class ReflectionUtils {
             return new MethodInvokeResult(false, null);
         }
     }
-
 
 
     /**
@@ -219,7 +215,7 @@ public class ReflectionUtils {
     /**
      * Get a {@link Constructor} for the specified class with the specified parameters.
      *
-     * @param clazz The {@link Class} for which to return the constructor.
+     * @param clazz          The {@link Class} for which to return the constructor.
      * @param parameterTypes The parameter types of the constructor.
      * @return Returns the {@link Constructor} if getting the it was successful, otherwise {@code null}.
      */
@@ -235,7 +231,6 @@ public class ReflectionUtils {
     }
 
 
-
     /**
      * Wrapper for {@link #invokeConstructor(Constructor, Object...)} without arguments.
      */
@@ -248,7 +243,7 @@ public class ReflectionUtils {
      * Invoke a {@link Constructor} with the specified arguments.
      *
      * @param constructor The {@link Constructor} to invoke.
-     * @param args The arguments to pass to the constructor.
+     * @param args        The arguments to pass to the constructor.
      * @return Returns the new instance if invoking the constructor was successful, otherwise {@code null}.
      */
     @Nullable

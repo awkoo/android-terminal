@@ -9,7 +9,7 @@
 
     <!-- TermuxApp DayNight DarkActionBar theme. -->
     <!-- TermuxApp DayNight NoActionBar theme. -->
-    <style name="Theme.TermuxApp.DayNight.NoActionBar" parent="Theme.BaseActivity.DayNight.NoActionBar"/>
+    <style name="Theme.TermuxApp.DayNight.NoActionBar" parent="Theme.BaseActivity.DayNight.NoActionBar" />
 
 
     <!-- TermuxActivity DayNight NoActionBar theme. -->
@@ -66,8 +66,8 @@
         <item name="colorOnSecondary">@color/white</item>
 
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
-        <item name="colorPrimaryDark" >?attr/colorPrimary</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="colorPrimaryDark">?attr/colorPrimary</item>
 
         <!-- Text color. -->
         <item name="android:textColorPrimary">@color/black</item>
@@ -92,12 +92,10 @@
     </style>
 
 
-
     <!-- BaseActivity DayNight DarkActionBar theme. -->
-    <style name="Theme.BaseActivity.DayNight.DarkActionBar" parent="Theme.BaseActivity.Light.DarkActionBar"/>
+    <style name="Theme.BaseActivity.DayNight.DarkActionBar" parent="Theme.BaseActivity.Light.DarkActionBar" />
     <!-- BaseActivity DayNight NoActionBar theme. -->
-    <style name="Theme.BaseActivity.DayNight.NoActionBar" parent="Theme.BaseActivity.Light.NoActionBar"/>
-
+    <style name="Theme.BaseActivity.DayNight.NoActionBar" parent="Theme.BaseActivity.Light.NoActionBar" />
 
 
     <!-- BaseActivity extended classes Day NoActionBar themes. -->
@@ -133,7 +131,7 @@
     </style>
 
     <!-- BaseDialog DayNight theme. -->
-    <style name="ThemeOverlay.BaseDialog.DayNight" parent="ThemeOverlay.BaseDialog.Light"/>
+    <style name="ThemeOverlay.BaseDialog.DayNight" parent="ThemeOverlay.BaseDialog.Light" />
 
     <!-- BaseDialog extended classes DayNight themes. -->
 

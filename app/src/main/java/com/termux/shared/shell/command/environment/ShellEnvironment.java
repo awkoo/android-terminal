@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 /**
  * Environment for Android.
- *
+ * <p>
  * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/core/java/android/os/Environment.java
  * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:system/core/rootdir/init.environ.rc.in
  * https://cs.android.com/android/platform/superproject/+/android-5.0.0_r1.0.1:system/core/rootdir/init.environ.rc.in
@@ -14,7 +14,9 @@ import java.util.HashMap;
  * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:packages/modules/SdkExtensions/derive_classpath/derive_classpath.cpp;l=96
  */
 public class ShellEnvironment {
-    /** Names for common/supported login shell binaries. */
+    /**
+     * Names for common/supported login shell binaries.
+     */
     public static final String LOGIN_SHELL_BINARIES = "sh";
 
     public static final String ENVNAME_PWD = "PWD";

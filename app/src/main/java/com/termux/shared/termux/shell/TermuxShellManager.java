@@ -37,7 +37,6 @@ public class TermuxShellManager {
     public static int TERMINAL_SESSION_NUMBER_SINCE_APP_START;
 
 
-
     public TermuxShellManager(@NonNull Context context) {
         mContext = context.getApplicationContext();
     }

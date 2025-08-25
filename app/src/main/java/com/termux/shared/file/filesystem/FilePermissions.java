@@ -25,21 +25,31 @@
 
 package com.termux.shared.file.filesystem;
 
-import static com.termux.shared.file.filesystem.FilePermission.*;
+import static com.termux.shared.file.filesystem.FilePermission.GROUP_EXECUTE;
+import static com.termux.shared.file.filesystem.FilePermission.GROUP_READ;
+import static com.termux.shared.file.filesystem.FilePermission.GROUP_WRITE;
+import static com.termux.shared.file.filesystem.FilePermission.OTHERS_EXECUTE;
+import static com.termux.shared.file.filesystem.FilePermission.OTHERS_READ;
+import static com.termux.shared.file.filesystem.FilePermission.OTHERS_WRITE;
+import static com.termux.shared.file.filesystem.FilePermission.OWNER_EXECUTE;
+import static com.termux.shared.file.filesystem.FilePermission.OWNER_READ;
+import static com.termux.shared.file.filesystem.FilePermission.OWNER_WRITE;
 
-import java.util.*;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * This class consists exclusively of static methods that operate on sets of
  * {@link FilePermission} objects.
- *
+ * <p>
  * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/java/java/nio/file/attribute/PosixFilePermissions.java
  *
  * @since 1.7
  */
 
 public final class FilePermissions {
-    private FilePermissions() { }
+    private FilePermissions() {
+    }
 
     // Write string representation of permission bits to {@code sb}.
     private static void writeBits(StringBuilder sb, boolean r, boolean w, boolean x) {
@@ -68,10 +78,8 @@ public final class FilePermissions {
      * <p> If the set contains {@code null} or elements that are not of type
      * {@code FilePermission} then these elements are ignored.
      *
-     * @param   perms
-     *          the set of permissions
-     *
-     * @return  the string representation of the permission set
+     * @param perms the set of permissions
+     * @return the string representation of the permission set
      */
     public static String toString(Set<FilePermission> perms) {
         StringBuilder sb = new StringBuilder(9);
@@ -91,9 +99,18 @@ public final class FilePermissions {
             return false;
         throw new IllegalArgumentException("Invalid mode");
     }
-    private static boolean isR(char c) { return isSet(c, 'r'); }
-    private static boolean isW(char c) { return isSet(c, 'w'); }
-    private static boolean isX(char c) { return isSet(c, 'x'); }
+
+    private static boolean isR(char c) {
+        return isSet(c, 'r');
+    }
+
+    private static boolean isW(char c) {
+        return isSet(c, 'w');
+    }
+
+    private static boolean isX(char c) {
+        return isSet(c, 'x');
+    }
 
     /**
      * Returns the set of permissions corresponding to a given {@code String}
@@ -116,14 +133,9 @@ public final class FilePermissions {
      *   Set&lt;FilePermission&gt; perms = FilePermissions.fromString("rwxr-x---");
      * </pre>
      *
-     * @param   perms
-     *          string representing a set of permissions
-     *
-     * @return  the resulting set of permissions
-     *
-     * @throws  IllegalArgumentException
-     *          if the string cannot be converted to a set of permissions
-     *
+     * @param perms string representing a set of permissions
+     * @return the resulting set of permissions
+     * @throws IllegalArgumentException if the string cannot be converted to a set of permissions
      * @see #toString(Set)
      */
     public static Set<FilePermission> fromString(String perms) {

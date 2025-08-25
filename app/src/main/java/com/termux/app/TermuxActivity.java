@@ -21,27 +21,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.termux.R;
-import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
-import com.termux.app.terminal.io.TermuxTerminalExtraKeys;
-import com.termux.databinding.ActivityTermuxBinding;
-import com.termux.shared.activity.ActivityUtils;
-import com.termux.shared.data.DataUtils;
-import com.termux.app.activities.SettingsActivity;
-import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
-import com.termux.app.terminal.TermuxSessionsListViewController;
-import com.termux.app.terminal.io.TerminalToolbarViewPager;
-import com.termux.app.terminal.TermuxTerminalViewClient;
-import com.termux.shared.termux.extrakeys.ExtraKeysView;
-import com.termux.shared.termux.interact.TextInputDialogUtils;
-import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
-import com.termux.shared.view.ViewUtils;
-import com.termux.terminal.TerminalSession;
-import com.termux.terminal.TerminalSessionClient;
-import com.termux.utils.UI;
-import com.termux.view.TerminalView;
-import com.termux.view.TerminalViewClient;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,6 +28,27 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
+
+import com.termux.R;
+import com.termux.app.activities.SettingsActivity;
+import com.termux.app.terminal.TermuxSessionsListViewController;
+import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
+import com.termux.app.terminal.TermuxTerminalViewClient;
+import com.termux.app.terminal.io.TerminalToolbarViewPager;
+import com.termux.app.terminal.io.TermuxTerminalExtraKeys;
+import com.termux.databinding.ActivityTermuxBinding;
+import com.termux.shared.activity.ActivityUtils;
+import com.termux.shared.data.DataUtils;
+import com.termux.shared.termux.extrakeys.ExtraKeysView;
+import com.termux.shared.termux.interact.TextInputDialogUtils;
+import com.termux.shared.termux.settings.preferences.TermuxAppSharedPreferences;
+import com.termux.shared.termux.settings.properties.TermuxAppSharedProperties;
+import com.termux.shared.view.ViewUtils;
+import com.termux.terminal.TerminalSession;
+import com.termux.terminal.TerminalSessionClient;
+import com.termux.utils.UI;
+import com.termux.view.TerminalView;
+import com.termux.view.TerminalViewClient;
 
 /**
  * A terminal emulator activity.
@@ -77,14 +77,14 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     TerminalView mTerminalView;
 
     /**
-     *  The {@link TerminalViewClient} interface implementation to allow for communication between
-     *  {@link TerminalView} and {@link TermuxActivity}.
+     * The {@link TerminalViewClient} interface implementation to allow for communication between
+     * {@link TerminalView} and {@link TermuxActivity}.
      */
     TermuxTerminalViewClient mTermuxTerminalViewClient;
 
     /**
-     *  The {@link TerminalSessionClient} interface implementation to allow for communication between
-     *  {@link TerminalSession} and {@link TermuxActivity}.
+     * The {@link TerminalSessionClient} interface implementation to allow for communication between
+     * {@link TerminalSession} and {@link TermuxActivity}.
      */
     TermuxTerminalSessionActivityClient mTermuxTerminalSessionActivityClient;
 
@@ -282,9 +282,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
 
-
-
-
     /**
      * Part of the {@link ServiceConnection} interface. The service is bound with
      * {@link #bindService(Intent, ServiceConnection, int)} in {@link #onCreate(Bundle)} which will cause a call to this
@@ -334,10 +331,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
 
-
-
-
-
     private void reloadProperties() {
         mProperties.loadTermuxPropertiesFromDisk();
 
@@ -352,7 +345,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         int marginVertical = mProperties.getTerminalMarginVertical();
         ViewUtils.setLayoutMarginsInDp(relativeLayout, marginHorizontal, marginVertical, marginHorizontal, marginVertical);
     }
-
 
 
     private void setTermuxTerminalViewAndClients() {
@@ -380,13 +372,13 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
 
-
     private void setTerminalToolbarView(Bundle savedInstanceState) {
         mTermuxTerminalExtraKeys = new TermuxTerminalExtraKeys(this, mTerminalView,
             mTermuxTerminalViewClient, mTermuxTerminalSessionActivityClient);
 
         final ViewPager terminalToolbarViewPager = getTerminalToolbarViewPager();
-        if (mPreferences.shouldShowTerminalToolbar()) terminalToolbarViewPager.setVisibility(View.VISIBLE);
+        if (mPreferences.shouldShowTerminalToolbar())
+            terminalToolbarViewPager.setVisibility(View.VISIBLE);
 
         ViewGroup.LayoutParams layoutParams = terminalToolbarViewPager.getLayoutParams();
         mTerminalToolbarDefaultHeight = layoutParams.height;
@@ -431,10 +423,10 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         final EditText textInputView = findViewById(R.id.terminal_toolbar_text_input);
         if (textInputView != null) {
             String textInput = textInputView.getText().toString();
-            if (!textInput.isEmpty()) savedInstanceState.putString(ARG_TERMINAL_TOOLBAR_TEXT_INPUT, textInput);
+            if (!textInput.isEmpty())
+                savedInstanceState.putString(ARG_TERMINAL_TOOLBAR_TEXT_INPUT, textInput);
         }
     }
-
 
 
     private void setSettingsButtonView() {
@@ -467,9 +459,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
 
-
-
-
     @SuppressLint("RtlHardcoded")
     @Override
     public void onBackPressed() {
@@ -487,7 +476,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             finish();
         }
     }
-
 
 
     @Override
@@ -511,7 +499,9 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         menu.add(Menu.NONE, CONTEXT_MENU_SETTINGS_ID, Menu.NONE, R.string.action_open_settings);
     }
 
-    /** Hook system menu to show context menu instead. */
+    /**
+     * Hook system menu to show context menu instead.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         mTerminalView.showContextMenu();
@@ -656,7 +646,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
 
-
     public TermuxService getTermuxService() {
         return mTermuxService;
     }
@@ -684,9 +673,6 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     public TermuxAppSharedProperties getProperties() {
         return mProperties;
     }
-
-
-
 
 
     public static Intent newInstance(@NonNull final Context context) {

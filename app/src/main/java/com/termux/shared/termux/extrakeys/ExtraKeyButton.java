@@ -13,16 +13,24 @@ import java.util.stream.Collectors;
 
 public class ExtraKeyButton {
 
-    /** The key name for the name of the extra key if using a dict to define the extra key. {key: name, ...} */
+    /**
+     * The key name for the name of the extra key if using a dict to define the extra key. {key: name, ...}
+     */
     public static final String KEY_KEY_NAME = "key";
 
-    /** The key name for the macro value of the extra key if using a dict to define the extra key. {macro: value, ...} */
+    /**
+     * The key name for the macro value of the extra key if using a dict to define the extra key. {macro: value, ...}
+     */
     public static final String KEY_MACRO = "macro";
 
-    /** The key name for the alternate display name of the extra key if using a dict to define the extra key. {display: name, ...} */
+    /**
+     * The key name for the alternate display name of the extra key if using a dict to define the extra key. {display: name, ...}
+     */
     public static final String KEY_DISPLAY_NAME = "display";
 
-    /** The key name for the nested dict to define popup extra key info if using a dict to define the extra key. {popup: {key: name, ...}, ...} */
+    /**
+     * The key name for the nested dict to define popup extra key info if using a dict to define the extra key. {popup: {key: name, ...}, ...}
+     */
     public static final String KEY_POPUP = "popup";
 
 
@@ -52,11 +60,11 @@ public class ExtraKeyButton {
     /**
      * Initialize a {@link ExtraKeyButton}.
      *
-     * @param config The {@link JSONObject} containing the info to create the {@link ExtraKeyButton}.
+     * @param config             The {@link JSONObject} containing the info to create the {@link ExtraKeyButton}.
      * @param extraKeyDisplayMap The {@link ExtraKeysConstants.ExtraKeyDisplayMap} that defines the
      *                           display text mapping for the keys if a custom value is not defined
      *                           by {@link #KEY_DISPLAY_NAME}.
-     * @param extraKeyAliasMap The {@link ExtraKeysConstants.ExtraKeyDisplayMap} that defines the
+     * @param extraKeyAliasMap   The {@link ExtraKeysConstants.ExtraKeyDisplayMap} that defines the
      *                           aliases for the actual key names.
      */
     public ExtraKeyButton(@NonNull JSONObject config,
@@ -68,12 +76,12 @@ public class ExtraKeyButton {
     /**
      * Initialize a {@link ExtraKeyButton}.
      *
-     * @param config The {@link JSONObject} containing the info to create the {@link ExtraKeyButton}.
-     * @param popup The {@link ExtraKeyButton} optional {@link #popup} button.
+     * @param config             The {@link JSONObject} containing the info to create the {@link ExtraKeyButton}.
+     * @param popup              The {@link ExtraKeyButton} optional {@link #popup} button.
      * @param extraKeyDisplayMap The {@link ExtraKeysConstants.ExtraKeyDisplayMap} that defines the
      *                           display text mapping for the keys if a custom value is not defined
      *                           by {@link #KEY_DISPLAY_NAME}.
-     * @param extraKeyAliasMap The {@link ExtraKeysConstants.ExtraKeyDisplayMap} that defines the
+     * @param extraKeyAliasMap   The {@link ExtraKeysConstants.ExtraKeyDisplayMap} that defines the
      *                           aliases for the actual key names.
      */
     public ExtraKeyButton(@NonNull JSONObject config, @Nullable ExtraKeyButton popup,
@@ -120,22 +128,30 @@ public class ExtraKeyButton {
         }
     }
 
-    /** Get {@link #key}. */
+    /**
+     * Get {@link #key}.
+     */
     public String getKey() {
         return key;
     }
 
-    /** Check whether a {@link #macro} is defined or not. */
+    /**
+     * Check whether a {@link #macro} is defined or not.
+     */
     public boolean isMacro() {
         return macro;
     }
 
-    /** Get {@link #display}. */
+    /**
+     * Get {@link #display}.
+     */
     public String getDisplay() {
         return display;
     }
 
-    /** Get {@link #popup}. */
+    /**
+     * Get {@link #popup}.
+     */
     @Nullable
     public ExtraKeyButton getPopup() {
         return popup;

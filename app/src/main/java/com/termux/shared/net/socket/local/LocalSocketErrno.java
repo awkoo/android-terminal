@@ -7,10 +7,14 @@ public class LocalSocketErrno extends Errno {
     public static final String TYPE = "LocalSocket Error";
 
 
-    /** Errors for {@link LocalSocketManager} (100-150) */
+    /**
+     * Errors for {@link LocalSocketManager} (100-150)
+     */
     public static final Errno ERRNO_START_LOCAL_SOCKET_LIB_LOAD_FAILED_WITH_EXCEPTION = new Errno(TYPE, 100, "Failed to load \"%1$s\" library.\nException: %2$s");
 
-    /** Errors for {@link LocalServerSocket} (150-200) */
+    /**
+     * Errors for {@link LocalServerSocket} (150-200)
+     */
     public static final Errno ERRNO_SERVER_SOCKET_PATH_NULL_OR_EMPTY = new Errno(TYPE, 150, "The \"%1$s\" server socket path is null or empty.");
     public static final Errno ERRNO_SERVER_SOCKET_PATH_TOO_LONG = new Errno(TYPE, 151, "The \"%1$s\" server socket path \"%2$s\" is greater than 108 bytes.");
     public static final Errno ERRNO_SERVER_SOCKET_PATH_NOT_ABSOLUTE = new Errno(TYPE, 152, "The \"%1$s\" server socket path \"%2$s\" is not an absolute file path.");
@@ -25,7 +29,9 @@ public class LocalSocketErrno extends Errno {
     public static final Errno ERRNO_CLOSE_SERVER_SOCKET_FAILED_WITH_EXCEPTION = new Errno(TYPE, 161, "Close \"%1$s\" server socket failed.\nException: %2$s");
     public static final Errno ERRNO_CLIENT_SOCKET_LISTENER_FAILED_WITH_EXCEPTION = new Errno(TYPE, 162, "Exception in client socket listener for \"%1$s\" server.\nException: %2$s");
 
-    /** Errors for {@link LocalClientSocket} (200-250) */
+    /**
+     * Errors for {@link LocalClientSocket} (200-250)
+     */
     public static final Errno ERRNO_SET_CLIENT_SOCKET_READ_TIMEOUT_FAILED = new Errno(TYPE, 200, "Set \"%1$s\" client socket read (SO_RCVTIMEO) timeout to \"%2$s\" failed.\n%3$s");
     public static final Errno ERRNO_SET_CLIENT_SOCKET_SEND_TIMEOUT_FAILED = new Errno(TYPE, 201, "Set \"%1$s\" client socket send (SO_SNDTIMEO) timeout \"%2$s\" failed.\n%3$s");
     public static final Errno ERRNO_READ_DATA_FROM_CLIENT_SOCKET_FAILED = new Errno(TYPE, 202, "Read data from \"%1$s\" client socket failed.\n%2$s");

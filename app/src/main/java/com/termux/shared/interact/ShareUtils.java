@@ -21,8 +21,8 @@ public class ShareUtils {
      * Open the system app chooser that allows the user to select which app to send the intent.
      *
      * @param context The context for operations.
-     * @param intent The intent that describes the choices that should be shown.
-     * @param title The title for choose menu.
+     * @param intent  The intent that describes the choices that should be shown.
+     * @param title   The title for choose menu.
      */
     public static void openSystemAppChooser(final Context context, final Intent intent, final String title) {
         if (context == null) return;
@@ -43,8 +43,8 @@ public class ShareUtils {
      *
      * @param context The context for operations.
      * @param subject The subject for sharing.
-     * @param text The text to share.
-     * @param title The title for share menu.
+     * @param text    The text to share.
+     * @param title   The title for share menu.
      */
     public static void shareText(final Context context, final String subject, final String text, @Nullable final String title) {
         if (context == null || text == null) return;
@@ -58,13 +58,16 @@ public class ShareUtils {
     }
 
 
-
-    /** Wrapper for {@link #copyTextToClipboard(Context, String, String, String)} with `null` `clipDataLabel` and `toastString`. */
+    /**
+     * Wrapper for {@link #copyTextToClipboard(Context, String, String, String)} with `null` `clipDataLabel` and `toastString`.
+     */
     public static void copyTextToClipboard(Context context, final String text) {
         copyTextToClipboard(context, null, text, null);
     }
 
-    /** Wrapper for {@link #copyTextToClipboard(Context, String, String, String)} with `null` `clipDataLabel`. */
+    /**
+     * Wrapper for {@link #copyTextToClipboard(Context, String, String, String)} with `null` `clipDataLabel`.
+     */
     public static void copyTextToClipboard(Context context, final String text, final String toastString) {
         copyTextToClipboard(context, null, text, toastString);
     }
@@ -72,11 +75,11 @@ public class ShareUtils {
     /**
      * Copy the text to primary clip of the clipboard.
      *
-     * @param context The context for operations.
+     * @param context       The context for operations.
      * @param clipDataLabel The label to show to the user describing the copied text.
-     * @param text The text to copy.
-     * @param toastString If this is not {@code null} or empty, then a toast is shown if copying to
-     *                    clipboard is successful.
+     * @param text          The text to copy.
+     * @param toastString   If this is not {@code null} or empty, then a toast is shown if copying to
+     *                      clipboard is successful.
      */
     public static void copyTextToClipboard(Context context, @Nullable final String clipDataLabel,
                                            final String text, final String toastString) {
@@ -94,7 +97,6 @@ public class ShareUtils {
     }
 
 
-
     /**
      * Wrapper for {@link #getTextFromClipboard(Context, boolean)} that returns primary text {@link String}
      * if its set and not empty.
@@ -110,7 +112,7 @@ public class ShareUtils {
     /**
      * Get the text from primary clip of the clipboard.
      *
-     * @param context The context for operations.
+     * @param context      The context for operations.
      * @param coerceToText Whether to call {@link ClipData.Item#coerceToText(Context)} to coerce
      *                     non-text data to text.
      * @return Returns the {@link CharSequence} of primary text. This will be `null` if failed to get it.
@@ -132,12 +134,11 @@ public class ShareUtils {
     }
 
 
-
     /**
      * Open a url.
      *
      * @param context The context for operations.
-     * @param url The url to open.
+     * @param url     The url to open.
      */
     public static void openUrl(final Context context, final String url) {
         if (context == null || url == null || url.isEmpty()) return;

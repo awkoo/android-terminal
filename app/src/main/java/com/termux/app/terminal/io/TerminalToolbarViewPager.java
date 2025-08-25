@@ -91,7 +91,6 @@ public class TerminalToolbarViewPager {
     }
 
 
-
     public static class OnPageChangeListener extends ViewPager.SimpleOnPageChangeListener {
 
         final TermuxActivity mActivity;

@@ -40,7 +40,8 @@ public class NativeDispatcher {
     }
 
     public static void validateFileExistence(String filePath) throws IOException {
-        if (filePath == null || filePath.isEmpty()) throw new IOException("The path is null or empty");
+        if (filePath == null || filePath.isEmpty())
+            throw new IOException("The path is null or empty");
 
         File file = new File(filePath);
 

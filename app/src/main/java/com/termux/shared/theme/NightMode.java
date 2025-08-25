@@ -4,13 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
-/** The modes used by to decide night mode for themes. */
+/**
+ * The modes used by to decide night mode for themes.
+ */
 public enum NightMode {
 
-    /** Night theme should be enabled. */
+    /**
+     * Night theme should be enabled.
+     */
     TRUE("true", AppCompatDelegate.MODE_NIGHT_YES),
 
-    /** Dark theme should be enabled. */
+    /**
+     * Dark theme should be enabled.
+     */
     FALSE("false", AppCompatDelegate.MODE_NIGHT_NO),
 
     /**
@@ -19,7 +25,9 @@ public enum NightMode {
      */
     SYSTEM("system", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
 
-    /** The current app wide night mode used by various libraries. Defaults to {@link #SYSTEM}. */
+    /**
+     * The current app wide night mode used by various libraries. Defaults to {@link #SYSTEM}.
+     */
     private static NightMode APP_NIGHT_MODE;
 
     private static final String LOG_TAG = "NightMode";
@@ -41,7 +49,9 @@ public enum NightMode {
     }
 
 
-    /** Get {@link NightMode} for {@code name} if found, otherwise {@code null}. */
+    /**
+     * Get {@link NightMode} for {@code name} if found, otherwise {@code null}.
+     */
     @Nullable
     public static NightMode modeOf(String name) {
         for (NightMode v : NightMode.values()) {
@@ -53,7 +63,9 @@ public enum NightMode {
         return null;
     }
 
-    /** Get {@link NightMode} for {@code name} if found, otherwise {@code def}. */
+    /**
+     * Get {@link NightMode} for {@code name} if found, otherwise {@code def}.
+     */
     @NonNull
     public static NightMode modeOf(@Nullable String name, @NonNull NightMode def) {
         NightMode nightMode = modeOf(name);
@@ -61,7 +73,9 @@ public enum NightMode {
     }
 
 
-    /** Set {@link #APP_NIGHT_MODE}. */
+    /**
+     * Set {@link #APP_NIGHT_MODE}.
+     */
     public static void setAppNightMode(@Nullable String name) {
         if (name == null || name.isEmpty()) {
             APP_NIGHT_MODE = SYSTEM;
@@ -77,11 +91,13 @@ public enum NightMode {
         //        logMessage(Log.VERBOSE, tag, message);
     }
 
-    /** Get {@link #APP_NIGHT_MODE}. */
+    /**
+     * Get {@link #APP_NIGHT_MODE}.
+     */
     @NonNull
     public static NightMode getAppNightMode() {
         if (APP_NIGHT_MODE == null)
-            APP_NIGHT_MODE =  SYSTEM;
+            APP_NIGHT_MODE = SYSTEM;
 
         return APP_NIGHT_MODE;
     }

@@ -6,11 +6,11 @@ import android.net.Uri;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.termux.shared.data.DataUtils;
 import com.termux.shared.data.IntentUtils;
-import com.termux.shared.shell.command.result.ResultData;
 import com.termux.shared.errors.Error;
 import com.termux.shared.logger.Logger;
-import com.termux.shared.data.DataUtils;
+import com.termux.shared.shell.command.result.ResultData;
 import com.termux.terminal.TerminalSession;
 
 import java.util.Collections;
@@ -26,7 +26,9 @@ public class ExecutionCommand {
     perspective.
     */
 
-    /** The {@link Enum} that defines {@link ExecutionCommand} state. */
+    /**
+     * The {@link Enum} that defines {@link ExecutionCommand} state.
+     */
     public enum ExecutionState {
 
         PRE_EXECUTION("Pre-Execution", 0),
@@ -56,7 +58,9 @@ public class ExecutionCommand {
 
     public enum Runner {
 
-        /** Run command in {@link TerminalSession}. */
+        /**
+         * Run command in {@link TerminalSession}.
+         */
         TERMINAL_SESSION("terminal-session"),
 
         APP_SHELL("app-shell");
@@ -75,7 +79,9 @@ public class ExecutionCommand {
             return runner != null && runner.equals(this.name);
         }
 
-        /** Get {@link Runner} for {@code name} if found, otherwise {@code null}. */
+        /**
+         * Get {@link Runner} for {@code name} if found, otherwise {@code null}.
+         */
         @Nullable
         public static Runner runnerOf(String name) {
             for (Runner v : Runner.values()) {
@@ -86,7 +92,9 @@ public class ExecutionCommand {
             return null;
         }
 
-        /** Get {@link Runner} for {@code name} if found, otherwise {@code def}. */
+        /**
+         * Get {@link Runner} for {@code name} if found, otherwise {@code def}.
+         */
         @NonNull
         public static Runner runnerOf(@Nullable String name, @NonNull Runner def) {
             Runner runner = runnerOf(name);
@@ -97,10 +105,14 @@ public class ExecutionCommand {
 
     public enum ShellCreateMode {
 
-        /** Always create {@link TerminalSession}. */
+        /**
+         * Always create {@link TerminalSession}.
+         */
         ALWAYS("always"),
 
-        /** Create shell only if no shell with {@link #shellName} found. */
+        /**
+         * Create shell only if no shell with {@link #shellName} found.
+         */
         NO_SHELL_WITH_NAME("no-shell-with-name");
 
         private final String mode;
@@ -117,7 +129,9 @@ public class ExecutionCommand {
             return sessionCreateMode != null && sessionCreateMode.equals(this.mode);
         }
 
-        /** Get {@link ShellCreateMode} for {@code mode} if found, otherwise {@code null}. */
+        /**
+         * Get {@link ShellCreateMode} for {@code mode} if found, otherwise {@code null}.
+         */
         @Nullable
         public static ShellCreateMode modeOf(String mode) {
             for (ShellCreateMode v : ShellCreateMode.values()) {
@@ -130,68 +144,104 @@ public class ExecutionCommand {
 
     }
 
-    /** The optional unique id for the {@link ExecutionCommand}. This should equal -1 if execution
-     * command is not going to be managed by a shell manager. */
+    /**
+     * The optional unique id for the {@link ExecutionCommand}. This should equal -1 if execution
+     * command is not going to be managed by a shell manager.
+     */
     public Integer id;
 
-    /** The process id of command. */
+    /**
+     * The process id of command.
+     */
     public int mPid = -1;
 
-    /** The current state of the {@link ExecutionCommand}. */
+    /**
+     * The current state of the {@link ExecutionCommand}.
+     */
     private ExecutionState currentState = ExecutionState.PRE_EXECUTION;
-    /** The previous state of the {@link ExecutionCommand}. */
+    /**
+     * The previous state of the {@link ExecutionCommand}.
+     */
     private ExecutionState previousState = ExecutionState.PRE_EXECUTION;
 
 
-    /** The executable for the {@link ExecutionCommand}. */
+    /**
+     * The executable for the {@link ExecutionCommand}.
+     */
     public String executable;
-    /** The executable Uri for the {@link ExecutionCommand}. */
+    /**
+     * The executable Uri for the {@link ExecutionCommand}.
+     */
     public Uri executableUri;
-    /** The executable arguments array for the {@link ExecutionCommand}. */
+    /**
+     * The executable arguments array for the {@link ExecutionCommand}.
+     */
     public String[] arguments;
-    /** The stdin string for the {@link ExecutionCommand}. */
+    /**
+     * The stdin string for the {@link ExecutionCommand}.
+     */
     public String stdin;
-    /** The current working directory for the {@link ExecutionCommand}. */
+    /**
+     * The current working directory for the {@link ExecutionCommand}.
+     */
     public String workingDirectory;
 
 
-    /** The terminal transcript rows for the {@link ExecutionCommand}. */
+    /**
+     * The terminal transcript rows for the {@link ExecutionCommand}.
+     */
     public Integer terminalTranscriptRows;
 
 
-    /** The {@link Runner} for the {@link ExecutionCommand}. */
+    /**
+     * The {@link Runner} for the {@link ExecutionCommand}.
+     */
     public String runner;
 
 
-    /** The session action of {@link Runner#TERMINAL_SESSION} commands. */
+    /**
+     * The session action of {@link Runner#TERMINAL_SESSION} commands.
+     */
     public String sessionAction;
 
 
-    /** The shell name of commands. */
+    /**
+     * The shell name of commands.
+     */
     public String shellName;
 
-    /** The {@link ShellCreateMode} of commands. */
+    /**
+     * The {@link ShellCreateMode} of commands.
+     */
     public String shellCreateMode;
 
-    /** Whether to set {@link ExecutionCommand} shell environment. */
+    /**
+     * Whether to set {@link ExecutionCommand} shell environment.
+     */
     public boolean setShellCommandShellEnvironment;
 
 
-
-
-    /** The command label for the {@link ExecutionCommand}. */
+    /**
+     * The command label for the {@link ExecutionCommand}.
+     */
     public String commandLabel;
 
 
-    /** Defines the {@link Intent} received which started the command. */
+    /**
+     * Defines the {@link Intent} received which started the command.
+     */
     public Intent commandIntent;
 
-    /** Defines the {@link ResultData} for the {@link ExecutionCommand} containing information
-     * of the result. */
+    /**
+     * Defines the {@link ResultData} for the {@link ExecutionCommand} containing information
+     * of the result.
+     */
     public final ResultData resultData = new ResultData();
 
 
-    /** Defines if processing results already called for this {@link ExecutionCommand}. */
+    /**
+     * Defines if processing results already called for this {@link ExecutionCommand}.
+     */
     public boolean processingResultsAlreadyCalled;
 
     public ExecutionCommand(
@@ -224,7 +274,7 @@ public class ExecutionCommand {
             previousState = currentState;
 
         currentState = newState;
-        return  true;
+        return true;
     }
 
     public synchronized boolean hasExecuted() {
@@ -247,6 +297,7 @@ public class ExecutionCommand {
     public synchronized boolean setStateFailed(@NonNull Error error, Throwable throwable) {
         return setStateFailed(error.getType(), error.getCode(), error.getMessage(), Collections.singletonList(throwable));
     }
+
     public synchronized boolean setStateFailed(@NonNull Error error, List<Throwable> throwablesList) {
         return setStateFailed(error.getType(), error.getCode(), error.getMessage(), throwablesList);
     }
@@ -262,6 +313,7 @@ public class ExecutionCommand {
     public synchronized boolean setStateFailed(int code, String message, List<Throwable> throwablesList) {
         return setStateFailed(null, code, message, throwablesList);
     }
+
     public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
         this.resultData.setStateFailed(type, code, message, throwablesList);
         return setState(ExecutionState.FAILED);
@@ -298,8 +350,8 @@ public class ExecutionCommand {
      * Get a log friendly {@link String} for {@link ExecutionCommand} execution input parameters.
      *
      * @param executionCommand The {@link ExecutionCommand} to convert.
-     * @param ignoreNull Set to {@code true} if non-critical {@code null} values are to be ignored.
-     * @param logStdin Set to {@code true} if {@link #stdin} should be logged.
+     * @param ignoreNull       Set to {@code true} if non-critical {@code null} values are to be ignored.
+     * @param logStdin         Set to {@code true} if {@link #stdin} should be logged.
      * @return Returns the log friendly {@link String}.
      */
     public static String getExecutionInputLogString(final ExecutionCommand executionCommand, boolean ignoreNull, boolean logStdin) {
@@ -348,9 +400,9 @@ public class ExecutionCommand {
     /**
      * Get a log friendly {@link String} for {@link ExecutionCommand} execution output parameters.
      *
-     * @param executionCommand The {@link ExecutionCommand} to convert.
-     * @param ignoreNull Set to {@code true} if non-critical {@code null} values are to be ignored.
-     * @param logResultData Set to {@code true} if {@link #resultData} should be logged.
+     * @param executionCommand   The {@link ExecutionCommand} to convert.
+     * @param ignoreNull         Set to {@code true} if non-critical {@code null} values are to be ignored.
+     * @param logResultData      Set to {@code true} if {@link #resultData} should be logged.
      * @param logStdoutAndStderr Set to {@code true} if {@link ResultData#stdout} and {@link ResultData#stderr} should be logged.
      * @return Returns the log friendly {@link String}.
      */
@@ -452,7 +504,7 @@ public class ExecutionCommand {
      * Get a log friendly {@link String} for {@link List<String>} argumentsArray.
      * If argumentsArray are null or of size 0, then `Arguments: -` is returned. Otherwise
      * following format is returned:
-     *
+     * <p>
      * Arguments:
      * ```
      * Arg 1: `value`
@@ -473,7 +525,7 @@ public class ExecutionCommand {
                     "-")).append("\n");
             }
             argumentsString.append("```");
-        } else{
+        } else {
             argumentsString.append(" -");
         }
 

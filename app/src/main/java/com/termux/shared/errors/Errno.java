@@ -9,7 +9,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-/** The {@link Class} that defines error messages and codes. */
+/**
+ * The {@link Class} that defines error messages and codes.
+ */
 public class Errno {
 
     private static final HashMap<String, Errno> map = new HashMap<>();
@@ -22,11 +24,17 @@ public class Errno {
     public static final Errno ERRNO_MINOR_FAILURES = new Errno(TYPE, Activity.RESULT_FIRST_USER, "Minor failure");
     public static final Errno ERRNO_FAILED = new Errno(TYPE, Activity.RESULT_FIRST_USER + 1, "Failed");
 
-    /** The errno type. */
+    /**
+     * The errno type.
+     */
     protected final String type;
-    /** The errno code. */
+    /**
+     * The errno code.
+     */
     protected final int code;
-    /** The errno message. */
+    /**
+     * The errno message.
+     */
     protected final String message;
 
     private static final String LOG_TAG = "Errno";
@@ -60,7 +68,6 @@ public class Errno {
     }
 
 
-
     /**
      * Get the {@link Errno} of a specific type and code.
      *
@@ -71,7 +78,6 @@ public class Errno {
         if (type == null || type.isEmpty() || code == null) return null;
         return map.get(type + ":" + code);
     }
-
 
 
     public Error getError() {

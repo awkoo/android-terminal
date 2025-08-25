@@ -40,12 +40,12 @@ import java.util.concurrent.TimeUnit;
  * or {@link FileAttributes#creationTime() created}.
  *
  * <p> Instances of this class are immutable.
- *
+ * <p>
  * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/java/java/nio/file/attribute/FileTime.java
  *
- * @since 1.7
  * @see java.nio.file.Files#setLastModifiedTime
  * @see java.nio.file.Files#getLastModifiedTime
+ * @since 1.7
  */
 
 public final class FileTime {
@@ -61,7 +61,7 @@ public final class FileTime {
      * The value since the epoch; can be negative.
      */
     private final long value;
-    
+
 
     /**
      * The value return by toString (created lazily)
@@ -80,13 +80,10 @@ public final class FileTime {
      * Returns a {@code FileTime} representing a value at the given unit of
      * granularity.
      *
-     * @param   value
-     *          the value since the epoch (1970-01-01T00:00:00Z); can be
-     *          negative
-     * @param   unit
-     *          the unit of granularity to interpret the value
-     *
-     * @return  a {@code FileTime} representing the given value
+     * @param value the value since the epoch (1970-01-01T00:00:00Z); can be
+     *              negative
+     * @param unit  the unit of granularity to interpret the value
+     * @return a {@code FileTime} representing the given value
      */
     public static FileTime from(long value, @NonNull TimeUnit unit) {
         Objects.requireNonNull(unit, "unit");
@@ -96,11 +93,9 @@ public final class FileTime {
     /**
      * Returns a {@code FileTime} representing the given value in milliseconds.
      *
-     * @param   value
-     *          the value, in milliseconds, since the epoch
-     *          (1970-01-01T00:00:00Z); can be negative
-     *
-     * @return  a {@code FileTime} representing the given value
+     * @param value the value, in milliseconds, since the epoch
+     *              (1970-01-01T00:00:00Z); can be negative
+     * @return a {@code FileTime} representing the given value
      */
     public static FileTime fromMillis(long value) {
         return new FileTime(value, TimeUnit.MILLISECONDS);
@@ -113,11 +108,9 @@ public final class FileTime {
      * saturate to {@code Long.MIN_VALUE} if negative or {@code Long.MAX_VALUE}
      * if positive.
      *
-     * @param   unit
-     *          the unit of granularity for the return value
-     *
-     * @return  value in the given unit of granularity, since the epoch
-     *          since the epoch (1970-01-01T00:00:00Z); can be negative
+     * @param unit the unit of granularity for the return value
+     * @return value in the given unit of granularity, since the epoch
+     * since the epoch (1970-01-01T00:00:00Z); can be negative
      */
     public long to(TimeUnit unit) {
         Objects.requireNonNull(unit, "unit");
@@ -131,7 +124,7 @@ public final class FileTime {
      * saturate to {@code Long.MIN_VALUE} if negative or {@code Long.MAX_VALUE}
      * if positive.
      *
-     * @return  the value in milliseconds, since the epoch (1970-01-01T00:00:00Z)
+     * @return the value in milliseconds, since the epoch (1970-01-01T00:00:00Z)
      */
     public long toMillis() {
         return unit.toMillis(value);
@@ -148,7 +141,7 @@ public final class FileTime {
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(milliSeconds);
             return new SimpleDateFormat(format).format(calendar.getTime());
-        } catch(Exception e) {
+        } catch (Exception e) {
             return Long.toString(milliSeconds);
         }
     }

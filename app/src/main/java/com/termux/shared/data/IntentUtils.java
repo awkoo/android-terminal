@@ -16,9 +16,9 @@ public class IntentUtils {
     /**
      * Get a {@link String} extra from an {@link Intent} if its not {@code null} or empty.
      *
-     * @param intent The {@link Intent} to get the extra from.
-     * @param key The {@link String} key name.
-     * @param def The default value if extra is not set.
+     * @param intent                 The {@link Intent} to get the extra from.
+     * @param key                    The {@link String} key name.
+     * @param def                    The default value if extra is not set.
      * @param throwExceptionIfNotSet If set to {@code true}, then an exception will be thrown if extra
      *                               is not set.
      * @return Returns the {@link String} extra if set, otherwise {@code null}.
@@ -34,8 +34,8 @@ public class IntentUtils {
      * Get a {@link String} extra from an {@link Intent} if its not {@code null} or empty.
      *
      * @param intent The {@link Intent} to get the extra from.
-     * @param key The {@link String} key name.
-     * @param def The default value if extra is not set.
+     * @param key    The {@link String} key name.
+     * @param def    The default value if extra is not set.
      * @return Returns the {@link String} extra if set, otherwise {@code null}.
      */
     public static String getStringExtraIfSet(@NonNull Intent intent, String key, String def) {
@@ -54,8 +54,8 @@ public class IntentUtils {
      * {@code null} or empty.
      *
      * @param intent The {@link Intent} to get the extra from.
-     * @param key The {@link String} key name.
-     * @param def The default value if extra is not set.
+     * @param key    The {@link String} key name.
+     * @param def    The default value if extra is not set.
      * @return Returns the {@link Integer} extra if set, otherwise {@code null}.
      */
     public static Integer getIntegerExtraIfSet(@NonNull Intent intent, String key, Integer def) {
@@ -66,20 +66,18 @@ public class IntentUtils {
             }
 
             return Integer.parseInt(value);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return def;
         }
     }
 
 
-
     /**
      * Get a {@link String[]} extra from an {@link Intent} if its not {@code null} or empty.
      *
-     * @param intent The {@link Intent} to get the extra from.
-     * @param key The {@link String} key name.
-     * @param def The default value if extra is not set.
+     * @param intent                 The {@link Intent} to get the extra from.
+     * @param key                    The {@link String} key name.
+     * @param def                    The default value if extra is not set.
      * @param throwExceptionIfNotSet If set to {@code true}, then an exception will be thrown if extra
      *                               is not set.
      * @return Returns the {@link String[]} extra if set, otherwise {@code null}.
@@ -95,8 +93,8 @@ public class IntentUtils {
      * Get a {@link String[]} extra from an {@link Intent} if its not {@code null} or empty.
      *
      * @param intent The {@link Intent} to get the extra from.
-     * @param key The {@link String} key name.
-     * @param def The default value if extra is not set.
+     * @param key    The {@link String} key name.
+     * @param def    The default value if extra is not set.
      * @return Returns the {@link String[]} extra if set, otherwise {@code null}.
      */
     public static String[] getStringArrayExtraIfSet(Intent intent, String key, String[] def) {

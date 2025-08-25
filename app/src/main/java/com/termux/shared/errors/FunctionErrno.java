@@ -1,6 +1,8 @@
 package com.termux.shared.errors;
 
-/** The {@link Class} that defines function error messages and codes. */
+/**
+ * The {@link Class} that defines function error messages and codes.
+ */
 public class FunctionErrno extends Errno {
 
     public static final String TYPE = "Function Error";

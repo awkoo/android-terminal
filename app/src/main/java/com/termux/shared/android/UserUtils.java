@@ -19,7 +19,7 @@ public class UserUtils {
      * and if that fails, then a call to {@link #getNameForUidFromLibcore(int)}.
      *
      * @param context The {@link Context} for operations.
-     * @param uid The user id.
+     * @param uid     The user id.
      * @return Returns the user name if found, otherwise {@code null}.
      */
     @Nullable
@@ -32,16 +32,16 @@ public class UserUtils {
 
     /**
      * Get the user name for user id with a call to {@link PackageManager#getNameForUid(int)}.
-     *
+     * <p>
      * This will not return user names for non app user id like for root user 0, use {@link #getNameForUidFromLibcore(int)}
      * to get those.
-     *
+     * <p>
      * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/core/java/android/content/pm/PackageManager.java;l=5556
      * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/core/java/android/app/ApplicationPackageManager.java;l=1028
      * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/services/core/java/com/android/server/pm/PackageManagerService.java;l=10293
      *
      * @param context The {@link Context} for operations.
-     * @param uid The user id.
+     * @param uid     The user id.
      * @return Returns the user name if found, otherwise {@code null}.
      */
     @Nullable
@@ -60,15 +60,15 @@ public class UserUtils {
 
     /**
      * Get the user name for user id with a call to `Libcore.os.getpwuid()`.
-     *
+     * <p>
      * This will return user names for non app user id like for root user 0 as well, but this call
      * is expensive due to usage of reflection, and requires hidden API bypass, check
      * {@link ReflectionUtils#bypassHiddenAPIReflectionRestrictions()} for details.
-     *
+     * <p>
      * `BlockGuardOs` implements the `Os` interface and its instance is stored in `Libcore` class static `os` field.
      * The `getpwuid` method is implemented by `ForwardingOs`, which is the super class of `BlockGuardOs`.
      * The `getpwuid` method returns `StructPasswd` object whose `pw_name` contains the user name for id.
-     *
+     * <p>
      * https://stackoverflow.com/a/28057167/14686958
      * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:libcore/luni/src/main/java/libcore/io/Libcore.java;l=39
      * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:libcore/luni/src/main/java/libcore/io/Os.java;l=279

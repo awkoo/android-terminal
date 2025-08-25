@@ -9,7 +9,6 @@
     <string name="permission_run_command_description">execute arbitrary commands within Terminal</string>
 
 
-
     <!-- Termux Bootstrap Packages Installation -->
 
 
@@ -28,7 +27,6 @@
 
     <string name="msg_enabling_terminal_toolbar">Enabling Terminal Toolbar</string>
     <string name="msg_disabling_terminal_toolbar">Disabling Terminal Toolbar</string>
-
 
 
     <!-- Terminal Popup -->
@@ -64,7 +62,6 @@
     <string name="notification_action_wake_unlock">Release wakelock</string>
 
 
-
     <!-- TermuxService -->
 
 
@@ -77,7 +74,6 @@
     <!-- Miscellaneous -->
     <string name="error_termux_service_start_failed_general">Failed to start TermuxService. Check logcat for exception message.</string>
     <string name="error_termux_service_start_failed_bg">Failed to start TermuxService while app is in background due to android bg restrictions.</string>
-
 
 
     <!-- Termux Settings -->
@@ -99,35 +95,34 @@
 
 
     <!-- Terminal IO Preferences -->
-        <string name="termux_terminal_io_preferences_title">Terminal I/O</string>
-        <string name="termux_terminal_io_preferences_summary">Preferences for terminal I/O</string>
+    <string name="termux_terminal_io_preferences_title">Terminal I/O</string>
+    <string name="termux_terminal_io_preferences_summary">Preferences for terminal I/O</string>
 
-            <!-- Keyboard Category -->
-            <string name="termux_keyboard_header">Keyboard</string>
+    <!-- Keyboard Category -->
+    <string name="termux_keyboard_header">Keyboard</string>
 
-                <!-- Soft Keyboard -->
-                <string name="termux_soft_keyboard_enabled_title">Soft Keyboard Enabled</string>
-                <string name="termux_soft_keyboard_enabled_off">Soft keyboard will be disabled.</string>
-                <string name="termux_soft_keyboard_enabled_on">Soft keyboard will be enabled. (Default)</string>
+    <!-- Soft Keyboard -->
+    <string name="termux_soft_keyboard_enabled_title">Soft Keyboard Enabled</string>
+    <string name="termux_soft_keyboard_enabled_off">Soft keyboard will be disabled.</string>
+    <string name="termux_soft_keyboard_enabled_on">Soft keyboard will be enabled. (Default)</string>
 
-                <!-- Soft Keyboard Only If No Hardware-->
-                <string name="termux_soft_keyboard_enabled_only_if_no_hardware_title">Soft Keyboard Only If No Hardware</string>
-                <string name="termux_soft_keyboard_enabled_only_if_no_hardware_off">Soft keyboard will be enabled even if hardware keyboard is connected. (Default)</string>
-                <string name="termux_soft_keyboard_enabled_only_if_no_hardware_on">Soft keyboard will be enabled only if no hardware keyboard is connected.</string>
+    <!-- Soft Keyboard Only If No Hardware-->
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_title">Soft Keyboard Only If No Hardware</string>
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_off">Soft keyboard will be enabled even if hardware keyboard is connected. (Default)</string>
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_on">Soft keyboard will be enabled only if no hardware keyboard is connected.</string>
 
 
-        <!-- Terminal View Preferences -->
-        <string name="termux_terminal_view_preferences_title">Terminal View</string>
-        <string name="termux_terminal_view_preferences_summary">Preferences for terminal view</string>
+    <!-- Terminal View Preferences -->
+    <string name="termux_terminal_view_preferences_title">Terminal View</string>
+    <string name="termux_terminal_view_preferences_summary">Preferences for terminal view</string>
 
-            <!-- View Category -->
-            <string name="termux_terminal_view_view_header">View</string>
+    <!-- View Category -->
+    <string name="termux_terminal_view_view_header">View</string>
 
-                <!-- Terminal View Margin Adjustment -->
-                <string name="termux_terminal_view_terminal_margin_adjustment_title">Terminal Margin Adjustment</string>
-                <string name="termux_terminal_view_terminal_margin_adjustment_off">Terminal margin adjustment will be disabled.</string>
-                <string name="termux_terminal_view_terminal_margin_adjustment_on">Terminal margin adjustment will be enabled. It should be enabled to try to fix the issue where soft keyboard covers part of extra keys/terminal view.                     If it causes screen flickering on your devices, then disable it. (Default)</string>
-
+    <!-- Terminal View Margin Adjustment -->
+    <string name="termux_terminal_view_terminal_margin_adjustment_title">Terminal Margin Adjustment</string>
+    <string name="termux_terminal_view_terminal_margin_adjustment_off">Terminal margin adjustment will be disabled.</string>
+    <string name="termux_terminal_view_terminal_margin_adjustment_on">Terminal margin adjustment will be enabled. It should be enabled to try to fix the issue where soft keyboard covers part of extra keys/terminal view.                     If it causes screen flickering on your devices, then disable it. (Default)</string>
 
 
     <!-- Termux:API App Preferences -->
@@ -160,7 +155,6 @@
     <string name="error_get_package_context_failed_help_url_message">Check %1$s for more details.</string>
     <string name="error_enable_component_failed">Failed to enable %1$s/%2$s component</string>
     <string name="error_disable_component_failed">Failed to enable %1$s/%2$s component</string>
-
 
 
     <!-- PermissionUtils -->

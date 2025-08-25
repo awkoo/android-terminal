@@ -11,12 +11,12 @@ public class ShellEnvironmentUtils {
 
     /**
      * Convert environment {@link HashMap} to `environ` {@link List <String>}.
-     *
+     * <p>
      * The items in the environ will have the format `name=value`.
-     *
+     * <p>
      * Check {@link #isValidEnvironmentVariableName(String)} and {@link #isValidEnvironmentVariableValue(String)}
      * for valid variable names and values.
-     *
+     * <p>
      * https://manpages.debian.org/testing/manpages/environ.7.en.html
      * https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap08.html
      */
@@ -35,7 +35,7 @@ public class ShellEnvironmentUtils {
     /**
      * Check if environment variable name and value pair is valid. Errors will be logged if
      * {@code logErrors} is {@code true}.
-     *
+     * <p>
      * Check {@link #isValidEnvironmentVariableName(String)} and {@link #isValidEnvironmentVariableValue(String)}
      * for valid variable names and values.
      */

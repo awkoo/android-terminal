@@ -6,18 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.AttributeSet;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ScheduledExecutorService;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.stream.Collectors;
-
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -35,34 +23,44 @@ import com.termux.R;
 import com.termux.shared.termux.terminal.io.TerminalExtraKeys;
 import com.termux.shared.theme.ThemeUtils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 /**
  * A {@link View} showing extra keys (such as Escape, Ctrl, Alt) not normally available on an Android soft
  * keyboards.
- *
+ * <p>
  * To use it, add following to a layout file and import it in your activity layout file or inflate
  * it with a {@link androidx.viewpager.widget.ViewPager}.:
  * {@code
  * <?xml version="1.0" encoding="utf-8"?>
  * <com.termux.shared.termux.extrakeys.ExtraKeysView xmlns:android="http://schemas.android.com/apk/res/android"
- *     android:id="@+id/extra_keys"
- *     style="?android:attr/buttonBarStyle"
- *     android:layout_width="match_parent"
- *     android:layout_height="match_parent"
- *     android:layout_alignParentBottom="true"
- *     android:orientation="horizontal" />
+ * android:id="@+id/extra_keys"
+ * style="?android:attr/buttonBarStyle"
+ * android:layout_width="match_parent"
+ * android:layout_height="match_parent"
+ * android:layout_alignParentBottom="true"
+ * android:orientation="horizontal" />
  * }
- *
+ * <p>
  * Then in your activity, get its reference by a call to {@link android.app.Activity#findViewById(int)}
  * or {@link LayoutInflater#inflate(int, ViewGroup)} if using {@link androidx.viewpager.widget.ViewPager}.
  * Then call {@link #setExtraKeysViewClient(IExtraKeysView)} and pass it the implementation of
  * {@link IExtraKeysView} so that you can receive callbacks. You can also override other values set
  * in {@link ExtraKeysView#ExtraKeysView(Context, AttributeSet)} by calling the respective functions.
  * If you extend {@link ExtraKeysView}, you can also set them in the constructor, but do call super().
- *
+ * <p>
  * After this you will have to make a call to {@link ExtraKeysView#reload(ExtraKeysInfo, float) and pass
  * it the {@link ExtraKeysInfo} to load and display the extra keys. Read its class javadocs for more
  * info on how to create it.
- *
+ * <p>
  * Termux app defines the view in res/layout/view_terminal_toolbar_extra_keys and
  * inflates it in TerminalToolbarViewPager.instantiateItem() and sets the {@link ExtraKeysView} client
  * and calls {@link ExtraKeysView#reload(ExtraKeysInfo).
@@ -74,7 +72,9 @@ import com.termux.shared.theme.ThemeUtils;
  */
 public final class ExtraKeysView extends GridLayout {
 
-    /** The client for the {@link ExtraKeysView}. */
+    /**
+     * The client for the {@link ExtraKeysView}.
+     */
     public interface IExtraKeysView {
 
         /**
@@ -83,11 +83,11 @@ public final class ExtraKeysView extends GridLayout {
          * However, this is not called for {@link #mSpecialButtons}, whose state can instead be read
          * via a call to {@link #readSpecialButton(SpecialButton, boolean)}.
          *
-         * @param view The view that was clicked.
+         * @param view       The view that was clicked.
          * @param buttonInfo The {@link ExtraKeyButton} for the button that was clicked.
          *                   The button may be a {@link ExtraKeyButton#KEY_MACRO} set which can be
          *                   checked with a call to {@link ExtraKeyButton#isMacro()}.
-         * @param button The {@link MaterialButton} that was clicked.
+         * @param button     The {@link MaterialButton} that was clicked.
          */
         void onExtraKeyButtonClick(View view, ExtraKeyButton buttonInfo, MaterialButton button);
 
@@ -96,9 +96,9 @@ public final class ExtraKeysView extends GridLayout {
          * can perform any hepatic feedback. This is only called in the {@link MaterialButton.OnClickListener}
          * and not for every repeat. Its also called for {@link #mSpecialButtons}.
          *
-         * @param view The view that was clicked.
+         * @param view       The view that was clicked.
          * @param buttonInfo The {@link ExtraKeyButton} for the button that was clicked.
-         * @param button The {@link MaterialButton} that was clicked.
+         * @param button     The {@link MaterialButton} that was clicked.
          * @return Return {@code true} if the client handled the feedback, otherwise {@code false}
          * so that {@link ExtraKeysView#performExtraKeyButtonHapticFeedback(View, ExtraKeyButton, MaterialButton)}
          * can handle it depending on system settings.
@@ -108,51 +108,83 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-    /** Defines the default value for {@link #mButtonTextColor} defined by current theme. */
+    /**
+     * Defines the default value for {@link #mButtonTextColor} defined by current theme.
+     */
     public static final int ATTR_BUTTON_TEXT_COLOR = R.attr.extraKeysButtonTextColor;
-    /** Defines the default value for {@link #mButtonActiveTextColor} defined by current theme. */
+    /**
+     * Defines the default value for {@link #mButtonActiveTextColor} defined by current theme.
+     */
     public static final int ATTR_BUTTON_ACTIVE_TEXT_COLOR = R.attr.extraKeysButtonActiveTextColor;
-    /** Defines the default value for {@link #mButtonBackgroundColor} defined by current theme. */
+    /**
+     * Defines the default value for {@link #mButtonBackgroundColor} defined by current theme.
+     */
     public static final int ATTR_BUTTON_BACKGROUND_COLOR = R.attr.extraKeysButtonBackgroundColor;
-    /** Defines the default value for {@link #mButtonActiveBackgroundColor} defined by current theme. */
+    /**
+     * Defines the default value for {@link #mButtonActiveBackgroundColor} defined by current theme.
+     */
     public static final int ATTR_BUTTON_ACTIVE_BACKGROUND_COLOR = R.attr.extraKeysButtonActiveBackgroundColor;
 
-    /** Defines the default fallback value for {@link #mButtonTextColor} if {@link #ATTR_BUTTON_TEXT_COLOR} is undefined. */
+    /**
+     * Defines the default fallback value for {@link #mButtonTextColor} if {@link #ATTR_BUTTON_TEXT_COLOR} is undefined.
+     */
     public static final int DEFAULT_BUTTON_TEXT_COLOR = 0xFFFFFFFF;
-    /** Defines the default fallback value for {@link #mButtonActiveTextColor} if {@link #ATTR_BUTTON_ACTIVE_TEXT_COLOR} is undefined. */
+    /**
+     * Defines the default fallback value for {@link #mButtonActiveTextColor} if {@link #ATTR_BUTTON_ACTIVE_TEXT_COLOR} is undefined.
+     */
     public static final int DEFAULT_BUTTON_ACTIVE_TEXT_COLOR = 0xFF80DEEA;
-    /** Defines the default fallback value for {@link #mButtonBackgroundColor} if {@link #ATTR_BUTTON_BACKGROUND_COLOR} is undefined. */
+    /**
+     * Defines the default fallback value for {@link #mButtonBackgroundColor} if {@link #ATTR_BUTTON_BACKGROUND_COLOR} is undefined.
+     */
     public static final int DEFAULT_BUTTON_BACKGROUND_COLOR = 0x00000000;
-    /** Defines the default fallback value for {@link #mButtonActiveBackgroundColor} if {@link #ATTR_BUTTON_ACTIVE_BACKGROUND_COLOR} is undefined. */
+    /**
+     * Defines the default fallback value for {@link #mButtonActiveBackgroundColor} if {@link #ATTR_BUTTON_ACTIVE_BACKGROUND_COLOR} is undefined.
+     */
     public static final int DEFAULT_BUTTON_ACTIVE_BACKGROUND_COLOR = 0xFF7F7F7F;
 
 
-
-    /** Defines the minimum allowed duration in milliseconds for {@link #mLongPressTimeout}. */
+    /**
+     * Defines the minimum allowed duration in milliseconds for {@link #mLongPressTimeout}.
+     */
     public static final int MIN_LONG_PRESS_DURATION = 200;
-    /** Defines the maximum allowed duration in milliseconds for {@link #mLongPressTimeout}. */
+    /**
+     * Defines the maximum allowed duration in milliseconds for {@link #mLongPressTimeout}.
+     */
     public static final int MAX_LONG_PRESS_DURATION = 3000;
-    /** Defines the fallback duration in milliseconds for {@link #mLongPressTimeout}. */
+    /**
+     * Defines the fallback duration in milliseconds for {@link #mLongPressTimeout}.
+     */
     public static final int FALLBACK_LONG_PRESS_DURATION = 400;
 
-    /** Defines the minimum allowed duration in milliseconds for {@link #mLongPressRepeatDelay}. */
+    /**
+     * Defines the minimum allowed duration in milliseconds for {@link #mLongPressRepeatDelay}.
+     */
     public static final int MIN_LONG_PRESS__REPEAT_DELAY = 5;
-    /** Defines the maximum allowed duration in milliseconds for {@link #mLongPressRepeatDelay}. */
+    /**
+     * Defines the maximum allowed duration in milliseconds for {@link #mLongPressRepeatDelay}.
+     */
     public static final int MAX_LONG_PRESS__REPEAT_DELAY = 2000;
-    /** Defines the default duration in milliseconds for {@link #mLongPressRepeatDelay}. */
+    /**
+     * Defines the default duration in milliseconds for {@link #mLongPressRepeatDelay}.
+     */
     public static final int DEFAULT_LONG_PRESS_REPEAT_DELAY = 80;
 
 
-
-    /** The implementation of the {@link IExtraKeysView} that acts as a client for the {@link ExtraKeysView}. */
+    /**
+     * The implementation of the {@link IExtraKeysView} that acts as a client for the {@link ExtraKeysView}.
+     */
     private IExtraKeysView mExtraKeysViewClient;
 
-    /** The map for the {@link SpecialButton} and their {@link SpecialButtonState}. Defaults to
-     * the one returned by {@link #getDefaultSpecialButtons(ExtraKeysView)}. */
+    /**
+     * The map for the {@link SpecialButton} and their {@link SpecialButtonState}. Defaults to
+     * the one returned by {@link #getDefaultSpecialButtons(ExtraKeysView)}.
+     */
     private Map<SpecialButton, SpecialButtonState> mSpecialButtons;
 
-    /** The keys for the {@link SpecialButton} added to {@link #mSpecialButtons}. This is automatically
-     * set when the call to {@link #setSpecialButtons(Map)} is made. */
+    /**
+     * The keys for the {@link SpecialButton} added to {@link #mSpecialButtons}. This is automatically
+     * set when the call to {@link #setSpecialButtons(Map)} is made.
+     */
     private Set<String> mSpecialButtonsKeys;
 
 
@@ -165,18 +197,28 @@ public final class ExtraKeysView extends GridLayout {
     private List<String> mRepetitiveKeys;
 
 
-    /** The text color for the extra keys button. Defaults to {@link #DEFAULT_BUTTON_TEXT_COLOR}. */
+    /**
+     * The text color for the extra keys button. Defaults to {@link #DEFAULT_BUTTON_TEXT_COLOR}.
+     */
     private int mButtonTextColor;
-    /** The text color for the extra keys button when its active.
-     * Defaults to {@link #DEFAULT_BUTTON_ACTIVE_TEXT_COLOR}. */
+    /**
+     * The text color for the extra keys button when its active.
+     * Defaults to {@link #DEFAULT_BUTTON_ACTIVE_TEXT_COLOR}.
+     */
     private int mButtonActiveTextColor;
-    /** The background color for the extra keys button. Defaults to {@link #DEFAULT_BUTTON_BACKGROUND_COLOR}. */
+    /**
+     * The background color for the extra keys button. Defaults to {@link #DEFAULT_BUTTON_BACKGROUND_COLOR}.
+     */
     private int mButtonBackgroundColor;
-    /** The background color for the extra keys button when its active. Defaults to
-     * {@link #DEFAULT_BUTTON_ACTIVE_BACKGROUND_COLOR}. */
+    /**
+     * The background color for the extra keys button when its active. Defaults to
+     * {@link #DEFAULT_BUTTON_ACTIVE_BACKGROUND_COLOR}.
+     */
     private int mButtonActiveBackgroundColor;
 
-    /** Defines whether text for the extra keys button should be all capitalized automatically. */
+    /**
+     * Defines whether text for the extra keys button should be all capitalized automatically.
+     */
     private boolean mButtonTextAllCaps = true;
 
 
@@ -198,8 +240,10 @@ public final class ExtraKeysView extends GridLayout {
     private int mLongPressRepeatDelay;
 
 
-    /** The popup window shown if {@link ExtraKeyButton#getPopup()} returns a {@code non-null} value
-     * and a swipe up action is done on an extra key. */
+    /**
+     * The popup window shown if {@link ExtraKeyButton#getPopup()} returns a {@code non-null} value
+     * and a swipe up action is done on an extra key.
+     */
     private PopupWindow mPopupWindow;
 
     private ScheduledExecutorService mScheduledExecutor;
@@ -225,42 +269,56 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-    /** Get {@link #mExtraKeysViewClient}. */
+    /**
+     * Get {@link #mExtraKeysViewClient}.
+     */
     public IExtraKeysView getExtraKeysViewClient() {
         return mExtraKeysViewClient;
     }
 
-    /** Set {@link #mExtraKeysViewClient}. */
+    /**
+     * Set {@link #mExtraKeysViewClient}.
+     */
     public void setExtraKeysViewClient(IExtraKeysView extraKeysViewClient) {
         mExtraKeysViewClient = extraKeysViewClient;
     }
 
 
-    /** Get {@link #mRepetitiveKeys}. */
+    /**
+     * Get {@link #mRepetitiveKeys}.
+     */
     public List<String> getRepetitiveKeys() {
         if (mRepetitiveKeys == null) return null;
         return mRepetitiveKeys.stream().map(String::new).collect(Collectors.toList());
     }
 
-    /** Set {@link #mRepetitiveKeys}. Must not be {@code null}. */
+    /**
+     * Set {@link #mRepetitiveKeys}. Must not be {@code null}.
+     */
     public void setRepetitiveKeys(@NonNull List<String> repetitiveKeys) {
         mRepetitiveKeys = repetitiveKeys;
     }
 
 
-    /** Get {@link #mSpecialButtons}. */
+    /**
+     * Get {@link #mSpecialButtons}.
+     */
     public Map<SpecialButton, SpecialButtonState> getSpecialButtons() {
         if (mSpecialButtons == null) return null;
         return mSpecialButtons.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    /** Get {@link #mSpecialButtonsKeys}. */
+    /**
+     * Get {@link #mSpecialButtonsKeys}.
+     */
     public Set<String> getSpecialButtonsKeys() {
         if (mSpecialButtonsKeys == null) return null;
         return mSpecialButtonsKeys.stream().map(String::new).collect(Collectors.toSet());
     }
 
-    /** Set {@link #mSpecialButtonsKeys}. Must not be {@code null}. */
+    /**
+     * Set {@link #mSpecialButtonsKeys}. Must not be {@code null}.
+     */
     public void setSpecialButtons(@NonNull Map<SpecialButton, SpecialButtonState> specialButtons) {
         mSpecialButtons = specialButtons;
         mSpecialButtonsKeys = this.mSpecialButtons.keySet().stream().map(SpecialButton::key).collect(Collectors.toSet());
@@ -270,9 +328,9 @@ public final class ExtraKeysView extends GridLayout {
     /**
      * Set the {@link ExtraKeysView} button colors.
      *
-     * @param buttonTextColor The value for {@link #mButtonTextColor}.
-     * @param buttonActiveTextColor The value for {@link #mButtonActiveTextColor}.
-     * @param buttonBackgroundColor The value for {@link #mButtonBackgroundColor}.
+     * @param buttonTextColor             The value for {@link #mButtonTextColor}.
+     * @param buttonActiveTextColor       The value for {@link #mButtonActiveTextColor}.
+     * @param buttonBackgroundColor       The value for {@link #mButtonBackgroundColor}.
      * @param buttonActiveBackgroundColor The value for {@link #mButtonActiveBackgroundColor}.
      */
     public void setButtonColors(int buttonTextColor, int buttonActiveTextColor, int buttonBackgroundColor, int buttonActiveBackgroundColor) {
@@ -283,61 +341,83 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-    /** Get {@link #mButtonTextColor}. */
+    /**
+     * Get {@link #mButtonTextColor}.
+     */
     public int getButtonTextColor() {
         return mButtonTextColor;
     }
 
-    /** Set {@link #mButtonTextColor}. */
+    /**
+     * Set {@link #mButtonTextColor}.
+     */
     public void setButtonTextColor(int buttonTextColor) {
         mButtonTextColor = buttonTextColor;
     }
 
 
-    /** Get {@link #mButtonActiveTextColor}. */
+    /**
+     * Get {@link #mButtonActiveTextColor}.
+     */
     public int getButtonActiveTextColor() {
         return mButtonActiveTextColor;
     }
 
-    /** Set {@link #mButtonActiveTextColor}. */
+    /**
+     * Set {@link #mButtonActiveTextColor}.
+     */
     public void setButtonActiveTextColor(int buttonActiveTextColor) {
         mButtonActiveTextColor = buttonActiveTextColor;
     }
 
 
-    /** Get {@link #mButtonBackgroundColor}. */
+    /**
+     * Get {@link #mButtonBackgroundColor}.
+     */
     public int getButtonBackgroundColor() {
         return mButtonBackgroundColor;
     }
 
-    /** Set {@link #mButtonBackgroundColor}. */
+    /**
+     * Set {@link #mButtonBackgroundColor}.
+     */
     public void setButtonBackgroundColor(int buttonBackgroundColor) {
         mButtonBackgroundColor = buttonBackgroundColor;
     }
 
 
-    /** Get {@link #mButtonActiveBackgroundColor}. */
+    /**
+     * Get {@link #mButtonActiveBackgroundColor}.
+     */
     public int getButtonActiveBackgroundColor() {
         return mButtonActiveBackgroundColor;
     }
 
-    /** Set {@link #mButtonActiveBackgroundColor}. */
+    /**
+     * Set {@link #mButtonActiveBackgroundColor}.
+     */
     public void setButtonActiveBackgroundColor(int buttonActiveBackgroundColor) {
         mButtonActiveBackgroundColor = buttonActiveBackgroundColor;
     }
 
-    /** Set {@link #mButtonTextAllCaps}. */
+    /**
+     * Set {@link #mButtonTextAllCaps}.
+     */
     public void setButtonTextAllCaps(boolean buttonTextAllCaps) {
         mButtonTextAllCaps = buttonTextAllCaps;
     }
 
 
-    /** Get {@link #mLongPressTimeout}. */
+    /**
+     * Get {@link #mLongPressTimeout}.
+     */
     public int getLongPressTimeout() {
         return mLongPressTimeout;
     }
 
-    /** Set {@link #mLongPressTimeout}. */
+    /**
+     * Set {@link #mLongPressTimeout}.
+     */
     public void setLongPressTimeout(int longPressDuration) {
         if (longPressDuration >= MIN_LONG_PRESS_DURATION && longPressDuration <= MAX_LONG_PRESS_DURATION) {
             mLongPressTimeout = longPressDuration;
@@ -346,12 +426,16 @@ public final class ExtraKeysView extends GridLayout {
         }
     }
 
-    /** Get {@link #mLongPressRepeatDelay}. */
+    /**
+     * Get {@link #mLongPressRepeatDelay}.
+     */
     public int getLongPressRepeatDelay() {
         return mLongPressRepeatDelay;
     }
 
-    /** Set {@link #mLongPressRepeatDelay}. */
+    /**
+     * Set {@link #mLongPressRepeatDelay}.
+     */
     public void setLongPressRepeatDelay(int longPressRepeatDelay) {
         if (mLongPressRepeatDelay >= MIN_LONG_PRESS__REPEAT_DELAY && mLongPressRepeatDelay <= MAX_LONG_PRESS__REPEAT_DELAY) {
             mLongPressRepeatDelay = longPressRepeatDelay;
@@ -361,7 +445,9 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-    /** Get the default map that can be used for {@link #mSpecialButtons}. */
+    /**
+     * Get the default map that can be used for {@link #mSpecialButtons}.
+     */
     @NonNull
     public Map<SpecialButton, SpecialButtonState> getDefaultSpecialButtons(ExtraKeysView extraKeysView) {
         return new HashMap<>() {{
@@ -373,20 +459,19 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-
     /**
      * Reload this instance of {@link ExtraKeysView} with the info passed in {@code extraKeysInfo}.
      *
      * @param extraKeysInfo The {@link ExtraKeysInfo} that defines the necessary info for the extra keys.
-     * @param heightPx The height in pixels of the parent surrounding the {@link ExtraKeysView}. It must
-     *                 be a single child.
+     * @param heightPx      The height in pixels of the parent surrounding the {@link ExtraKeysView}. It must
+     *                      be a single child.
      */
     @SuppressLint("ClickableViewAccessibility")
     public void reload(ExtraKeysInfo extraKeysInfo, float heightPx) {
         if (extraKeysInfo == null)
             return;
 
-        for(SpecialButtonState state : mSpecialButtons.values())
+        for (SpecialButtonState state : mSpecialButtons.values())
             state.buttons = new ArrayList<>();
 
         removeAllViews();
@@ -482,7 +567,6 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-
     public void onExtraKeyButtonClick(View view, ExtraKeyButton buttonInfo, MaterialButton button) {
         if (mExtraKeysViewClient != null)
             mExtraKeysViewClient.onExtraKeyButtonClick(view, buttonInfo, button);
@@ -501,7 +585,6 @@ public final class ExtraKeysView extends GridLayout {
             button.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         }
     }
-
 
 
     public void onAnyExtraKeyButtonClick(View view, @NonNull ExtraKeyButton buttonInfo, MaterialButton button) {
@@ -573,7 +656,6 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-
     void showPopup(View view, ExtraKeyButton extraButton) {
         int width = view.getMeasuredWidth();
         int height = view.getMeasuredHeight();
@@ -611,8 +693,9 @@ public final class ExtraKeysView extends GridLayout {
     }
 
 
-
-    /** Check whether a {@link ExtraKeyButton} is a {@link SpecialButton}. */
+    /**
+     * Check whether a {@link ExtraKeyButton} is a {@link SpecialButton}.
+     */
     public boolean isSpecialButton(ExtraKeyButton button) {
         return mSpecialButtonsKeys.contains(button.getKey());
     }
@@ -620,12 +703,12 @@ public final class ExtraKeysView extends GridLayout {
     /**
      * Read whether {@link SpecialButton} registered in {@link #mSpecialButtons} is active or not.
      *
-     * @param specialButton The {@link SpecialButton} to read.
+     * @param specialButton   The {@link SpecialButton} to read.
      * @param autoSetInActive Set to {@code true} if {@link SpecialButtonState#isActive} should be
      *                        set {@code false} if button is not locked.
      * @return Returns {@code null} if button does not exist in {@link #mSpecialButtons}. If button
-     *         exists, then returns {@code true} if the button is created in {@link ExtraKeysView}
-     *         and is active, otherwise {@code false}.
+     * exists, then returns {@code true} if the button is created in {@link ExtraKeysView}
+     * and is active, otherwise {@code false}.
      */
     @Nullable
     public Boolean readSpecialButton(SpecialButton specialButton, boolean autoSetInActive) {
@@ -653,7 +736,6 @@ public final class ExtraKeysView extends GridLayout {
         }
         return button;
     }
-
 
 
     /**

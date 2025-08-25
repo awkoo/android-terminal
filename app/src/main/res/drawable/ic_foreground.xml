@@ -13,8 +13,7 @@
                           l-12,16
                           h-6
                           l12,-16
-                          "
-        />
+                          " />
 
     <path
         android:fillColor="#FFFFFF"
@@ -22,7 +21,6 @@
                           h18
                           v4
                           h-18
-                          "
-        />
+                          " />
 
 </vector>

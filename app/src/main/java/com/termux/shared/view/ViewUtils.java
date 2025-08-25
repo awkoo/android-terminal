@@ -23,10 +23,10 @@ public class ViewUtils {
 
     /**
      * Check if a {@link View} is fully visible and not hidden or partially covered by another view.
-     *
+     * <p>
      * https://stackoverflow.com/a/51078418/14686958
      *
-     * @param view The {@link View} to check.
+     * @param view            The {@link View} to check.
      * @param statusBarHeight The status bar height received by {@link View.OnApplyWindowInsetsListener}.
      * @return Returns {@code true} if view is fully visible.
      */
@@ -40,10 +40,10 @@ public class ViewUtils {
     /**
      * Get the {@link Rect} of a {@link View} and the  {@link Rect} of the window inside which it
      * exists.
-     *
+     * <p>
      * https://stackoverflow.com/a/51078418/14686958
      *
-     * @param view The {@link View} inside the window whose {@link Rect} to get.
+     * @param view            The {@link View} inside the window whose {@link Rect} to get.
      * @param statusBarHeight The status bar height received by {@link View.OnApplyWindowInsetsListener}.
      * @return Returns {@link Rect[]} if view is visible where Rect[0] will contain window
      * {@link Rect} and Rect[1] will contain view {@link Rect}. This will be {@code null}
@@ -130,7 +130,7 @@ public class ViewUtils {
 
     /**
      * Get device orientation.
-     *
+     * <p>
      * Related: https://stackoverflow.com/a/29392593/14686958
      *
      * @param context The {@link Context} to check with.
@@ -144,14 +144,14 @@ public class ViewUtils {
     /**
      * Get device display size.
      *
-     * @param context The {@link Context} to check with. It must be {@link Activity} context, otherwise
-     *                android will throw:
-     *                `java.lang.IllegalArgumentException: Used non-visual Context to obtain an instance of WindowManager. Please use an Activity or a ContextWrapper around one instead.`
+     * @param context      The {@link Context} to check with. It must be {@link Activity} context, otherwise
+     *                     android will throw:
+     *                     `java.lang.IllegalArgumentException: Used non-visual Context to obtain an instance of WindowManager. Please use an Activity or a ContextWrapper around one instead.`
      * @param activitySize The set to {@link true}, then size returned will be that of the activity
      *                     and can be smaller than physical display size in multi-window mode.
      * @return Returns the display size as {@link Point}.
      */
-    public static Point getDisplaySize( @NonNull Context context, boolean activitySize) {
+    public static Point getDisplaySize(@NonNull Context context, boolean activitySize) {
         WindowMetricsCalculator calculator = WindowMetricsCalculator.getOrCreate();
         WindowMetrics metrics;
         if (activitySize) metrics = calculator.computeCurrentWindowMetrics(context);
@@ -160,37 +160,47 @@ public class ViewUtils {
         return new Point(bounds.width(), bounds.height());
     }
 
-    /** Convert {@link Rect} to {@link String}. */
+    /**
+     * Convert {@link Rect} to {@link String}.
+     */
     public static String toRectString(Rect rect) {
         if (rect == null) return "null";
         return "(" + rect.left + "," + rect.top + "), (" + rect.right + "," + rect.bottom + ")";
     }
 
-    /** Convert {@link Point} to {@link String}. */
+    /**
+     * Convert {@link Point} to {@link String}.
+     */
     public static String toPointString(Point point) {
         if (point == null) return "null";
         return "(" + point.x + "," + point.y + ")";
     }
 
-    /** Get the {@link Activity} associated with the {@link Context} if available. */
+    /**
+     * Get the {@link Activity} associated with the {@link Context} if available.
+     */
     @Nullable
     public static Activity getActivity(Context context) {
         while (context instanceof ContextWrapper) {
             if (context instanceof Activity) {
-                return (Activity)context;
+                return (Activity) context;
             }
-            context = ((ContextWrapper)context).getBaseContext();
+            context = ((ContextWrapper) context).getBaseContext();
         }
         return null;
     }
 
 
-    /** Convert value in device independent pixels (dp) to pixels (px) units. */
+    /**
+     * Convert value in device independent pixels (dp) to pixels (px) units.
+     */
     public static float dpToPx(Context context, float dp) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    /** Convert value in pixels (px) to device independent pixels (dp) units. */
+    /**
+     * Convert value in pixels (px) to device independent pixels (dp) units.
+     */
     public static float pxToDp(Context context, float px) {
         return px / context.getResources().getDisplayMetrics().density;
     }

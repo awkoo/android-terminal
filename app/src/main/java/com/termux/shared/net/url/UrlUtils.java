@@ -9,7 +9,9 @@ import java.net.URL;
 
 public class UrlUtils {
 
-    /** The parts of a {@link URL}. */
+    /**
+     * The parts of a {@link URL}.
+     */
     public enum UrlPart {
         AUTHORITY,
         FILE,
@@ -28,9 +30,9 @@ public class UrlUtils {
     /**
      * Join a url base and destination.
      *
-     * @param base The base url to open.
+     * @param base        The base url to open.
      * @param destination The destination url to open.
-     * @param logError If an error message should be logged.
+     * @param logError    If an error message should be logged.
      * @return Returns the joined {@link String} Url, otherwise {@code null}.
      */
     @Nullable
@@ -66,7 +68,7 @@ public class UrlUtils {
      * Get a {@link URL} part from url string.
      *
      * @param urlString The urlString string.
-     * @param urlPart The part to get.
+     * @param urlPart   The part to get.
      * @return Returns the {@link URL} part if a valid urlString and part, otherwise {@code null}.
      */
     @Nullable
@@ -87,10 +89,12 @@ public class UrlUtils {
         };
     }
 
-    /** Remove "https://www.", "https://", "www.", etc */
+    /**
+     * Remove "https://www.", "https://", "www.", etc
+     */
     public static String removeProtocol(String urlString) {
         if (urlString == null) return null;
-        return urlString.replaceFirst("^(http[s]?://www\\.|http[s]?://|www\\.)","");
+        return urlString.replaceFirst("^(http[s]?://www\\.|http[s]?://|www\\.)", "");
     }
 
     public static boolean areUrlsEqual(String url1, String url2) {

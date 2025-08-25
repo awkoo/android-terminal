@@ -9,15 +9,18 @@ import com.termux.terminal.TerminalSession;
 
 public class ShellUtils {
 
-    /** Get basename for executable. */
+    /**
+     * Get basename for executable.
+     */
     @Nullable
     public static String getExecutableBasename(@Nullable String executable) {
         return FileUtils.getFileBasename(executable);
     }
 
 
-
-    /** Get transcript for {@link TerminalSession}. */
+    /**
+     * Get transcript for {@link TerminalSession}.
+     */
     public static String getTerminalSessionTranscriptText(TerminalSession terminalSession, boolean linesJoined, boolean trim) {
         if (terminalSession == null) return null;
 

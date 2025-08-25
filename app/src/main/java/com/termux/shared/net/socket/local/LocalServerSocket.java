@@ -11,22 +11,36 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/** The server socket for {@link LocalSocketManager}. */
+/**
+ * The server socket for {@link LocalSocketManager}.
+ */
 public class LocalServerSocket implements Closeable {
 
     public static final String LOG_TAG = "LocalServerSocket";
 
-    /** The {@link LocalSocketManager} instance for the local socket. */
-    @NonNull protected final LocalSocketManager mLocalSocketManager;
+    /**
+     * The {@link LocalSocketManager} instance for the local socket.
+     */
+    @NonNull
+    protected final LocalSocketManager mLocalSocketManager;
 
-    /** The {@link LocalSocketRunConfig} containing run config for the {@link LocalServerSocket}. */
-    @NonNull protected final LocalSocketRunConfig mLocalSocketRunConfig;
+    /**
+     * The {@link LocalSocketRunConfig} containing run config for the {@link LocalServerSocket}.
+     */
+    @NonNull
+    protected final LocalSocketRunConfig mLocalSocketRunConfig;
 
-    /** The {@link ILocalSocketManager} client for the {@link LocalSocketManager}. */
-    @NonNull protected final ILocalSocketManager mLocalSocketManagerClient;
+    /**
+     * The {@link ILocalSocketManager} client for the {@link LocalSocketManager}.
+     */
+    @NonNull
+    protected final ILocalSocketManager mLocalSocketManagerClient;
 
-    /** The {@link ClientSocketListener} {@link Thread} for the {@link LocalServerSocket}. */
-    @NonNull protected final Thread mClientSocketListener;
+    /**
+     * The {@link ClientSocketListener} {@link Thread} for the {@link LocalServerSocket}.
+     */
+    @NonNull
+    protected final Thread mClientSocketListener;
 
     /**
      * The required permissions for server socket file parent directory.
@@ -47,7 +61,9 @@ public class LocalServerSocket implements Closeable {
         mClientSocketListener = new Thread(new ClientSocketListener());
     }
 
-    /** Start server by creating server socket. */
+    /**
+     * Start server by creating server socket.
+     */
     public synchronized Error start() {
         //        logMessage(Log.DEBUG, tag, message);
 
@@ -122,14 +138,17 @@ public class LocalServerSocket implements Closeable {
         return null;
     }
 
-    /** Stop server. */
+    /**
+     * Stop server.
+     */
     public synchronized Error stop() {
         //        logMessage(Log.DEBUG, tag, message);
 
         try {
             // Stop the LocalClientSocket listener.
             mClientSocketListener.interrupt();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
 
         Error error = closeServerSocket(false);
         if (error != null)
@@ -138,7 +157,9 @@ public class LocalServerSocket implements Closeable {
         return deleteServerSocketFile();
     }
 
-    /** Close server socket. */
+    /**
+     * Close server socket.
+     */
     public synchronized Error closeServerSocket(boolean logErrorMessage) {
         //        logMessage(Log.DEBUG, tag, message);
 
@@ -155,7 +176,9 @@ public class LocalServerSocket implements Closeable {
         return null;
     }
 
-    /** Implementation for {@link Closeable#close()} to close server socket. */
+    /**
+     * Implementation for {@link Closeable#close()} to close server socket.
+     */
     @Override
     public synchronized void close() throws IOException {
         //        logMessage(Log.DEBUG, tag, message);
@@ -183,7 +206,9 @@ public class LocalServerSocket implements Closeable {
             return null;
     }
 
-    /** Listen and accept new {@link LocalClientSocket}. */
+    /**
+     * Listen and accept new {@link LocalClientSocket}.
+     */
     public LocalClientSocket accept() {
         //        logMessage(Log.VERBOSE, tag, message);
 
@@ -226,7 +251,7 @@ public class LocalServerSocket implements Closeable {
                 continue;
             }
 
-            LocalClientSocket clientSocket =  new LocalClientSocket(mLocalSocketManager, clientFD, peerCred);
+            LocalClientSocket clientSocket = new LocalClientSocket(mLocalSocketManager, clientFD, peerCred);
             clientSocket.getLogString();
 //        logMessage(Log.VERBOSE, tag, message);
 
@@ -244,9 +269,9 @@ public class LocalServerSocket implements Closeable {
     }
 
 
-
-
-    /** The {@link LocalClientSocket} listener {@link java.lang.Runnable} for {@link LocalServerSocket}. */
+    /**
+     * The {@link LocalClientSocket} listener {@link java.lang.Runnable} for {@link LocalServerSocket}.
+     */
     protected class ClientSocketListener implements Runnable {
 
         @Override
@@ -293,7 +318,8 @@ public class LocalServerSocket implements Closeable {
             } finally {
                 try {
                     close();
-                } catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
             }
 
             //        logMessage(Log.VERBOSE, tag, message);

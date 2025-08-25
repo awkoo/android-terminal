@@ -32,7 +32,7 @@ package com.termux.shared.file.filesystem;
  *
  * <p> The {@link FileAttributes} class defines methods for manipulating
  * set of permissions.
- *
+ * <p>
  * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/java/java/nio/file/attribute/PosixFilePermission.java
  *
  * @since 1.7

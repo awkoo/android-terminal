@@ -27,14 +27,14 @@ public interface ILocalSocketManager {
      * or {@link LocalClientSocket}. The server will automatically close the client socket
      * with a call to {@link LocalClientSocket#closeClientSocket(boolean)} if the error occurred due
      * to the client.
-     *
+     * <p>
      * The {@link LocalClientSocket#getPeerCred()} can be used to get the {@link PeerCred} object
      * containing info for the connected client/peer.
      *
      * @param localSocketManager The {@link LocalSocketManager} for the server.
-     * @param clientSocket The {@link LocalClientSocket} that connected. This will be {@code null}
-     *                     if error is not for a {@link LocalClientSocket}.
-     * @param error The {@link Error} auto generated that can be used for logging purposes.
+     * @param clientSocket       The {@link LocalClientSocket} that connected. This will be {@code null}
+     *                           if error is not for a {@link LocalClientSocket}.
+     * @param error              The {@link Error} auto generated that can be used for logging purposes.
      */
     void onError(@NonNull LocalSocketManager localSocketManager,
                  @Nullable LocalClientSocket clientSocket, @NonNull Error error);
@@ -43,28 +43,28 @@ public interface ILocalSocketManager {
      * This is called if a {@link LocalServerSocket} connects to the server which **does not** have
      * the server app's user id or root user id. The server will automatically close the client socket
      * with a call to {@link LocalClientSocket#closeClientSocket(boolean)}.
-     *
+     * <p>
      * The {@link LocalClientSocket#getPeerCred()} can be used to get the {@link PeerCred} object
      * containing info for the connected client/peer.
      *
      * @param localSocketManager The {@link LocalSocketManager} for the server.
-     * @param clientSocket The {@link LocalClientSocket} that connected.
-     * @param error The {@link Error} auto generated that can be used for logging purposes.
+     * @param clientSocket       The {@link LocalClientSocket} that connected.
+     * @param error              The {@link Error} auto generated that can be used for logging purposes.
      */
     void onDisallowedClientConnected(@NonNull LocalSocketManager localSocketManager,
-                 @NonNull LocalClientSocket clientSocket, @NonNull Error error);
+                                     @NonNull LocalClientSocket clientSocket, @NonNull Error error);
 
     /**
      * This is called if a {@link LocalServerSocket} connects to the server which has the
      * the server app's user id or root user id. It is the responsibility of the interface
      * implementation to close the client socket with a call to
      * {@link LocalClientSocket#closeClientSocket(boolean)} once its done processing.
-     *
+     * <p>
      * The {@link LocalClientSocket#getPeerCred()} can be used to get the {@link PeerCred} object
      * containing info for the connected client/peer.
      *
      * @param localSocketManager The {@link LocalSocketManager} for the server.
-     * @param clientSocket The {@link LocalClientSocket} that connected.
+     * @param clientSocket       The {@link LocalClientSocket} that connected.
      */
     void onClientAccepted(@NonNull LocalSocketManager localSocketManager,
                           @NonNull LocalClientSocket clientSocket);

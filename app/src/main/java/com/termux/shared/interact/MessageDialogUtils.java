@@ -17,11 +17,11 @@ public class MessageDialogUtils {
     /**
      * Show a message in a dialog
      *
-     * @param context The {@link Context} to use to start the dialog. An {@link Activity} {@link Context}
-     *                must be passed, otherwise exceptions will be thrown.
-     * @param titleText The title text of the dialog.
+     * @param context     The {@link Context} to use to start the dialog. An {@link Activity} {@link Context}
+     *                    must be passed, otherwise exceptions will be thrown.
+     * @param titleText   The title text of the dialog.
      * @param messageText The message text of the dialog.
-     * @param onDismiss The {@link DialogInterface.OnDismissListener} to run when dialog is dismissed.
+     * @param onDismiss   The {@link DialogInterface.OnDismissListener} to run when dialog is dismissed.
      */
     public static void showMessage(Context context, String titleText, String messageText, final DialogInterface.OnDismissListener onDismiss) {
         showMessage(context, titleText, messageText, null, null, null, null, onDismiss);
@@ -30,18 +30,18 @@ public class MessageDialogUtils {
     /**
      * Show a message in a dialog
      *
-     * @param context The {@link Context} to use to start the dialog. An {@link Activity} {@link Context}
-     *                must be passed, otherwise exceptions will be thrown.
-     * @param titleText The title text of the dialog.
-     * @param messageText The message text of the dialog.
-     * @param positiveText The positive button text of the dialog.
+     * @param context          The {@link Context} to use to start the dialog. An {@link Activity} {@link Context}
+     *                         must be passed, otherwise exceptions will be thrown.
+     * @param titleText        The title text of the dialog.
+     * @param messageText      The message text of the dialog.
+     * @param positiveText     The positive button text of the dialog.
      * @param onPositiveButton The {@link DialogInterface.OnClickListener} to run when positive button
      *                         is pressed.
-     * @param negativeText The negative button text of the dialog. If this is {@code null}, then
+     * @param negativeText     The negative button text of the dialog. If this is {@code null}, then
      *                         negative button will not be shown.
      * @param onNegativeButton The {@link DialogInterface.OnClickListener} to run when negative button
      *                         is pressed.
-     * @param onDismiss The {@link DialogInterface.OnDismissListener} to run when dialog is dismissed.
+     * @param onDismiss        The {@link DialogInterface.OnDismissListener} to run when dialog is dismissed.
      */
     public static void showMessage(Context context, String titleText, String messageText,
                                    String positiveText,
@@ -52,7 +52,7 @@ public class MessageDialogUtils {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context, androidx.appcompat.R.style.Theme_AppCompat_Light_Dialog);
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.dialog_show_message, null);
         if (view != null) {
             builder.setView(view);

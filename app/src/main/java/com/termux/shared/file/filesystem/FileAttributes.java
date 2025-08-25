@@ -32,9 +32,9 @@ import androidx.annotation.NonNull;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Unix implementation of PosixFileAttributes.

@@ -1,5 +1,7 @@
 package com.termux.shared.termux.terminal.io;
 
+import static com.termux.shared.termux.extrakeys.ExtraKeysConstants.PRIMARY_KEY_CODES_FOR_STRINGS;
+
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -10,8 +12,6 @@ import com.termux.shared.termux.extrakeys.ExtraKeyButton;
 import com.termux.shared.termux.extrakeys.ExtraKeysView;
 import com.termux.shared.termux.extrakeys.SpecialButton;
 import com.termux.view.TerminalView;
-
-import static com.termux.shared.termux.extrakeys.ExtraKeysConstants.PRIMARY_KEY_CODES_FOR_STRINGS;
 
 
 public class TerminalExtraKeys implements ExtraKeysView.IExtraKeysView {
@@ -41,7 +41,10 @@ public class TerminalExtraKeys implements ExtraKeysView.IExtraKeysView {
                     fnDown = true;
                 } else {
                     onTerminalExtraKeyButtonClick(view, key, ctrlDown, altDown, shiftDown, fnDown);
-                    ctrlDown = false; altDown = false; shiftDown = false; fnDown = false;
+                    ctrlDown = false;
+                    altDown = false;
+                    shiftDown = false;
+                    fnDown = false;
                 }
             }
         } else {

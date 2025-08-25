@@ -8,7 +8,7 @@ import com.termux.shared.logger.Logger;
 /**
  * A class that can be used to return result for JNI calls with support for multiple fields to easily
  * return success and error states.
- *
+ * <p>
  * https://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/functions.html
  * https://developer.android.com/training/articles/perf-jni
  */
@@ -24,7 +24,7 @@ public class JniResult {
     /**
      * The errno value for any failed native system or library calls if {@link #retval} does not equal 0.
      * This should be 0 if no errno was set.
-     *
+     * <p>
      * https://manpages.debian.org/testing/manpages-dev/errno.3.en.html
      */
     public int errno;
@@ -32,7 +32,7 @@ public class JniResult {
     /**
      * The error message for the failure if {@link #retval} does not equal 0.
      * The message will contain errno message returned by strerror() if errno was set.
-     *
+     * <p>
      * https://manpages.debian.org/testing/manpages-dev/strerror.3.en.html
      */
     public String errmsg;
@@ -46,7 +46,7 @@ public class JniResult {
      * Create an new instance of {@link JniResult}.
      *
      * @param retval The {@link #retval} value.
-     * @param errno The {@link #errno} value.
+     * @param errno  The {@link #errno} value.
      * @param errmsg The {@link #errmsg} value.
      */
     public JniResult(int retval, int errno, String errmsg) {
@@ -58,9 +58,9 @@ public class JniResult {
     /**
      * Create an new instance of {@link JniResult}.
      *
-     * @param retval The {@link #retval} value.
-     * @param errno The {@link #errno} value.
-     * @param errmsg The {@link #errmsg} value.
+     * @param retval  The {@link #retval} value.
+     * @param errno   The {@link #errno} value.
+     * @param errmsg  The {@link #errmsg} value.
      * @param intData The {@link #intData} value.
      */
     public JniResult(int retval, int errno, String errmsg, int intData) {
@@ -71,7 +71,7 @@ public class JniResult {
     /**
      * Create an new instance of {@link JniResult} from a {@link Throwable} with {@link #retval} -1.
      *
-     * @param message The error message.
+     * @param message   The error message.
      * @param throwable The {@link Throwable} value.
      */
     public JniResult(String message, Throwable throwable) {
@@ -90,7 +90,9 @@ public class JniResult {
         return result.getErrorString();
     }
 
-    /** Get error {@link String} for {@link JniResult}. */
+    /**
+     * Get error {@link String} for {@link JniResult}.
+     */
     @NonNull
     public String getErrorString() {
         StringBuilder logString = new StringBuilder();

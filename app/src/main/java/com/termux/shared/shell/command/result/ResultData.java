@@ -3,8 +3,8 @@ package com.termux.shared.shell.command.result;
 import androidx.annotation.NonNull;
 
 import com.termux.shared.data.DataUtils;
-import com.termux.shared.logger.Logger;
 import com.termux.shared.errors.Error;
+import com.termux.shared.logger.Logger;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,18 +12,27 @@ import java.util.List;
 
 public class ResultData implements Serializable {
 
-    /** The stdout of command. */
+    /**
+     * The stdout of command.
+     */
     public final StringBuilder stdout = new StringBuilder();
-    /** The stderr of command. */
+    /**
+     * The stderr of command.
+     */
     public final StringBuilder stderr = new StringBuilder();
-    /** The exit code of command. */
+    /**
+     * The exit code of command.
+     */
     public Integer exitCode;
 
-    /** The internal errors list of command. */
-    public List<Error> errorsList =  new ArrayList<>();
+    /**
+     * The internal errors list of command.
+     */
+    public List<Error> errorsList = new ArrayList<>();
+
     public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
         if (errorsList == null)
-            errorsList =  new ArrayList<>();
+            errorsList = new ArrayList<>();
 
         Error error = new Error();
         errorsList.add(error);
@@ -51,7 +60,7 @@ public class ResultData implements Serializable {
     /**
      * Get a log friendly {@link String} for {@link ResultData} parameters.
      *
-     * @param resultData The {@link ResultData} to convert.
+     * @param resultData         The {@link ResultData} to convert.
      * @param logStdoutAndStderr Set to {@code true} if {@link #stdout} and {@link #stderr} should be logged.
      * @return Returns the log friendly {@link String}.
      */
@@ -70,7 +79,6 @@ public class ResultData implements Serializable {
 
         return logString.toString();
     }
-
 
 
     public String getStdoutLogString() {

@@ -11,23 +11,41 @@ import androidx.annotation.Nullable;
 
 public class NotificationUtils {
 
-    /** Do not show notification */
+    /**
+     * Do not show notification
+     */
     public static final int NOTIFICATION_MODE_NONE = 0;
-    /** Show notification without sound, vibration or lights */
+    /**
+     * Show notification without sound, vibration or lights
+     */
     public static final int NOTIFICATION_MODE_SILENT = 1;
-    /** Show notification with sound */
+    /**
+     * Show notification with sound
+     */
     public static final int NOTIFICATION_MODE_SOUND = 2;
-    /** Show notification with vibration */
+    /**
+     * Show notification with vibration
+     */
     public static final int NOTIFICATION_MODE_VIBRATE = 3;
-    /** Show notification with lights */
+    /**
+     * Show notification with lights
+     */
     public static final int NOTIFICATION_MODE_LIGHTS = 4;
-    /** Show notification with sound and vibration */
+    /**
+     * Show notification with sound and vibration
+     */
     public static final int NOTIFICATION_MODE_SOUND_AND_VIBRATE = 5;
-    /** Show notification with sound and lights */
+    /**
+     * Show notification with sound and lights
+     */
     public static final int NOTIFICATION_MODE_SOUND_AND_LIGHTS = 6;
-    /** Show notification with vibration and lights */
+    /**
+     * Show notification with vibration and lights
+     */
     public static final int NOTIFICATION_MODE_VIBRATE_AND_LIGHTS = 7;
-    /** Show notification with sound, vibration and lights */
+    /**
+     * Show notification with sound, vibration and lights
+     */
     public static final int NOTIFICATION_MODE_ALL = 8;
 
     private static final String LOG_TAG = "NotificationUtils";
@@ -47,17 +65,17 @@ public class NotificationUtils {
     /**
      * Get {@link Notification.Builder}.
      *
-     * @param context The {@link Context} for operations.
-     * @param title The title for the notification.
-     * @param channelId The channel id for the notification.
-     * @param priority The priority for the notification.
-     * @param notificationText The second line text of the notification.
+     * @param context             The {@link Context} for operations.
+     * @param title               The title for the notification.
+     * @param channelId           The channel id for the notification.
+     * @param priority            The priority for the notification.
+     * @param notificationText    The second line text of the notification.
      * @param notificationBigText The full text of the notification that may optionally be styled.
-     * @param contentIntent The {@link PendingIntent} which should be sent when notification is clicked.
-     * @param deleteIntent The {@link PendingIntent} which should be sent when notification is deleted.
-     * @param notificationMode The notification mode. It must be one of {@code NotificationUtils.NOTIFICATION_MODE_*}.
-     *                         The builder returned will be {@code null} if {@link #NOTIFICATION_MODE_NONE}
-     *                         is passed. That case should ideally be handled before calling this function.
+     * @param contentIntent       The {@link PendingIntent} which should be sent when notification is clicked.
+     * @param deleteIntent        The {@link PendingIntent} which should be sent when notification is deleted.
+     * @param notificationMode    The notification mode. It must be one of {@code NotificationUtils.NOTIFICATION_MODE_*}.
+     *                            The builder returned will be {@code null} if {@link #NOTIFICATION_MODE_NONE}
+     *                            is passed. That case should ideally be handled before calling this function.
      * @return Returns the {@link Notification.Builder}.
      */
     @Nullable
@@ -86,11 +104,11 @@ public class NotificationUtils {
      * Setup the notification channel if Android version is greater than or equal to
      * {@link Build.VERSION_CODES#O}.
      *
-     * @param context The {@link Context} for operations.
-     * @param channelId The id of the channel. Must be unique per package.
+     * @param context     The {@link Context} for operations.
+     * @param channelId   The id of the channel. Must be unique per package.
      * @param channelName The user visible name of the channel.
-     * @param importance The importance of the channel. This controls how interruptive notifications
-     *                   posted to this channel are.
+     * @param importance  The importance of the channel. This controls how interruptive notifications
+     *                    posted to this channel are.
      */
     public static void setupNotificationChannel(final Context context, final String channelId, final CharSequence channelName, final int importance) {
 

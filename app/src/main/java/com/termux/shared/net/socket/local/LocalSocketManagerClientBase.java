@@ -3,7 +3,9 @@ package com.termux.shared.net.socket.local;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-/** Base helper implementation for {@link ILocalSocketManager}. */
+/**
+ * Base helper implementation for {@link ILocalSocketManager}.
+ */
 public abstract class LocalSocketManagerClientBase implements ILocalSocketManager {
 
     @Nullable
@@ -16,7 +18,7 @@ public abstract class LocalSocketManagerClientBase implements ILocalSocketManage
 //    @Override
 //    public void onError(@NonNull LocalSocketManager localSocketManager,
 //                        @Nullable LocalClientSocket clientSocket, @NonNull Error error) {
-        // Only log if log level is debug or higher since PeerCred.cmdline may contain private info
+    // Only log if log level is debug or higher since PeerCred.cmdline may contain private info
 //        getLogTag();
 //        if (CURRENT_LOG_LEVEL >= LOG_LEVEL_DEBUG)
 //            logMessage(Log.ERROR, tag, message);
@@ -44,7 +46,6 @@ public abstract class LocalSocketManagerClientBase implements ILocalSocketManage
         // Just close socket and let child class handle any required communication
         clientSocket.closeClientSocket(true);
     }
-
 
 
 //    protected abstract String getLogTag();

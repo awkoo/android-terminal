@@ -9,16 +9,15 @@
     -->
 
     <group>
-        <clip-path
-            android:pathData="M0,0h24v24h-24z"/>
+        <clip-path android:pathData="M0,0h24v24h-24z" />
 
         <path
             android:pathData="M5,4H2L8,12L2,20H5L11,12L5,4Z"
-            android:fillColor="#ffffff"/>
+            android:fillColor="#ffffff" />
 
         <path
             android:pathData="M13,18H22V20H13V18Z"
-            android:fillColor="#ffffff"/>
+            android:fillColor="#ffffff" />
 
     </group>
 </vector>

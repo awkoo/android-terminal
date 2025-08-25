@@ -1,8 +1,5 @@
 package com.termux.terminal;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static android.view.KeyEvent.KEYCODE_BACK;
 import static android.view.KeyEvent.KEYCODE_BREAK;
 import static android.view.KeyEvent.KEYCODE_DEL;
@@ -53,6 +50,9 @@ import static android.view.KeyEvent.KEYCODE_PAGE_UP;
 import static android.view.KeyEvent.KEYCODE_SPACE;
 import static android.view.KeyEvent.KEYCODE_SYSRQ;
 import static android.view.KeyEvent.KEYCODE_TAB;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public final class KeyHandler {
 

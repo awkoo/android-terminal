@@ -69,7 +69,7 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
             try {
                 mExtraKeysInfo = new ExtraKeysInfo(TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS, TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE, ExtraKeysConstants.CONTROL_CHARS_ALIASES);
             } catch (JSONException e2) {
-                UI.showToast(mActivity, "Can't create default extra keys",true);
+                UI.showToast(mActivity, "Can't create default extra keys", true);
                 //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
                 mExtraKeysInfo = null;
             }

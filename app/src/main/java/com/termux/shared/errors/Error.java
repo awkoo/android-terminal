@@ -14,15 +14,25 @@ import java.util.List;
 
 public class Error implements Serializable {
 
-    /** The optional error label. */
+    /**
+     * The optional error label.
+     */
     private String label;
-    /** The error type. */
+    /**
+     * The error type.
+     */
     private String type;
-    /** The error code. */
+    /**
+     * The error code.
+     */
     private int code;
-    /** The error message. */
+    /**
+     * The error message.
+     */
     private String message;
-    /** The error exceptions. */
+    /**
+     * The error exceptions.
+     */
     private List<Throwable> throwablesList = new ArrayList<>();
 
     private static final String LOG_TAG = "Error";
@@ -129,6 +139,7 @@ public class Error implements Serializable {
     public synchronized boolean setStateFailed(@NonNull Error error, Throwable throwable) {
         return setStateFailed(error.getType(), error.getCode(), error.getMessage(), Collections.singletonList(throwable));
     }
+
     public synchronized boolean setStateFailed(@NonNull Error error, List<Throwable> throwablesList) {
         return setStateFailed(error.getType(), error.getCode(), error.getMessage(), throwablesList);
     }
@@ -174,13 +185,12 @@ public class Error implements Serializable {
     }
 
 
-
     /**
      * Log the {@link Error} and show a toast for the minimal {@link String} for the {@link Error}.
      *
      * @param context The {@link Context} for operations.
-     * @param logTag The log tag to use for logging.
-     * @param error The {@link Error} to convert.
+     * @param logTag  The log tag to use for logging.
+     * @param error   The {@link Error} to convert.
      */
     public static void logErrorAndShowToast(Context context, String logTag, Error error) {
         if (error == null) return;

@@ -54,7 +54,6 @@ public class TermuxTerminalSessionClientBase implements TerminalSessionClient {
     }
 
 
-
     @Override
     public void logError(String tag, String message) {
 //        Logger.logError(tag, message);

@@ -27,9 +27,9 @@ public class ActivityUtils {
     /**
      * Start an {@link Activity}.
      *
-     * @param context The context for operations.
-     * @param intent The {@link Intent} to send to start the activity.
-     * @param logErrorMessage If an error message should be logged if failed to start activity.
+     * @param context          The context for operations.
+     * @param intent           The {@link Intent} to send to start the activity.
+     * @param logErrorMessage  If an error message should be logged if failed to start activity.
      * @param showErrorMessage If an error message toast should be shown if failed to start activity
      *                         in addition to logging a message. The {@code context} must not be
      *                         {@code null}.
@@ -60,7 +60,6 @@ public class ActivityUtils {
     }
 
 
-
     /**
      * Wrapper for {@link #startActivityForResult(Context, int, Intent, boolean, boolean, ActivityResultLauncher)}.
      */
@@ -79,17 +78,17 @@ public class ActivityUtils {
     /**
      * Start an {@link Activity} for result.
      *
-     * @param context The context for operations. It must be an instance of {@link Activity} or
-     *               {@link AppCompatActivity}. It is ignored if {@code activityResultLauncher}
-     *                is not {@code null}.
-     * @param requestCode The request code to use while sending intent. This must be >= 0, otherwise
-     *                    exception will be raised. This is ignored if {@code activityResultLauncher}
-     *                    is {@code null}.
-     * @param intent The {@link Intent} to send to start the activity.
-     * @param logErrorMessage If an error message should be logged if failed to start activity.
-     * @param showErrorMessage If an error message toast should be shown if failed to start activity
-     *                         in addition to logging a message. The {@code context} must not be
-     *                         {@code null}.
+     * @param context                The context for operations. It must be an instance of {@link Activity} or
+     *                               {@link AppCompatActivity}. It is ignored if {@code activityResultLauncher}
+     *                               is not {@code null}.
+     * @param requestCode            The request code to use while sending intent. This must be >= 0, otherwise
+     *                               exception will be raised. This is ignored if {@code activityResultLauncher}
+     *                               is {@code null}.
+     * @param intent                 The {@link Intent} to send to start the activity.
+     * @param logErrorMessage        If an error message should be logged if failed to start activity.
+     * @param showErrorMessage       If an error message toast should be shown if failed to start activity
+     *                               in addition to logging a message. The {@code context} must not be
+     *                               {@code null}.
      * @param activityResultLauncher The {@link ActivityResultLauncher<Intent>} to use for start the
      *                               activity. If this is {@code null}, then
      *                               {@link Activity#startActivityForResult(Intent, int)} will be

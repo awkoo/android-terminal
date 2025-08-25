@@ -143,7 +143,7 @@ public class TextSelectionHandleView extends View {
 
     public void removeFromParent() {
         if (!isParentNull()) {
-            ((ViewGroup)this.getParent()).removeView(this);
+            ((ViewGroup) this.getParent()).removeView(this);
         }
     }
 
