@@ -281,14 +281,6 @@ public final class TerminalView extends View {
         this.mClient = client;
     }
 
-    /**
-     * Sets whether terminal view key logging is enabled or not.
-     *
-     * @param value The boolean value that defines the state.
-     */
-    public void setIsTerminalViewKeyLoggingEnabled(boolean value) {
-    }
-
 
     /**
      * Attach a {@link TerminalSession} to this view.
