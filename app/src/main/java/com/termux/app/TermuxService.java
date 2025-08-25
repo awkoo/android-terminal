@@ -16,6 +16,7 @@ import android.os.PowerManager;
 import androidx.annotation.Nullable;
 
 import com.termux.R;
+import com.termux.app.activities.MainActivity;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.TermuxTerminalSessionServiceClient;
 import com.termux.shared.notification.NotificationUtils;
@@ -38,9 +39,9 @@ import java.util.Objects;
 /**
  * A service holding a list of {@link TermuxSession} in {@link TermuxShellManager#mTermuxSessions} and background
  * showing a foreground notification while running so that it is not terminated.
- * The user interacts with the session through {@link TermuxActivity}, but this service may outlive
+ * The user interacts with the session through {@link MainActivity}, but this service may outlive
  * the activity when the user or the system disposes of the activity. In that case the user may
- * restart {@link TermuxActivity} later to yet again access the sessions.
+ * restart {@link MainActivity} later to yet again access the sessions.
  * <p/>
  * In order to keep both terminal sessions and spawned processes (who may outlive the terminal sessions) alive as long
  * as wanted by the user this service is a foreground service, {@link Service#startForeground(int, Notification)}.
@@ -93,7 +94,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     @Override
     public void onCreate() {
         // Get Termux app SharedProperties without loading from disk since TermuxApplication handles
-        // load and TermuxActivity handles reloads
+        // load and MainActivity handles reloads
         mProperties = TermuxAppSharedProperties.getProperties();
 
         mShellManager = TermuxShellManager.getShellManager();
@@ -151,7 +152,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
     @Override
     public boolean onUnbind(Intent intent) {
-        // Since we cannot rely on {@link TermuxActivity.onDestroy()} to always complete,
+        // Since we cannot rely on {@link MainActivity.onDestroy()} to always complete,
         // we unset clients here as well if it failed, so that we do not leave service and session
         // clients with references to the activity.
         if (mTermuxTerminalSessionActivityClient != null)
@@ -375,15 +376,15 @@ public final class TermuxService extends Service implements TermuxSession.Termux
 
 
     /**
-     * If {@link TermuxActivity} has not bound to the {@link TermuxService} yet or is destroyed, then
+     * If {@link MainActivity} has not bound to the {@link TermuxService} yet or is destroyed, then
      * interface functions requiring the activity should not be available to the terminal sessions,
-     * so we just return the {@link #mTermuxTerminalSessionServiceClient}. Once {@link TermuxActivity} bind
+     * so we just return the {@link #mTermuxTerminalSessionServiceClient}. Once {@link MainActivity} bind
      * callback is received, it should call {@link #setTermuxTerminalSessionClient} to set the
      * {@link TermuxService#mTermuxTerminalSessionActivityClient} so that further terminal sessions are directly
      * passed the {@link TermuxTerminalSessionActivityClient} object which fully implements the
      * {@link TerminalSessionClient} interface.
      *
-     * @return Returns the {@link TermuxTerminalSessionActivityClient} if {@link TermuxActivity} has bound with
+     * @return Returns the {@link TermuxTerminalSessionActivityClient} if {@link MainActivity} has bound with
      * {@link TermuxService}, otherwise {@link TermuxTerminalSessionServiceClient}.
      */
     public synchronized TermuxTerminalSessionClientBase getTermuxTerminalSessionClient() {
@@ -391,7 +392,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     }
 
     /**
-     * This should be called when {@link TermuxActivity#onServiceConnected} is called to set the
+     * This should be called when {@link MainActivity#onServiceConnected} is called to set the
      * {@link TermuxService#mTermuxTerminalSessionActivityClient} variable and update the {@link TerminalSession}
      * and {@link TerminalEmulator} clients in case they were passed {@link TermuxTerminalSessionServiceClient}
      * earlier.
@@ -407,7 +408,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
     }
 
     /**
-     * This should be called when {@link TermuxActivity} has been destroyed and in {@link #onUnbind(Intent)}
+     * This should be called when {@link MainActivity} has been destroyed and in {@link #onUnbind(Intent)}
      * so that the {@link TermuxService} and {@link TerminalSession} and {@link TerminalEmulator}
      * clients do not hold an activity references.
      */
@@ -423,7 +424,7 @@ public final class TermuxService extends Service implements TermuxSession.Termux
         Resources res = getResources();
 
         // Set pending intent to be launched when notification is clicked
-        Intent notificationIntent = TermuxActivity.newInstance(this);
+        Intent notificationIntent = MainActivity.newInstance(this);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
 

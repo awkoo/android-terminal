@@ -12,7 +12,7 @@
     <style name="Theme.TermuxApp.DayNight.NoActionBar" parent="Theme.BaseActivity.DayNight.NoActionBar" />
 
 
-    <!-- TermuxActivity DayNight NoActionBar theme. -->
+    <!-- MainActivity DayNight NoActionBar theme. -->
     <style name="Theme.TermuxActivity.DayNight.NoActionBar" parent="Theme.TermuxApp.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black</item>

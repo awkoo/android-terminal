@@ -1,4 +1,4 @@
-package com.termux.app;
+package com.termux.app.activities;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -30,7 +30,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import com.termux.R;
-import com.termux.app.activities.SettingsActivity;
+import com.termux.app.TermuxService;
 import com.termux.app.terminal.TermuxSessionsListViewController;
 import com.termux.app.terminal.TermuxTerminalSessionActivityClient;
 import com.termux.app.terminal.TermuxTerminalViewClient;
@@ -60,7 +60,7 @@ import com.termux.view.TerminalViewClient;
  * </ul>
  * about memory leaks.
  */
-public final class TermuxActivity extends AppCompatActivity implements ServiceConnection {
+public final class MainActivity extends AppCompatActivity implements ServiceConnection {
 
     ActivityTermuxBinding binding;
 
@@ -72,19 +72,19 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     TermuxService mTermuxService;
 
     /**
-     * The {@link TerminalView} shown in  {@link TermuxActivity} that displays the terminal.
+     * The {@link TerminalView} shown in  {@link MainActivity} that displays the terminal.
      */
     TerminalView mTerminalView;
 
     /**
      * The {@link TerminalViewClient} interface implementation to allow for communication between
-     * {@link TerminalView} and {@link TermuxActivity}.
+     * {@link TerminalView} and {@link MainActivity}.
      */
     TermuxTerminalViewClient mTermuxTerminalViewClient;
 
     /**
      * The {@link TerminalSessionClient} interface implementation to allow for communication between
-     * {@link TerminalSession} and {@link TermuxActivity}.
+     * {@link TerminalSession} and {@link MainActivity}.
      */
     TermuxTerminalSessionActivityClient mTermuxTerminalSessionActivityClient;
 
@@ -100,7 +100,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
 
     /**
-     * The space at the bottom of {@link @mTermuxActivityRootView} of the {@link TermuxActivity}.
+     * The space at the bottom of {@link @mTermuxActivityRootView} of the {@link MainActivity}.
      */
 //    View mTermuxActivityBottomSpaceView;
 
@@ -134,7 +134,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private boolean mIsActivityRecreated = false;
 
     /**
-     * The {@link TermuxActivity} is in an invalid state and must not be run.
+     * The {@link MainActivity} is in an invalid state and must not be run.
      */
     private boolean mIsInvalidState;
 
@@ -438,7 +438,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         View newSessionButton = findViewById(R.id.new_session_button);
         newSessionButton.setOnClickListener(v -> mTermuxTerminalSessionActivityClient.addNewSession(null));
         newSessionButton.setOnLongClickListener(v -> {
-            TextInputDialogUtils.textInput(TermuxActivity.this, R.string.title_create_named_session, null,
+            TextInputDialogUtils.textInput(MainActivity.this, R.string.title_create_named_session, null,
                 R.string.action_create_named_session_confirm, text -> mTermuxTerminalSessionActivityClient.addNewSession(text),
                 R.string.action_new_session_failsafe, text -> mTermuxTerminalSessionActivityClient.addNewSession(text),
                 -1, null, null);
@@ -472,7 +472,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     public void finishActivityIfNotFinishing() {
         // prevent duplicate calls to finish() if called from multiple places
-        if (!TermuxActivity.this.isFinishing()) {
+        if (!MainActivity.this.isFinishing()) {
             finish();
         }
     }
@@ -676,7 +676,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
 
     public static Intent newInstance(@NonNull final Context context) {
-        Intent intent = new Intent(context, TermuxActivity.class);
+        Intent intent = new Intent(context, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         return intent;
     }

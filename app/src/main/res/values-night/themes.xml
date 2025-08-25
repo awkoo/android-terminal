@@ -4,7 +4,7 @@
      https://material.io/develop/android/theming/dark
     -->
 
-    <!-- TermuxActivity DayNight NoActionBar theme. -->
+    <!-- MainActivity DayNight NoActionBar theme. -->
     <!-- See https://developer.android.com/training/material/theme.html for how to customize the Material theme. -->
     <!-- NOTE: Cannot use "Light." since it hides the terminal scrollbar on the default black background. -->
     <style name="Theme.TermuxActivity.DayNight.NoActionBar" parent="Theme.TermuxApp.DayNight.NoActionBar">

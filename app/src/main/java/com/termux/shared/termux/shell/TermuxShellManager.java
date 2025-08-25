@@ -20,7 +20,7 @@ public class TermuxShellManager {
 
     /**
      * The foreground TermuxSessions which this service manages.
-     * Note that this list is observed by an activity, like TermuxActivity.mTermuxSessionListViewController,
+     * Note that this list is observed by an activity, like MainActivity.mTermuxSessionListViewController,
      * so any changes must be made on the UI thread and followed by a call to
      * {@link ArrayAdapter#notifyDataSetChanged()}.
      */

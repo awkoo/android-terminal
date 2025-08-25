@@ -17,7 +17,7 @@
         <intent
             android:action="android.intent.action.RUN"
             android:targetPackage="com.termux"
-            android:targetClass="com.termux.app.TermuxActivity"
+            android:targetClass="com.termux.app.activities.MainActivity"
             android:name="android.shortcut.conversation" />
     </shortcut>
 
@@ -29,7 +29,7 @@
         <intent
             android:action="android.intent.action.RUN"
             android:targetPackage="com.termux"
-            android:targetClass="com.termux.app.TermuxActivity"
+            android:targetClass="com.termux.app.activities.MainActivity"
             android:name="android.shortcut.conversation">
             <extra
                 android:name="com.termux.app.failsafe_session"
