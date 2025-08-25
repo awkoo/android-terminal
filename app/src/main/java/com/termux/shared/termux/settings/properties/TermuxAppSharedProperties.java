@@ -25,7 +25,6 @@ public class TermuxAppSharedProperties extends TermuxSharedProperties {
     public static void init(@NonNull Context context) {
         if (properties == null)
             properties = new TermuxAppSharedProperties(context);
-
     }
 
     /**
