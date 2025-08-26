@@ -163,7 +163,7 @@ string getJniResultString(const int retvalParam, const int errnoParam,
 /* Get "com/termux/shared/cpp/models/JniResult" object that can be returned as result for a JNI call. */
 jobject getJniResult(JNIEnv *env, jstring title, const int retvalParam, const int errnoParam,
                      string errmsgParam, const int intDataParam) {
-    jclass clazz = env->FindClass("com/termux/shared/jni/models/JniResult");
+    jclass clazz = env->FindClass("awkoo/terminal/shared/jni/models/JniResult");
     if (checkJniException(env)) return nullptr;
     if (!clazz) {
         log_error(get_title_and_message(env, title,
@@ -596,7 +596,7 @@ Java_com_termux_shared_net_socket_local_LocalSocketManager_getPeerCredNative(JNI
                             to_string(fd));
     }
 
-    // Fill "com.termux.shared.net.socket.local.PeerCred" object.
+    // Fill "awkoo.terminal.shared.net.socket.local.PeerCred" object.
     // The pid, uid and gid will always be set based on ucred.
     // The pname and cmdline will only be set if current process has access to "/proc/[pid]/cmdline"
     // of peer process. Processes of other users/apps are not normally accessible.
