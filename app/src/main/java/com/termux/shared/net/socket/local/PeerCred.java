@@ -117,33 +117,6 @@ public class PeerCred {
 
         return logString.toString();
     }
-
-    /**
-     * Get a markdown {@link String} for {@link PeerCred}.
-     *
-     * @param peerCred The {@link PeerCred} to get info of.
-     * @return Returns the markdown {@link String}.
-     */
-//    public static String getPeerCredMarkdownString(final PeerCred peerCred) {
-//        if (peerCred == null) return "null";
-//        return peerCred.getMarkdownString();
-//    }
-
-//    /** Get a markdown {@link String} for the {@link PeerCred}. */
-//    @NonNull
-//    public String getMarkdownString() {
-//        StringBuilder markdownString = new StringBuilder();
-//
-//        markdownString.append("## ").append("Peer Cred");
-//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Process", getProcessString(), "-"));
-//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("User", getUserString(), "-"));
-//        markdownString.append("\n").append(MarkdownUtils.getSingleLineMarkdownStringEntry("Group", getGroupString(), "-"));
-//
-//        if (cmdline != null)
-//            markdownString.append("\n").append(MarkdownUtils.getMultiLineMarkdownStringEntry("Cmdline", cmdline, "-"));
-//
-//        return markdownString.toString();
-//    }
     @NonNull
     public String getMinimalString() {
         return "process=" + getProcessString() + ", user=" + getUserString() + ", group=" + getGroupString();
