@@ -1,7 +1,7 @@
 package awkoo.terminal.terminal;
 
 /**
- * Native methods for creating and managing pseudoterminal subprocesses. C code is in cpp/termux.c.
+ * Native methods for creating and managing pseudoterminal subprocesses. C code is in jni/termux.c.
  */
 final class JNI {
 

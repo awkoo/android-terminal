@@ -19,7 +19,7 @@ public class ProcessUtils {
      * phantom process addition, but there is no API via IActivityManager to get them.
      * <p>
      * To get process name for pids of own app's child processes, check `get_process_name_from_cmdline()`
-     * in `local-socket.cpp`.
+     * in `local-socket.jni`.
      * <p>
      * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/core/java/android/app/ActivityManager.java;l=3362
      * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java;l=8434
