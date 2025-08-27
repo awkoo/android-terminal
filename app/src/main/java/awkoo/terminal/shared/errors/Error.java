@@ -35,8 +35,6 @@ public class Error implements Serializable {
      */
     private List<Throwable> throwablesList = new ArrayList<>();
 
-    private static final String LOG_TAG = "Error";
-
 
     public Error() {
         InitError(null, null, null, null);
@@ -100,10 +98,6 @@ public class Error implements Serializable {
         return this;
     }
 
-    public String getLabel() {
-        return label;
-    }
-
 
     public String getType() {
         return type;
@@ -117,44 +111,6 @@ public class Error implements Serializable {
         return message;
     }
 
-    public void prependMessage(String message) {
-        if (message != null && isStateFailed())
-            this.message = message + this.message;
-    }
-
-    public void appendMessage(String message) {
-        if (message != null && isStateFailed())
-            this.message = this.message + message;
-    }
-
-    public List<Throwable> getThrowablesList() {
-        return Collections.unmodifiableList(throwablesList);
-    }
-
-
-    public synchronized boolean setStateFailed(@NonNull Error error) {
-        return setStateFailed(error.getType(), error.getCode(), error.getMessage(), null);
-    }
-
-    public synchronized boolean setStateFailed(@NonNull Error error, Throwable throwable) {
-        return setStateFailed(error.getType(), error.getCode(), error.getMessage(), Collections.singletonList(throwable));
-    }
-
-    public synchronized boolean setStateFailed(@NonNull Error error, List<Throwable> throwablesList) {
-        return setStateFailed(error.getType(), error.getCode(), error.getMessage(), throwablesList);
-    }
-
-    public synchronized boolean setStateFailed(int code, String message) {
-        return setStateFailed(this.type, code, message, null);
-    }
-
-    public synchronized boolean setStateFailed(int code, String message, Throwable throwable) {
-        return setStateFailed(this.type, code, message, Collections.singletonList(throwable));
-    }
-
-    public synchronized boolean setStateFailed(int code, String message, List<Throwable> throwablesList) {
-        return setStateFailed(this.type, code, message, throwablesList);
-    }
 
     public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
         this.message = message;
@@ -185,21 +141,7 @@ public class Error implements Serializable {
     }
 
 
-    /**
-     * Log the {@link Error} and show a toast for the minimal {@link String} for the {@link Error}.
-     *
-     * @param context The {@link Context} for operations.
-     * @param logTag  The log tag to use for logging.
-     * @param error   The {@link Error} to convert.
-     */
-    public static void logErrorAndShowToast(Context context, String logTag, Error error) {
-        if (error == null) return;
-        error.logErrorAndShowToast(context, logTag);
-    }
-
-    public void logErrorAndShowToast(Context context, String logTag) {
-        getErrorLogString();
-//        logExtendedMessage(Log.ERROR, tag, message);
+    public void showToast(Context context) {
         UI.showToast(context, getMinimalErrorLogString(), true);
     }
 
@@ -220,50 +162,15 @@ public class Error implements Serializable {
 
         logString.append(getCodeString());
         logString.append("\n").append(getTypeAndMessageLogString());
-        if (throwablesList != null && throwablesList.size() > 0)
+        if (throwablesList != null && !throwablesList.isEmpty())
             logString.append("\n").append(geStackTracesLogString());
 
         return logString.toString();
     }
 
-    /**
-     * Get a minimal log friendly {@link String} for {@link Error} error parameters.
-     *
-     * @param error The {@link Error} to convert.
-     * @return Returns the log friendly {@link String}.
-     */
-    public static String getMinimalErrorLogString(final Error error) {
-        if (error == null) return "null";
-        return error.getMinimalErrorLogString();
-    }
-
     public String getMinimalErrorLogString() {
-        StringBuilder logString = new StringBuilder();
-
-        logString.append(getCodeString());
-        logString.append(getTypeAndMessageLogString());
-
-        return logString.toString();
-    }
-
-    /**
-     * Get a minimal {@link String} for {@link Error} error parameters.
-     *
-     * @param error The {@link Error} to convert.
-     * @return Returns the {@link String}.
-     */
-    public static String getMinimalErrorString(final Error error) {
-        if (error == null) return "null";
-        return error.getMinimalErrorString();
-    }
-
-    public String getMinimalErrorString() {
-        StringBuilder logString = new StringBuilder();
-
-        logString.append("(").append(getCode()).append(") ");
-        logString.append(getType()).append(": ").append(getMessage());
-
-        return logString.toString();
+        return getCodeString() +
+            getTypeAndMessageLogString();
     }
 
 

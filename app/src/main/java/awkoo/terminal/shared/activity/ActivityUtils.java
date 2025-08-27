@@ -39,7 +39,7 @@ public class ActivityUtils {
         if (context == null) {
             error = ActivityErrno.ERRNO_STARTING_ACTIVITY_WITH_NULL_CONTEXT.getError(activityName);
             if (logErrorMessage)
-                error.logErrorAndShowToast(null, LOG_TAG);
+                error.showToast(null);
             return error;
         }
 
@@ -48,7 +48,7 @@ public class ActivityUtils {
         } catch (Exception e) {
             error = ActivityErrno.ERRNO_START_ACTIVITY_FAILED_WITH_EXCEPTION.getError(e, activityName, e.getMessage());
             if (logErrorMessage)
-                error.logErrorAndShowToast(showErrorMessage ? context : null, LOG_TAG);
+                error.showToast(showErrorMessage ? context : null);
             return error;
         }
 

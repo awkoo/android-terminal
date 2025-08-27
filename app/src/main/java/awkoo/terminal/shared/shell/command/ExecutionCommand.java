@@ -1,19 +1,15 @@
 package awkoo.terminal.shared.shell.command;
 
 import android.content.Intent;
-import android.net.Uri;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import awkoo.terminal.shared.data.DataUtils;
 import awkoo.terminal.shared.data.IntentUtils;
-import awkoo.terminal.shared.errors.Error;
 import awkoo.terminal.shared.logger.Logger;
 import awkoo.terminal.shared.shell.command.result.ResultData;
 import awkoo.terminal.terminal.TerminalSession;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ExecutionCommand {
@@ -79,28 +75,6 @@ public class ExecutionCommand {
             return runner != null && runner.equals(this.name);
         }
 
-        /**
-         * Get {@link Runner} for {@code name} if found, otherwise {@code null}.
-         */
-        @Nullable
-        public static Runner runnerOf(String name) {
-            for (Runner v : Runner.values()) {
-                if (v.name.equals(name)) {
-                    return v;
-                }
-            }
-            return null;
-        }
-
-        /**
-         * Get {@link Runner} for {@code name} if found, otherwise {@code def}.
-         */
-        @NonNull
-        public static Runner runnerOf(@Nullable String name, @NonNull Runner def) {
-            Runner runner = runnerOf(name);
-            return runner != null ? runner : def;
-        }
-
     }
 
     public enum ShellCreateMode {
@@ -123,23 +97,6 @@ public class ExecutionCommand {
 
         public String getMode() {
             return mode;
-        }
-
-        public boolean equalsMode(String sessionCreateMode) {
-            return sessionCreateMode != null && sessionCreateMode.equals(this.mode);
-        }
-
-        /**
-         * Get {@link ShellCreateMode} for {@code mode} if found, otherwise {@code null}.
-         */
-        @Nullable
-        public static ShellCreateMode modeOf(String mode) {
-            for (ShellCreateMode v : ShellCreateMode.values()) {
-                if (v.mode.equals(mode)) {
-                    return v;
-                }
-            }
-            return null;
         }
 
     }
@@ -169,10 +126,6 @@ public class ExecutionCommand {
      * The executable for the {@link ExecutionCommand}.
      */
     public String executable;
-    /**
-     * The executable Uri for the {@link ExecutionCommand}.
-     */
-    public Uri executableUri;
     /**
      * The executable arguments array for the {@link ExecutionCommand}.
      */
@@ -281,37 +234,9 @@ public class ExecutionCommand {
         return currentState.getValue() >= ExecutionState.EXECUTED.getValue();
     }
 
-    public synchronized boolean isExecuting() {
-        return currentState == ExecutionState.EXECUTING;
-    }
-
-    public synchronized boolean isSuccessful() {
-        return currentState == ExecutionState.SUCCESS;
-    }
-
-
-    public synchronized boolean setStateFailed(@NonNull Error error) {
-        return setStateFailed(error.getType(), error.getCode(), error.getMessage(), null);
-    }
-
-    public synchronized boolean setStateFailed(@NonNull Error error, Throwable throwable) {
-        return setStateFailed(error.getType(), error.getCode(), error.getMessage(), Collections.singletonList(throwable));
-    }
-
-    public synchronized boolean setStateFailed(@NonNull Error error, List<Throwable> throwablesList) {
-        return setStateFailed(error.getType(), error.getCode(), error.getMessage(), throwablesList);
-    }
 
     public synchronized boolean setStateFailed(int code, String message) {
         return setStateFailed(null, code, message, null);
-    }
-
-    public synchronized boolean setStateFailed(int code, String message, Throwable throwable) {
-        return setStateFailed(null, code, message, Collections.singletonList(throwable));
-    }
-
-    public synchronized boolean setStateFailed(int code, String message, List<Throwable> throwablesList) {
-        return setStateFailed(null, code, message, throwablesList);
     }
 
     public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {

@@ -11,8 +11,6 @@ public class BellHandler {
     private static volatile BellHandler instance = null;
     private static final Object lock = new Object();
 
-    private static final String LOG_TAG = "BellHandler";
-
     public static BellHandler getInstance(Context context) {
         if (instance == null) {
             synchronized (lock) {

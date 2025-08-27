@@ -25,6 +25,8 @@
 
 package awkoo.terminal.shared.file.filesystem;
 
+import androidx.annotation.NonNull;
+
 /**
  * Container for device/inode to uniquely identify file.
  * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/java/sun/nio/fs/UnixFileKey.java
@@ -54,6 +56,7 @@ public class FileKey {
         return (this.st_dev == other.st_dev) && (this.st_ino == other.st_ino);
     }
 
+    @NonNull
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
