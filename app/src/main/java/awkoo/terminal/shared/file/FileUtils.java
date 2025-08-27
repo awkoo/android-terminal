@@ -18,46 +18,6 @@ import java.util.regex.Pattern;
 public class FileUtils {
 
     /**
-     * Get canonical path.
-     * <p>
-     * If path is already an absolute path, then it is used as is to get canonical path.
-     * If path is not an absolute path and {code prefixForNonAbsolutePath} is not {@code null}, then
-     * {code prefixForNonAbsolutePath} + "/" is prefixed before path before getting canonical path.
-     * If path is not an absolute path and {code prefixForNonAbsolutePath} is {@code null}, then
-     * "/" is prefixed before path before getting canonical path.
-     * <p>
-     * If an exception is raised to get the canonical path, then absolute path is returned.
-     *
-     * @param path                     The {@code path} to convert.
-     * @param prefixForNonAbsolutePath Optional prefix path to prefix before non-absolute paths. This
-     *                                 can be set to {@code null} if non-absolute paths should
-     *                                 be prefixed with "/". The call to {@link File#getCanonicalPath()}
-     *                                 will automatically do this anyways.
-     * @return Returns the {@code canonical path}.
-     */
-    public static String getCanonicalPath(String path, final String prefixForNonAbsolutePath) {
-        if (path == null) path = "";
-
-        String absolutePath;
-
-        // If path is already an absolute path
-        if (path.startsWith("/")) {
-            absolutePath = path;
-        } else {
-            if (prefixForNonAbsolutePath != null)
-                absolutePath = prefixForNonAbsolutePath + "/" + path;
-            else
-                absolutePath = "/" + path;
-        }
-
-        try {
-            return new File(absolutePath).getCanonicalPath();
-        } catch (Exception ignored) {}
-
-        return absolutePath;
-    }
-
-    /**
      * Removes one or more forward slashes "//" with single slash "/"
      * Removes "./"
      * Removes trailing forward slash "/"
