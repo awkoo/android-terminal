@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import awkoo.terminal.R;
 import awkoo.terminal.app.TerminalService;
@@ -353,21 +354,38 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         if (service == null) return;
 
         if (service.getTermuxSessionsSize() >= MAX_SESSIONS) {
-            new AlertDialog.Builder(mActivity).setTitle(R.string.title_max_terminals_reached).setMessage(R.string.msg_max_terminals_reached)
-                .setPositiveButton(android.R.string.ok, null).show();
+            new AlertDialog.Builder(mActivity)
+                .setTitle(R.string.title_max_terminals_reached)
+                .setMessage(R.string.msg_max_terminals_reached)
+                .setPositiveButton(android.R.string.ok, null)
+                .show();
         } else {
             TerminalSession currentSession = mActivity.getCurrentSession();
 
-            String workingDirectory = null;
+            String workingDirectory;
             if (currentSession != null) {
                 workingDirectory = currentSession.getCwd();
+            } else {
+                workingDirectory = mActivity.getFilesDir().getAbsolutePath();
             }
 
-            TermuxSession newTermuxSession = service.createTermuxSession(null, null, null, workingDirectory, sessionName);
+            TermuxSession newTermuxSession = service.createTermuxSession(
+                null,
+                null,
+                null,
+                workingDirectory,
+                sessionName
+            );
             if (newTermuxSession == null) return;
 
             TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
             setCurrentSession(newTerminalSession);
+
+            String shell_startup_commands = PreferenceManager.getDefaultSharedPreferences(
+                mActivity
+            ).getString("shell_startup_commands", "");
+            if (!shell_startup_commands.isEmpty())
+                newTerminalSession.write(shell_startup_commands + "\n");
 
             mActivity.getDrawer().closeDrawers();
         }

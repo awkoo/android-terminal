@@ -1,7 +1,5 @@
 package awkoo.terminal.shared.shell.command.environment;
 
-import android.content.Context;
-
 import java.util.HashMap;
 
 /**
@@ -13,7 +11,7 @@ import java.util.HashMap;
  * https://cs.android.com/android/_/android/platform/system/core/+/refs/tags/android-12.0.0_r32:rootdir/init.rc;l=910
  * https://cs.android.com/android/platform/superproject/+/android-12.0.0_r32:packages/modules/SdkExtensions/derive_classpath/derive_classpath.cpp;l=96
  */
-public class ShellEnvironment {
+public class ShellEnvironment extends HashMap<String, String> {
     /**
      * Names for common/supported login shell binaries.
      */
@@ -24,23 +22,22 @@ public class ShellEnvironment {
     public static final String ENVNAME_PATH = "PATH";
     public static final String ENVNAME_TMPDIR = "TMPDIR";
 
-    public static String getDefaultWorkingPath(Context context) {
-        return context.getFilesDir().getAbsolutePath();
+    public static String getDefaultWorkingPath() {
+        return "/";
     }
 
-    public static String getDefaultTempPath(Context context) {
-        return context.getCacheDir().getAbsolutePath();
+    public static String getDefaultTempPath() {
+        return "/";
     }
 
-    public static HashMap<String, String> getDefaultEnvironment(Context context) {
-        HashMap<String, String> environment = new HashMap<>();
-        environment.put(ENVNAME_PWD, getDefaultWorkingPath(context));
-        environment.put(ENVNAME_HOME, getDefaultWorkingPath(context));
-        environment.put(ENVNAME_PATH, System.getenv("PATH"));
-        environment.put(ENVNAME_TMPDIR, getDefaultTempPath(context));
-        environment.put("COLORTERM", "truecolor");
-        environment.put("TERM", "xterm-256color");
-        return environment;
+    public ShellEnvironment() {
+        super();
+        this.put(ENVNAME_PWD, getDefaultWorkingPath());
+        this.put(ENVNAME_HOME, getDefaultWorkingPath());
+        this.put(ENVNAME_PATH, System.getenv("PATH"));
+        this.put(ENVNAME_TMPDIR, getDefaultTempPath());
+        this.put("COLORTERM", "truecolor");
+        this.put("TERM", "xterm-256color");
     }
 
 }

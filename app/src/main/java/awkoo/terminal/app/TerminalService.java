@@ -15,6 +15,8 @@ import android.os.IBinder;
 import android.os.PowerManager;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import awkoo.terminal.R;
 import awkoo.terminal.app.activities.MainActivity;
@@ -300,7 +302,6 @@ public final class TerminalService extends Service implements TermuxSession.Term
             return null;
         }
 
-        executionCommand.setShellCommandShellEnvironment = true;
         executionCommand.terminalTranscriptRows = mProperties.getTerminalTranscriptRows();
 
         // If the execution command was started for a plugin, only then will the stdout be set

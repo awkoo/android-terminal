@@ -15,6 +15,11 @@
             app:useSimpleSummaryProvider="true"
             app:title="@string/su_path" />
 
+        <EditTextPreference
+            app:key="shell_startup_commands"
+            app:useSimpleSummaryProvider="true"
+            app:title="@string/title_shell_startup_commands" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

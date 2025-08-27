@@ -1,5 +1,6 @@
 package awkoo.terminal.terminal;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -15,9 +16,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
+
+import awkoo.terminal.R;
 
 /**
  * A terminal session, consisting of a process coupled to a terminal interface.
@@ -87,9 +89,19 @@ public final class TerminalSession extends TerminalOutput {
     private final String[] mArgs;
     private final String[] mEnv;
     private final Integer mTranscriptRows;
+    private final Context context;
 
 
-    public TerminalSession(String shellPath, String cwd, String[] args, String[] env, Integer transcriptRows, TerminalSessionClient client) {
+    public TerminalSession(
+        Context context,
+        String shellPath,
+        String cwd,
+        String[] args,
+        String[] env,
+        Integer transcriptRows,
+        TerminalSessionClient client
+    ) {
+        this.context = context;
         this.mShellPath = shellPath;
         this.mCwd = cwd;
         this.mArgs = args;
@@ -135,14 +147,31 @@ public final class TerminalSession extends TerminalOutput {
      * @param rows    The number of rows in the terminal window.
      */
     public void initializeEmulator(int columns, int rows, int cellWidthPixels, int cellHeightPixels) {
-        mEmulator = new TerminalEmulator(this, columns, rows, cellWidthPixels, cellHeightPixels, mTranscriptRows, mClient);
+        mEmulator = new TerminalEmulator(
+            this,
+            columns,
+            rows,
+            cellWidthPixels,
+            cellHeightPixels,
+            mTranscriptRows,
+            mClient
+        );
 
         int[] processId = new int[1];
-        mTerminalFileDescriptor = JNI.createSubprocess(mShellPath, mCwd, mArgs, mEnv, processId, rows, columns, cellWidthPixels, cellHeightPixels);
+        mTerminalFileDescriptor = JNI.createSubprocess(
+            mShellPath,
+            mCwd,
+            mArgs,
+            mEnv,
+            processId,
+            rows,
+            columns,
+            cellWidthPixels,
+            cellHeightPixels
+        );
         mShellPid = processId[0];
         mClient.setTerminalShellPid(this, mShellPid);
 
-//        final FileDescriptor terminalFileDescriptorWrapped = wrapFileDescriptor(mTerminalFileDescriptor, mClient);
         final ParcelFileDescriptor terminalFD;
         try {
             terminalFD = ParcelFileDescriptor.fromFd(mTerminalFileDescriptor);
@@ -189,7 +218,12 @@ public final class TerminalSession extends TerminalOutput {
             @Override
             public void run() {
                 int processExitCode = JNI.waitFor(mShellPid);
-                mMainThreadHandler.sendMessage(mMainThreadHandler.obtainMessage(MSG_PROCESS_EXITED, processExitCode));
+                mMainThreadHandler.sendMessage(
+                    mMainThreadHandler.obtainMessage(
+                        MSG_PROCESS_EXITED,
+                        processExitCode
+                    )
+                );
             }
         }.start();
 
@@ -268,9 +302,7 @@ public final class TerminalSession extends TerminalOutput {
         if (isRunning()) {
             try {
                 Os.kill(mShellPid, OsConstants.SIGKILL);
-            } catch (ErrnoException e) {
-//                Logger.logWarn(mClient, LOG_TAG, "Failed sending SIGKILL: " + e.getMessage());
-            }
+            } catch (ErrnoException ignored) {}
         }
     }
 
@@ -340,12 +372,10 @@ public final class TerminalSession extends TerminalOutput {
             final String cwdSymlink = String.format("/proc/%s/cwd/", mShellPid);
             String outputPath = new File(cwdSymlink).getCanonicalPath();
             String outputPathWithTrailingSlash = outputPath;
-            if (!outputPath.endsWith("/")) {
+            if (!outputPath.endsWith("/"))
                 outputPathWithTrailingSlash += '/';
-            }
-            if (!cwdSymlink.equals(outputPathWithTrailingSlash)) {
+            if (!cwdSymlink.equals(outputPathWithTrailingSlash))
                 return outputPath;
-            }
         } catch (IOException | SecurityException ignored) {}
         return null;
     }
@@ -373,28 +403,15 @@ public final class TerminalSession extends TerminalOutput {
                 int exitCode = (Integer) msg.obj;
                 session.cleanupResources(exitCode);
 
-                byte[] bytesToWrite = getBytesToWrite(exitCode);
+                byte[] bytesToWrite = session.context.getString(
+                    R.string.session_exit_message,
+                    exitCode < 0 ? "signal" : "code",
+                    exitCode
+                ).getBytes();
                 session.mEmulator.append(bytesToWrite, bytesToWrite.length);
                 session.notifyScreenUpdate();
-
                 session.mClient.onSessionFinished(session);
             }
         }
-
-        private static byte[] getBytesToWrite(int exitCode) {
-            String exitDescription = "\r\n[Process completed";
-            if (exitCode > 0) {
-                // Non-zero process exit.
-                exitDescription += " (code " + exitCode + ")";
-            } else if (exitCode < 0) {
-                // Negated signal.
-                exitDescription += " (signal " + (-exitCode) + ")";
-            }
-            exitDescription += " - press Enter]";
-
-            return exitDescription.getBytes(StandardCharsets.UTF_8);
-        }
-
     }
-
 }

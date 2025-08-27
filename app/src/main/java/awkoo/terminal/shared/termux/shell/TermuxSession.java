@@ -85,7 +85,7 @@ public class TermuxSession {
         if (executionCommand.executable != null && executionCommand.executable.isEmpty())
             executionCommand.executable = null;
         if (executionCommand.workingDirectory == null || executionCommand.workingDirectory.isEmpty())
-            executionCommand.workingDirectory = ShellEnvironment.getDefaultWorkingPath(context);
+            executionCommand.workingDirectory = ShellEnvironment.getDefaultWorkingPath();
 
         if (executionCommand.executable == null)
             executionCommand.executable = ShellEnvironment.LOGIN_SHELL_NAME;
@@ -98,8 +98,8 @@ public class TermuxSession {
         if (rootMode) {
             result.add(preferences.getString("su_path", "su"));
             result.add("-c");
-        }
-        result.add(executionCommand.executable);
+        } else
+            result.add(executionCommand.executable);
         if (executionCommand.arguments != null)
             Collections.addAll(result, executionCommand.arguments);
         String[] commandArgs = result.toArray(new String[0]);
@@ -118,7 +118,7 @@ public class TermuxSession {
             executionCommand.commandLabel = processName;
 
         // Setup command environment
-        HashMap<String, String> environment = ShellEnvironment.getDefaultEnvironment(context);
+        ShellEnvironment environment = new ShellEnvironment();
         environment.put(ShellEnvironment.ENVNAME_PWD, executionCommand.workingDirectory);
         if (additionalEnvironment != null)
             environment.putAll(additionalEnvironment);
@@ -133,6 +133,7 @@ public class TermuxSession {
         }
 
         TerminalSession terminalSession = new TerminalSession(
+            context,
             executionCommand.executable,
             executionCommand.workingDirectory,
             executionCommand.arguments,
@@ -168,7 +169,13 @@ public class TermuxSession {
         mExecutionCommand.resultData.exitCode = exitCode;
 
         if (this.mSetStdoutOnExit)
-            mExecutionCommand.resultData.stdout.append(ShellUtils.getTerminalSessionTranscriptText(mTerminalSession, true, false));
+            mExecutionCommand.resultData.stdout.append(
+                ShellUtils.getTerminalSessionTranscriptText(
+                    mTerminalSession,
+                    true,
+                    false
+                )
+            );
 
         if (!mExecutionCommand.setState(ExecutionCommand.ExecutionState.EXECUTED))
             return;

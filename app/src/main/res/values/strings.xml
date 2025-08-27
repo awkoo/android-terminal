@@ -185,6 +185,9 @@
     <string name="notification_title_sessions">%1$d sessions running</string>
     <string name="notification_title_sessions_wakelock">%1$d sessions running (wakelock held)</string>
 
+    <string name="session_exit_message">[Process completed (%1$s %2$d) - press Enter]</string>
+    <string name="title_shell_startup_commands">Shell startup commands</string>
+
 
     <!-- TermuxUtils -->
 

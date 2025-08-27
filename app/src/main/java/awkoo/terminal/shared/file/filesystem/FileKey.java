@@ -59,12 +59,10 @@ public class FileKey {
     @NonNull
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(dev=")
-            .append(Long.toHexString(st_dev))
-            .append(",ino=")
-            .append(st_ino)
-            .append(')');
-        return sb.toString();
+        return "(dev=" +
+            Long.toHexString(st_dev) +
+            ",ino=" +
+            st_ino +
+            ')';
     }
 }

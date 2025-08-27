@@ -21,6 +21,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -163,6 +164,14 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (getDrawer().isDrawerOpen(Gravity.LEFT))
+                    getDrawer().closeDrawers();
+                else finishActivityIfNotFinishing();
+            }
+        });
         // Load termux shared preferences
         // This will also fail if TermuxConstants.TERMUX_PACKAGE_NAME does not equal applicationId
         mPreferences = TermuxAppSharedPreferences.build(this);
@@ -452,18 +461,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             toggleTerminalToolbar();
             return true;
         });
-    }
-
-
-    @SuppressLint("RtlHardcoded")
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (getDrawer().isDrawerOpen(Gravity.LEFT)) {
-            getDrawer().closeDrawers();
-        } else {
-            finishActivityIfNotFinishing();
-        }
     }
 
     public void finishActivityIfNotFinishing() {

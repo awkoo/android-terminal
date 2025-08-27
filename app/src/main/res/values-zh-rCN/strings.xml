@@ -76,4 +76,6 @@
     <string name="termux_terminal_view_terminal_margin_adjustment_off">Terminal margin adjustment will be disabled.</string>
     <string name="notification_title_sessions">%1$d个会话正在运行</string>
     <string name="notification_title_sessions_wakelock">%1$d个会话正在运行（已获取唤醒锁）</string>
+    <string name="session_exit_message">[进程已结束 (%1$s %2$d) - 按回车关闭]</string>
+    <string name="title_shell_startup_commands">启动Shell时执行的命令</string>
 </resources>
