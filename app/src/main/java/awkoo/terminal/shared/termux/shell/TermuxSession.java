@@ -88,7 +88,7 @@ public class TermuxSession {
             executionCommand.workingDirectory = ShellEnvironment.getDefaultWorkingPath(context);
 
         if (executionCommand.executable == null)
-            executionCommand.executable = ShellEnvironment.LOGIN_SHELL_BINARIES;
+            executionCommand.executable = ShellEnvironment.LOGIN_SHELL_NAME;
 
         // Setup command args
         List<String> result = new ArrayList<>();

@@ -17,7 +17,7 @@ public class ShellEnvironment {
     /**
      * Names for common/supported login shell binaries.
      */
-    public static final String LOGIN_SHELL_BINARIES = "sh";
+    public static final String LOGIN_SHELL_NAME = "sh";
 
     public static final String ENVNAME_PWD = "PWD";
     public static final String ENVNAME_HOME = "HOME";
