@@ -73,7 +73,7 @@ public final class TerminalView extends View {
      * The top row of text to display. Ranges from -activeTranscriptRows to 0.
      */
     int mTopRow;
-    int[] mDefaultSelectors = new int[]{-1, -1, -1, -1};
+    final int[] mDefaultSelectors = new int[]{-1, -1, -1, -1};
 
     float mScaleFactor = 1.f;
     final GestureAndScaleRecognizer mGestureRecognizer;

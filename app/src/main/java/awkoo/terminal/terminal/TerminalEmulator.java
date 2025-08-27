@@ -2,6 +2,8 @@ package awkoo.terminal.terminal;
 
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
+
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Locale;
@@ -2744,6 +2746,7 @@ public final class TerminalEmulator {
         boolean mUseLineDrawingG0, mUseLineDrawingG1, mUseLineDrawingUsesG0 = true;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "TerminalEmulator[size=" + mScreen.mColumns + "x" + mScreen.mScreenRows + ", margins={" + mTopMargin + "," + mRightMargin + "," + mBottomMargin

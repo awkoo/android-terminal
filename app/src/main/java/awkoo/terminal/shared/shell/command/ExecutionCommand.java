@@ -105,7 +105,7 @@ public class ExecutionCommand {
      * The optional unique id for the {@link ExecutionCommand}. This should equal -1 if execution
      * command is not going to be managed by a shell manager.
      */
-    public Integer id;
+    public final Integer id;
 
     /**
      * The process id of command.
@@ -133,7 +133,7 @@ public class ExecutionCommand {
     /**
      * The stdin string for the {@link ExecutionCommand}.
      */
-    public String stdin;
+    public final String stdin;
     /**
      * The current working directory for the {@link ExecutionCommand}.
      */
@@ -149,7 +149,7 @@ public class ExecutionCommand {
     /**
      * The {@link Runner} for the {@link ExecutionCommand}.
      */
-    public String runner;
+    public final String runner;
 
 
     /**

@@ -19,7 +19,7 @@ public class JniResult {
      * The return value for the JNI call.
      * This should be 0 for success.
      */
-    public int retval;
+    public final int retval;
 
     /**
      * The errno value for any failed native system or library calls if {@link #retval} does not equal 0.
@@ -27,7 +27,7 @@ public class JniResult {
      * <p>
      * https://manpages.debian.org/testing/manpages-dev/errno.3.en.html
      */
-    public int errno;
+    public final int errno;
 
     /**
      * The error message for the failure if {@link #retval} does not equal 0.
@@ -35,7 +35,7 @@ public class JniResult {
      * <p>
      * https://manpages.debian.org/testing/manpages-dev/strerror.3.en.html
      */
-    public String errmsg;
+    public final String errmsg;
 
     /**
      * Optional additional int data that needs to be returned by JNI call, like bytes read on success.
