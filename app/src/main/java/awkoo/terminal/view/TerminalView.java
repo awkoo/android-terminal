@@ -1220,9 +1220,8 @@ public final class TerminalView extends View {
      * toggled `-> off -> on`, which would call this very quickly sequentially. So that if cursor
      * is moved 2 or more times quickly, like long hold on arrow keys, it would trigger
      * `-> off -> on -> off -> on -> ...`, and the "on" callback at index 2 is automatically
-     * cancelled by next "off" callback at index 3 before getting a chance to be run. For this case
-     * we log only if {@link #TERMINAL_VIEW_KEY_LOGGING_ENABLED} is enabled, otherwise would clutter
-     * the log. We don't start the blinking with a delay to immediately show cursor in case it was
+     * cancelled by next "off" callback at index 3 before getting a chance to be run.
+     * We don't start the blinking with a delay to immediately show cursor in case it was
      * previously not visible.
      *
      * @param start                    If cursor blinker should be started or stopped.

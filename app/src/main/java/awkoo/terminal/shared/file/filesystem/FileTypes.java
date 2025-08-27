@@ -57,12 +57,6 @@ public class FileTypes {
      * {@code false} and {@link Os#stat(String)} if {@code followLinks} is {@code true}. All exceptions
      * are assumed as non-existence.
      * <p>
-     * The {@link org.apache.commons.io.FileUtils#isSymlink(File)} can also be used for checking
-     * symlinks but {@link FileAttributes} will provide access to more attributes if necessary,
-     * including getting other special file types considering that {@link File#exists()} can't be
-     * used to reliably check for non-existence and exclude the other 3 file types. commons.io is
-     * also not compatible with android < 8 for many things.
-     * <p>
      * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/java/java/io/File.java;l=793
      * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/java/java/io/UnixFileSystem.java;l=248
      * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:libcore/ojluni/src/main/native/UnixFileSystem_md.c;l=121
@@ -88,9 +82,6 @@ public class FileTypes {
             return getFileType(fileAttributes);
         } catch (Exception e) {
             // If not a ENOENT (No such file or directory) exception
-            //        logMessage(Log.ERROR, DEFAULT_LOG_TAG, message);
-            if (e.getMessage() != null && !e.getMessage().contains("ENOENT"))
-                e.getMessage();
             return FileType.NO_EXIST;
         }
     }
