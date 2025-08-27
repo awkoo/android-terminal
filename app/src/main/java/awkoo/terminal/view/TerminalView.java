@@ -146,8 +146,6 @@ public final class TerminalView extends View {
      */
     public final static int KEY_EVENT_SOURCE_SOFT_KEYBOARD = 0;
 
-    private static final String LOG_TAG = "TerminalView";
-
     public TerminalView(Context context, AttributeSet attributes) { // NO_UCD (unused code)
         super(context, attributes);
         mGestureRecognizer = new GestureAndScaleRecognizer(context, new GestureAndScaleRecognizer.Listener() {
@@ -499,7 +497,7 @@ public final class TerminalView extends View {
      * when context menu for the {@link TerminalView} is started by
      * {@link TextSelectionCursorController#ACTION_MORE} is closed.
      */
-    public void onContextMenuClosed(Menu menu) {
+    public void onContextMenuClosed() {
         // Unset the stored text since it shouldn't be used anymore and should be cleared from memory
         unsetStoredSelectedText();
     }
@@ -1336,16 +1334,6 @@ public final class TerminalView extends View {
         } else {
             return false;
         }
-    }
-
-    /**
-     * Get the currently selected text if selecting.
-     */
-    public String getSelectedText() {
-        if (isSelectingText() && mTextSelectionCursorController != null)
-            return mTextSelectionCursorController.getSelectedText();
-        else
-            return null;
     }
 
     /**

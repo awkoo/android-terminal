@@ -553,7 +553,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     public void onContextMenuClosed(@NonNull Menu menu) {
         super.onContextMenuClosed(menu);
         // onContextMenuClosed() is triggered twice if back button is pressed to dismiss instead of tap for some reason
-        mTerminalView.onContextMenuClosed(menu);
+        mTerminalView.onContextMenuClosed();
     }
 
     private void showKillSessionDialog(TerminalSession session) {
