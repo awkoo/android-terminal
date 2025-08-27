@@ -456,7 +456,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
     /**
      * Update the shown foreground service notification after making any changes that affect it.
      */
-    private synchronized void updateNotification() {
+    public synchronized void updateNotification() {
         if (mWakeLock == null && mTermuxSessions.isEmpty()) {
             // Exit if we are updating after the user disabled all locks with no sessions or tasks running.
             requestStopService();

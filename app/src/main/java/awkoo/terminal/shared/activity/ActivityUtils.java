@@ -11,8 +11,6 @@ import awkoo.terminal.shared.errors.Error;
 
 public class ActivityUtils {
 
-    private static final String LOG_TAG = "ActivityUtils";
-
     /**
      * Wrapper for {@link #startActivity(Context, Intent, boolean, boolean)}.
      */

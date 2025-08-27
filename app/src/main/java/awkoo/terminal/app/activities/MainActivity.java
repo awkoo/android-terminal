@@ -1,11 +1,13 @@
 package awkoo.terminal.app.activities;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.ContextMenu;
@@ -22,9 +24,12 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.PackageManagerCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -221,6 +226,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         if (mTermuxTerminalSessionActivityClient != null)
             mTermuxTerminalSessionActivityClient.onStart();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), (isGranted) -> {
+                mTerminalService.updateNotification();
+            }).launch(Manifest.permission.POST_NOTIFICATIONS);
     }
 
     @Override

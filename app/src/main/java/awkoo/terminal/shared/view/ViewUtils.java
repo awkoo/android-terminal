@@ -2,7 +2,6 @@ package awkoo.terminal.shared.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -158,36 +157,6 @@ public class ViewUtils {
         else metrics = calculator.computeMaximumWindowMetrics(context);
         Rect bounds = metrics.getBounds();
         return new Point(bounds.width(), bounds.height());
-    }
-
-    /**
-     * Convert {@link Rect} to {@link String}.
-     */
-    public static String toRectString(Rect rect) {
-        if (rect == null) return "null";
-        return "(" + rect.left + "," + rect.top + "), (" + rect.right + "," + rect.bottom + ")";
-    }
-
-    /**
-     * Convert {@link Point} to {@link String}.
-     */
-    public static String toPointString(Point point) {
-        if (point == null) return "null";
-        return "(" + point.x + "," + point.y + ")";
-    }
-
-    /**
-     * Get the {@link Activity} associated with the {@link Context} if available.
-     */
-    @Nullable
-    public static Activity getActivity(Context context) {
-        while (context instanceof ContextWrapper) {
-            if (context instanceof Activity) {
-                return (Activity) context;
-            }
-            context = ((ContextWrapper) context).getBaseContext();
-        }
-        return null;
     }
 
 
