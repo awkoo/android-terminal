@@ -12,6 +12,7 @@ android {
         minSdk = 35
         versionCode = 100
         versionName = "1.0.0"
+        signingConfig = signingConfigs.debug
     }
 
     signingConfigs {
@@ -28,10 +29,6 @@ android {
             minifyEnabled = true
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-
-        debug {
-            signingConfig = signingConfigs.debug
         }
     }
 

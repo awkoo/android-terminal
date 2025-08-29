@@ -569,11 +569,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         final AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setIcon(android.R.drawable.ic_dialog_alert);
         b.setMessage(R.string.title_confirm_kill_process);
-        b.setPositiveButton(android.R.string.yes, (dialog, id) -> {
+        b.setPositiveButton(R.string.yes, (dialog, id) -> {
             dialog.dismiss();
             session.finishIfRunning();
         });
-        b.setNegativeButton(android.R.string.no, null);
+        b.setNegativeButton(R.string.no, null);
         b.show();
     }
 

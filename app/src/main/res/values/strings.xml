@@ -187,6 +187,8 @@
 
     <string name="session_exit_message">[Process completed (%1$s %2$d) - press Enter]</string>
     <string name="title_shell_startup_commands">Shell startup commands</string>
+    <string name="yes">sure</string>
+    <string name="no">cancel</string>
 
 
     <!-- TermuxUtils -->
