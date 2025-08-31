@@ -54,79 +54,76 @@ import awkoo.terminal.view.TerminalView;
 import awkoo.terminal.view.TerminalViewClient;
 
 /**
- * A terminal emulator activity.
+ * 终端模拟器 Activity。
  * <p/>
- * See
+ * 关于内存泄漏问题，请参考
  * <ul>
  * <li>http://www.mongrel-phones.com.au/default/how_to_make_a_local_service_and_bind_to_it_in_android</li>
  * <li>https://code.google.com/p/android/issues/detail?id=6426</li>
  * </ul>
- * about memory leaks.
  */
 public final class MainActivity extends AppCompatActivity implements ServiceConnection {
 
     ActivityMainBinding binding;
 
     /**
-     * The connection to the {@link TerminalService}. Requested in {@link #onCreate(Bundle)} with a call to
-     * {@link #bindService(Intent, ServiceConnection, int)}, and obtained and stored in
-     * {@link #onServiceConnected(ComponentName, IBinder)}.
+     * 与 {@link TerminalService} 的连接。在 {@link #onCreate(Bundle)} 中通过调用
+     * {@link #bindService(Intent, ServiceConnection, int)} 请求，并在
+     * {@link #onServiceConnected(ComponentName, IBinder)} 中获取和存储。
      */
     TerminalService mTerminalService;
 
     /**
-     * The {@link TerminalViewClient} interface implementation to allow for communication between
-     * {@link TerminalView} and {@link MainActivity}.
+     * {@link TerminalViewClient} 接口的实现，用于 {@link TerminalView} 和 {@link MainActivity} 之间的通信。
      */
     TermuxTerminalViewClient mTermuxTerminalViewClient;
 
     /**
-     * The {@link TerminalSessionClient} interface implementation to allow for communication between
-     * {@link TerminalSession} and {@link MainActivity}.
+     * {@link TerminalSessionClient} 接口的实现，用于 {@link TerminalSession} 和 {@link MainActivity} 之间的通信。
      */
     TermuxTerminalSessionActivityClient mTermuxTerminalSessionActivityClient;
 
     /**
-     * Termux app shared preferences manager.
+     * Termux 应用的共享首选项管理器。
      */
     private TermuxAppSharedPreferences mPreferences;
 
     /**
-     * Termux app SharedProperties loaded from termux.properties
+     * 从 termux.properties 加载的 Termux 应用共享属性。
      */
     private TermuxAppSharedProperties mProperties;
 
     /**
-     * The terminal extra keys view.
+     * 终端的额外按键视图。
      */
     ExtraKeysView mExtraKeysView;
 
     /**
-     * The client for the {@link #mExtraKeysView}.
+     * {@link #mExtraKeysView} 的客户端。
      */
     TermuxTerminalExtraKeys mTermuxTerminalExtraKeys;
 
     /**
-     * The termux sessions list controller.
+     * Termux 会话列表的控制器。
      */
     TermuxSessionsListViewController mTermuxSessionListViewController;
 
 
     /**
-     * If between onResume() and onStop(). Note that only one session is in the foreground of the terminal view at the
-     * time, so if the session causing a change is not in the foreground it should probably be treated as background.
+     * 标记是否处于 onResume() 和 onStop() 之间。注意，在终端视图的前台只有一个会话，
+     * 因此如果引起更改的会话不在前台，则应将其视为后台。
      */
     private boolean mIsVisible;
 
     /**
-     * If onResume() was called after onCreate().
+     * 标记 onResume() 是否在 onCreate() 之后被调用。
      */
     private boolean mIsOnResumeAfterOnCreate = false;
 
     private boolean mIsActivityRecreated = false;
 
     /**
-     * The {@link MainActivity} is in an invalid state and must not be run.
+     * 标记 {@link MainActivity} 是否处于无效状态，不能运行。
      */
     private boolean mIsInvalidState;
 
@@ -146,6 +143,10 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     private static final String ARG_TERMINAL_TOOLBAR_TEXT_INPUT = "terminal_toolbar_text_input";
     private static final String ARG_ACTIVITY_RECREATED = "activity_recreated";
 
+    /**
+     * Activity 创建时的回调。
+     * @param savedInstanceState 如果 Activity 被重新创建，则包含先前保存的状态。
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -154,7 +155,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         if (savedInstanceState != null)
             mIsActivityRecreated = savedInstanceState.getBoolean(ARG_ACTIVITY_RECREATED, false);
 
-        // Load Termux app SharedProperties from disk
+        // 从磁盘加载 Termux 应用的 SharedProperties
         mProperties = TermuxAppSharedProperties.getProperties();
         reloadProperties();
 
@@ -169,8 +170,8 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
                 else finishActivityIfNotFinishing();
             }
         });
-        // Load termux shared preferences
-        // This will also fail if TermuxConstants.TERMUX_PACKAGE_NAME does not equal applicationId
+        // 加载 Termux 的共享首选项
+        // 如果 TermuxConstants.TERMUX_PACKAGE_NAME 与 applicationId 不等，此操作也会失败
         mPreferences = TermuxAppSharedPreferences.build(this);
 
         setMargins();
@@ -183,18 +184,21 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         registerForContextMenu(binding.terminalView);
 
         try {
-            // Start the {@link TerminalService} and make it run regardless of who is bound to it
+            // 启动 {@link TerminalService} 并使其运行，无论是否有客户端绑定到它
             Intent serviceIntent = new Intent(this, TerminalService.class);
             startService(serviceIntent);
 
-            // Attempt to bind to the service, this will call the {@link #onServiceConnected(ComponentName, IBinder)}
-            // callback if it succeeds.
+            // 尝试绑定到服务，如果成功，将调用 {@link #onServiceConnected(ComponentName, IBinder)} 回调
             if (!bindService(serviceIntent, this, 0))
                 throw new RuntimeException("bindService() failed");
         } catch (Exception e) {
             UI.showToast(this,
-                getString(e.getMessage() != null && e.getMessage().contains("app is in background") ?
-                    R.string.error_termux_service_start_failed_bg : R.string.error_termux_service_start_failed_general),
+                getString(
+                    e.getMessage() != null &&
+                        e.getMessage().contains("app is in background") ?
+                        R.string.error_termux_service_start_failed_bg :
+                        R.string.error_termux_service_start_failed_general
+                ),
                 true);
             mIsInvalidState = true;
         }
@@ -212,6 +216,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         });
     }
 
+    /**
+     * Activity 变为可见时的回调。
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -222,12 +229,19 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         if (mTermuxTerminalSessionActivityClient != null)
             mTermuxTerminalSessionActivityClient.onStart();
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), (isGranted) -> {
-                mTerminalService.updateNotification();
-            }).launch(Manifest.permission.POST_NOTIFICATIONS);
+        if (ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        )
+            registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                (isGranted) -> mTerminalService.updateNotification()
+            ).launch(Manifest.permission.POST_NOTIFICATIONS);
     }
 
+    /**
+     * Activity 进入前台时的回调。
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -242,6 +256,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         mIsOnResumeAfterOnCreate = false;
     }
 
+    /**
+     * Activity 变为不可见时的回调。
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -258,6 +275,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         binding.drawerLayout.closeDrawers();
     }
 
+    /**
+     * Activity 销毁前的回调。
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -265,7 +285,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         if (mIsInvalidState) return;
 
         if (mTerminalService != null) {
-            // Do not leave service and session clients with references to activity.
+            // 不要让服务和会话客户端持有对 Activity 的引用
             mTerminalService.unsetTermuxTerminalSessionClient();
             mTerminalService = null;
         }
@@ -273,10 +293,14 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         try {
             unbindService(this);
         } catch (Exception e) {
-            // ignore.
+            // 忽略异常
         }
     }
 
+    /**
+     * 保存实例状态的回调。
+     * @param savedInstanceState 用于保存状态的 Bundle。
+     */
     @Override
     public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
@@ -286,9 +310,8 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
 
     /**
-     * Part of the {@link ServiceConnection} interface. The service is bound with
-     * {@link #bindService(Intent, ServiceConnection, int)} in {@link #onCreate(Bundle)} which will cause a call to this
-     * callback method.
+     * {@link ServiceConnection} 接口的一部分。在 {@link #onCreate(Bundle)} 中通过
+     * {@link #bindService(Intent, ServiceConnection, int)} 绑定服务，这将导致此回调方法的调用。
      */
     @Override
     public void onServiceConnected(ComponentName componentName, IBinder service) {
@@ -304,35 +327,42 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
                 try {
                     mTermuxTerminalSessionActivityClient.addNewSession(null);
                 } catch (WindowManager.BadTokenException e) {
-                    // Activity finished - ignore.
+                    // Activity 已结束 - 忽略
                 }
             } else {
-                // The service connected while not in foreground - just bail out.
+                // 服务在非前台时连接 - 直接退出
                 finishActivityIfNotFinishing();
             }
         } else {
-            // If termux was started from launcher "New session" shortcut and activity is recreated,
-            // then the original intent will be re-delivered, resulting in a new session being re-added
-            // each time.
+            // 如果 Termux 是从启动器的“新会话”快捷方式启动且 Activity 被重新创建，
+            // 原始 Intent 会被重新传递，导致每次都重新添加一个新会话。
             if (!mIsActivityRecreated && intent != null && Intent.ACTION_RUN.equals(intent.getAction())) {
-                // Android 7.1 app shortcut from res/xml/shortcuts.xml.
+                // Android 7.1 应用快捷方式，来自 res/xml/shortcuts.xml
                 mTermuxTerminalSessionActivityClient.addNewSession(null);
             } else {
-                mTermuxTerminalSessionActivityClient.setCurrentSession(mTermuxTerminalSessionActivityClient.getCurrentStoredSessionOrLast());
+                mTermuxTerminalSessionActivityClient.setCurrentSession(
+                    mTermuxTerminalSessionActivityClient.getCurrentStoredSessionOrLast()
+                );
             }
         }
 
-        // Update the {@link TerminalSession} and {@link TerminalEmulator} clients.
+        // 更新 {@link TerminalSession} 和 {@link TerminalEmulator} 的客户端
         mTerminalService.setTermuxTerminalSessionClient(mTermuxTerminalSessionActivityClient);
     }
 
+    /**
+     * 服务断开连接时的回调。
+     * @param name 断开连接的服务组件名称。
+     */
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        // Respect being stopped from the {@link TerminalService} notification action.
+        // 响应从 {@link TerminalService} 通知操作中停止的请求
         finishActivityIfNotFinishing();
     }
 
-
+    /**
+     * 重新加载属性。
+     */
     private void reloadProperties() {
         mProperties.loadTermuxPropertiesFromDisk();
 
@@ -340,21 +370,33 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             mTermuxTerminalViewClient.onReloadProperties();
     }
 
-
+    /**
+     * 设置边距。
+     */
     private void setMargins() {
         RelativeLayout relativeLayout = binding.activityTermuxRootRelativeLayout;
         int marginHorizontal = mProperties.getTerminalMarginHorizontal();
         int marginVertical = mProperties.getTerminalMarginVertical();
-        ViewUtils.setLayoutMarginsInDp(relativeLayout, marginHorizontal, marginVertical, marginHorizontal, marginVertical);
+        ViewUtils.setLayoutMarginsInDp(
+            relativeLayout,
+            marginHorizontal,
+            marginVertical,
+            marginHorizontal,
+            marginVertical
+        );
     }
 
-
+    /**
+     * 设置 Termux 终端视图和客户端。
+     */
     private void setTermuxTerminalViewAndClients() {
-        // Set termux terminal view and session clients
+        // 设置 Termux 终端视图和会话客户端
         mTermuxTerminalSessionActivityClient = new TermuxTerminalSessionActivityClient(this);
-        mTermuxTerminalViewClient = new TermuxTerminalViewClient(this, mTermuxTerminalSessionActivityClient);
+        mTermuxTerminalViewClient = new TermuxTerminalViewClient(
+            this, mTermuxTerminalSessionActivityClient
+        );
 
-        // Set termux terminal view
+        // 设置 Termux 终端视图
         binding.terminalView.setTerminalViewClient(mTermuxTerminalViewClient);
 
         mTermuxTerminalViewClient.onCreate();
@@ -363,15 +405,23 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             mTermuxTerminalSessionActivityClient.onCreate();
     }
 
+    /**
+     * 设置 Termux 会话列表视图。
+     */
     private void setTermuxSessionsListView() {
         ListView termuxSessionsListView = binding.terminalSessionsList;
-        mTermuxSessionListViewController = new TermuxSessionsListViewController(this, mTerminalService.getTermuxSessions());
+        mTermuxSessionListViewController = new TermuxSessionsListViewController(
+            this, mTerminalService.getTermuxSessions()
+        );
         termuxSessionsListView.setAdapter(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemLongClickListener(mTermuxSessionListViewController);
     }
 
-
+    /**
+     * 设置终端工具栏视图。
+     * @param savedInstanceState 如果 Activity 被重新创建，则包含先前保存的状态。
+     */
     private void setTerminalToolbarView(Bundle savedInstanceState) {
         mTermuxTerminalExtraKeys = new TermuxTerminalExtraKeys(
             this,
@@ -393,30 +443,49 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         if (savedInstanceState != null)
             savedTextInput = savedInstanceState.getString(ARG_TERMINAL_TOOLBAR_TEXT_INPUT);
 
-        terminalToolbarViewPager.setAdapter(new TerminalToolbarViewPager.PageAdapter(this, savedTextInput));
-        terminalToolbarViewPager.addOnPageChangeListener(new TerminalToolbarViewPager.OnPageChangeListener(this, terminalToolbarViewPager));
+        terminalToolbarViewPager.setAdapter(
+            new TerminalToolbarViewPager.PageAdapter(this, savedTextInput)
+        );
+        terminalToolbarViewPager.addOnPageChangeListener(
+            new TerminalToolbarViewPager.OnPageChangeListener(this, terminalToolbarViewPager)
+        );
     }
 
+    /**
+     * 设置终端工具栏高度。
+     */
     private void setTerminalToolbarHeight() {
         final ViewPager terminalToolbarViewPager = binding.terminalToolbarViewPager;
 
         ViewGroup.LayoutParams layoutParams = terminalToolbarViewPager.getLayoutParams();
         layoutParams.height = Math.round(mTerminalToolbarDefaultHeight *
-            (mTermuxTerminalExtraKeys.getExtraKeysInfo() == null ? 0 : mTermuxTerminalExtraKeys.getExtraKeysInfo().getMatrix().length) *
-            mProperties.getTerminalToolbarHeightScaleFactor());
+            (mTermuxTerminalExtraKeys.getExtraKeysInfo() == null ?
+                0 : mTermuxTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
+            ) * mProperties.getTerminalToolbarHeightScaleFactor());
         terminalToolbarViewPager.setLayoutParams(layoutParams);
     }
 
+    /**
+     * 切换终端工具栏的可见性。
+     */
     public void toggleTerminalToolbar() {
         final boolean showNow = mPreferences.toogleShowTerminalToolbar();
-        UI.showToast(this, (showNow ? getString(R.string.msg_enabling_terminal_toolbar) : getString(R.string.msg_disabling_terminal_toolbar)), true);
+        UI.showToast(this, (
+            showNow ?
+                getString(R.string.msg_enabling_terminal_toolbar) :
+                getString(R.string.msg_disabling_terminal_toolbar)
+        ), true);
         binding.terminalToolbarViewPager.setVisibility(showNow ? View.VISIBLE : View.GONE);
         if (showNow && isTerminalToolbarTextInputViewSelected()) {
-            // Focus the text input view if just revealed.
+            // 如果刚刚显示，则聚焦文本输入视图
             findViewById(R.id.terminal_toolbar_text_input).requestFocus();
         }
     }
 
+    /**
+     * 保存终端工具栏的文本输入。
+     * @param savedInstanceState 用于保存状态的 Bundle。
+     */
     private void saveTerminalToolbarTextInput(Bundle savedInstanceState) {
         if (savedInstanceState == null) return;
 
@@ -428,7 +497,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         }
     }
 
-
+    /**
+     * 设置设置按钮视图。
+     */
     private void setSettingsButtonView() {
         binding.settingsButton.setOnClickListener(
             v -> ActivityUtils.startActivity(
@@ -441,9 +512,14 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         );
     }
 
+    /**
+     * 设置新会话按钮视图。
+     */
     private void setNewSessionButtonView() {
         View newSessionButton = binding.newSessionButton;
-        newSessionButton.setOnClickListener(v -> mTermuxTerminalSessionActivityClient.addNewSession(null));
+        newSessionButton.setOnClickListener(
+            v -> mTermuxTerminalSessionActivityClient.addNewSession(null)
+        );
         newSessionButton.setOnLongClickListener(v -> {
             TextInputDialogUtils.textInput(
                 MainActivity.this,
@@ -461,6 +537,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         });
     }
 
+    /**
+     * 设置切换键盘按钮视图。
+     */
     private void setToggleKeyboardView() {
         binding.toggleKeyboardButton.setOnClickListener(v -> {
             mTermuxTerminalViewClient.onToggleSoftKeyboardRequest();
@@ -473,14 +552,23 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         });
     }
 
+    /**
+     * 如果 Activity 未结束，则结束它。
+     */
     public void finishActivityIfNotFinishing() {
-        // prevent duplicate calls to finish() if called from multiple places
+        // 防止在从多个地方调用时重复调用 finish()
         if (!MainActivity.this.isFinishing()) {
             finish();
         }
     }
 
 
+    /**
+     * 创建上下文菜单时的回调。
+     * @param menu 上下文菜单。
+     * @param v 视图。
+     * @param menuInfo 菜单信息。
+     */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         TerminalSession currentSession = getCurrentSession();
@@ -497,13 +585,16 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         if (autoFillEnabled)
             menu.add(Menu.NONE, CONTEXT_MENU_AUTOFILL_PASSWORD, Menu.NONE, R.string.action_autofill_password);
         menu.add(Menu.NONE, CONTEXT_MENU_RESET_TERMINAL_ID, Menu.NONE, R.string.action_reset_terminal);
-        menu.add(Menu.NONE, CONTEXT_MENU_KILL_PROCESS_ID, Menu.NONE, getResources().getString(R.string.action_kill_process, getCurrentSession().getPid())).setEnabled(currentSession.isRunning());
-        menu.add(Menu.NONE, CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON, Menu.NONE, R.string.action_toggle_keep_screen_on).setCheckable(true).setChecked(mPreferences.shouldKeepScreenOn());
+        menu.add(Menu.NONE, CONTEXT_MENU_KILL_PROCESS_ID, Menu.NONE, getString(R.string.action_kill_process, getCurrentSession().getPid())).setEnabled(currentSession.isRunning());
+        menu.add(Menu.NONE, CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON, Menu.NONE, R.string.action_toggle_keep_screen_on)
+            .setCheckable(true).setChecked(mPreferences.shouldKeepScreenOn());
         menu.add(Menu.NONE, CONTEXT_MENU_SETTINGS_ID, Menu.NONE, R.string.action_open_settings);
     }
 
     /**
-     * Hook system menu to show context menu instead.
+     * Hook 系统菜单以显示上下文菜单。
+     * @param menu 选项菜单。
+     * @return 总是返回 false，因为我们显示的是上下文菜单。
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -511,6 +602,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         return false;
     }
 
+    /**
+     * 上下文菜单项被选中时的回调。
+     * @param item 被选中的菜单项。
+     * @return 如果事件被处理则返回 true，否则返回 false。
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         TerminalSession session = getCurrentSession();
@@ -549,20 +645,30 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
                 yield true;
             }
             case CONTEXT_MENU_SETTINGS_ID -> {
-                ActivityUtils.startActivity(this, new Intent(this, SettingsActivity.class));
+                ActivityUtils.startActivity(
+                    this, new Intent(this, SettingsActivity.class)
+                );
                 yield true;
             }
             default -> super.onContextItemSelected(item);
         };
     }
 
+    /**
+     * 上下文菜单关闭时的回调。
+     * @param menu 关闭的菜单。
+     */
     @Override
     public void onContextMenuClosed(@NonNull Menu menu) {
         super.onContextMenuClosed(menu);
-        // onContextMenuClosed() is triggered twice if back button is pressed to dismiss instead of tap for some reason
+        // 如果按返回键关闭，onContextMenuClosed() 会被触发两次，原因未知
         binding.terminalView.onContextMenuClosed();
     }
 
+    /**
+     * 显示杀死会话的对话框。
+     * @param session 要杀死的会话。
+     */
     private void showKillSessionDialog(TerminalSession session) {
         if (session == null) return;
 
@@ -577,6 +683,10 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         b.show();
     }
 
+    /**
+     * 重置终端会话。
+     * @param session 要重置的会话。
+     */
     private void onResetTerminalSession(TerminalSession session) {
         if (session != null) {
             session.reset();
@@ -587,6 +697,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         }
     }
 
+    /**
+     * 切换保持屏幕常亮。
+     */
     private void toggleKeepScreenOn() {
         if (binding.terminalView.getKeepScreenOn()) {
             binding.terminalView.setKeepScreenOn(false);
@@ -597,79 +710,146 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         }
     }
 
-
+    /**
+     * 获取额外按键视图。
+     * @return 额外按键视图。
+     */
     public ExtraKeysView getExtraKeysView() {
         return mExtraKeysView;
     }
 
+    /**
+     * 获取 Termux 终端额外按键。
+     * @return Termux 终端额外按键。
+     */
     public TermuxTerminalExtraKeys getTermuxTerminalExtraKeys() {
         return mTermuxTerminalExtraKeys;
     }
 
+    /**
+     * 设置额外按键视图。
+     * @param extraKeysView 额外按键视图。
+     */
     public void setExtraKeysView(ExtraKeysView extraKeysView) {
         mExtraKeysView = extraKeysView;
     }
 
+    /**
+     * 获取抽屉布局。
+     * @return 抽屉布局。
+     */
     public DrawerLayout getDrawer() {
         return binding.drawerLayout;
     }
 
-
+    /**
+     * 获取终端工具栏的 ViewPager。
+     * @return 终端工具栏的 ViewPager。
+     */
     public ViewPager getTerminalToolbarViewPager() {
         return binding.terminalToolbarViewPager;
     }
 
+    /**
+     * 获取终端工具栏的默认高度。
+     * @return 终端工具栏的默认高度。
+     */
     public float getTerminalToolbarDefaultHeight() {
         return mTerminalToolbarDefaultHeight;
     }
 
+    /**
+     * 检查终端视图是否被选中。
+     * @return 如果终端视图被选中则返回 true，否则返回 false。
+     */
     public boolean isTerminalViewSelected() {
         return binding.terminalToolbarViewPager.getCurrentItem() == 0;
     }
 
+    /**
+     * 检查终端工具栏的文本输入视图是否被选中。
+     * @return 如果终端工具栏的文本输入视图被选中则返回 true，否则返回 false。
+     */
     public boolean isTerminalToolbarTextInputViewSelected() {
         return binding.terminalToolbarViewPager.getCurrentItem() == 1;
     }
 
-
+    /**
+     * 通知 Termux 会话列表已更新。
+     */
     public void termuxSessionListNotifyUpdated() {
         mTermuxSessionListViewController.notifyDataSetChanged();
     }
 
+    /**
+     * 检查 Activity 是否可见。
+     * @return 如果 Activity 可见则返回 true，否则返回 false。
+     */
     public boolean isVisible() {
         return mIsVisible;
     }
 
+    /**
+     * 检查 onResume 是否在 onCreate 之后调用。
+     * @return 如果 onResume 在 onCreate 之后调用则返回 true，否则返回 false。
+     */
     public boolean isOnResumeAfterOnCreate() {
         return mIsOnResumeAfterOnCreate;
     }
 
+    /**
+     * 检查 Activity 是否被重新创建。
+     * @return 如果 Activity 被重新创建则返回 true，否则返回 false。
+     */
     public boolean isActivityRecreated() {
         return mIsActivityRecreated;
     }
 
-
+    /**
+     * 获取 Termux 服务。
+     * @return Termux 服务。
+     */
     public TerminalService getTermuxService() {
         return mTerminalService;
     }
 
+    /**
+     * 获取终端视图。
+     * @return 终端视图。
+     */
     public TerminalView getTerminalView() {
         return binding.terminalView;
     }
 
+    /**
+     * 获取 Termux 终端会话客户端。
+     * @return Termux 终端会话客户端。
+     */
     public TermuxTerminalSessionActivityClient getTermuxTerminalSessionClient() {
         return mTermuxTerminalSessionActivityClient;
     }
 
+    /**
+     * 获取当前会话。
+     * @return 当前会话，如果不存在则返回 null。
+     */
     @Nullable
     public TerminalSession getCurrentSession() {
         return binding.terminalView.getCurrentSession();
     }
 
+    /**
+     * 获取应用的首选项。
+     * @return 应用的首选项。
+     */
     public TermuxAppSharedPreferences getPreferences() {
         return mPreferences;
     }
 
+    /**
+     * 获取应用的属性。
+     * @return 应用的属性。
+     */
     public TermuxAppSharedProperties getProperties() {
         return mProperties;
     }

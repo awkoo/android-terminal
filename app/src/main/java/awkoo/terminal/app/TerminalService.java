@@ -38,22 +38,19 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * A service holding a list of {@link TermuxSession} in {@link TerminalService#mTermuxSessions} and background
- * showing a foreground notification while running so that it is not terminated.
- * The user interacts with the session through {@link MainActivity}, but this service may outlive
- * the activity when the user or the system disposes of the activity. In that case the user may
- * restart {@link MainActivity} later to yet again access the sessions.
+ * 一个后台服务，持有一系列 {@link TermuxSession}，并在运行时显示一个前台通知以防止被系统终止。
+ * 用户通过 {@link MainActivity} 与会话交互，但此服务可能会在用户或系统销毁 Activity 后继续存在。
+ * 在这种情况下，用户可以稍后重启 {@link MainActivity} 以再次访问这些会话。
  * <p/>
- * In order to keep both terminal sessions and spawned processes (who may outlive the terminal sessions) alive as long
- * as wanted by the user this service is a foreground service, {@link Service#startForeground(int, Notification)}.
+ * 为了根据用户的意愿，尽可能长时间地保持终端会话和衍生的子进程（它们可能比终端会话更长寿）存活，
+ * 本服务是一个前台服务，通过 {@link Service#startForeground(int, Notification)} 启动。
  * <p/>
- * Optionally may hold a wake and a wifi lock, in which case that is shown in the notification - see
- * {@link #buildNotification()}.
+ * 服务还可以选择性地持有一个唤醒锁（wake lock）和一个Wi-Fi锁，并在通知中显示其状态 - 参见 {@link #buildNotification()}。
  */
 public final class TerminalService extends Service implements TermuxSession.TermuxSessionClient {
 
     /**
-     * This service is only bound from inside the same process and never uses IPC.
+     * 此服务仅在同一进程内部进行绑定，从不使用IPC（进程间通信）。
      */
     public class LocalBinder extends Binder {
         public final TerminalService service = TerminalService.this;
@@ -63,48 +60,59 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
 
     /**
-     * The full implementation of the {@link TerminalSessionClient} interface to be used by {@link TerminalSession}
-     * that holds activity references for activity related functions.
-     * Note that the service may often outlive the activity, so need to clear this reference.
+     * {@link TerminalSessionClient} 接口的完整实现，供 {@link TerminalSession} 使用，
+     * 其中持有 Activity 的引用以处理与 Activity 相关的功能。
+     * 注意，此服务通常比 Activity 的生命周期更长，因此需要注意在适当时机清除此引用。
      */
     private TermuxTerminalSessionActivityClient mTermuxTerminalSessionActivityClient;
 
     /**
-     * The basic implementation of the {@link TerminalSessionClient} interface to be used by {@link TerminalSession}
-     * that does not hold activity references and only a service reference.
+     * {@link TerminalSessionClient} 接口的基础实现，供 {@link TerminalSession} 使用，
+     * 它不持有 Activity 的引用，仅持有服务的引用。
      */
-    private final TermuxTerminalSessionServiceClient mTermuxTerminalSessionServiceClient = new TermuxTerminalSessionServiceClient(this);
+    private final TermuxTerminalSessionServiceClient mTermuxTerminalSessionServiceClient
+        = new TermuxTerminalSessionServiceClient(this);
 
     /**
-     * Termux app shared properties manager, loaded from termux.properties
+     * Termux 应用的共享属性管理器，从 termux.properties 文件加载。
      */
     private TermuxAppSharedProperties mProperties;
 
     /**
-     * Terminal sessions
+     * 终端会话列表
      */
     public final List<TermuxSession> mTermuxSessions = new ArrayList<>();
     private static int SHELL_ID = 0;
 
     /**
-     * The wake lock and wifi lock are always acquired and released together.
+     * 唤醒锁和Wi-Fi锁总是被一起获取和释放。
      */
     private PowerManager.WakeLock mWakeLock;
     private WifiManager.WifiLock mWifiLock;
     boolean mWantsToStop = false;
 
+    /**
+     * 服务创建时的回调。
+     * 获取应用共享属性并启动前台服务。
+     */
     @Override
     public void onCreate() {
-        // Get Termux app SharedProperties without loading from disk since Application handles
-        // load and MainActivity handles reloads
+        // 获取Termux应用的SharedProperties，不从磁盘加载，因为Application已处理加载，MainActivity处理重载
         mProperties = TermuxAppSharedProperties.getProperties();
-
         runStartForeground();
     }
 
+    /**
+     * 服务启动命令的回调。
+     * 根据接收到的Intent Action执行相应操作，例如停止服务、获取/释放唤醒锁。
+     * @param intent 启动时传递的Intent。
+     * @param flags 关于启动请求的附加数据。
+     * @param startId 请求的唯一整数ID。
+     * @return 返回服务的启动粘性，这里是 START_NOT_STICKY，表示服务被杀死后不会自动重启。
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Run again in case service is already started and onCreate() is not called
+        // 再次运行，以防服务已启动而onCreate()未被调用
         runStartForeground();
 
         String action = null;
@@ -128,11 +136,14 @@ public final class TerminalService extends Service implements TermuxSession.Term
             }
         }
 
-        // If this service really do get killed, there is no point restarting it automatically - let the user do on next
-        // start of {@link Term):
+        // 如果此服务真的被杀死，自动重启没有意义 - 让用户在下次启动应用时手动启动。
         return Service.START_NOT_STICKY;
     }
 
+    /**
+     * 服务销毁时的回调。
+     * 释放所有锁，杀死所有终端相关的执行命令，并停止前台服务状态。
+     */
     @Override
     public void onDestroy() {
         actionReleaseWakeLock(false);
@@ -142,23 +153,32 @@ public final class TerminalService extends Service implements TermuxSession.Term
         runStopForeground();
     }
 
+    /**
+     * 当客户端通过 bindService() 绑定到服务时调用。
+     * @param intent 用于绑定的Intent。
+     * @return 返回一个 IBinder 对象，客户端可以通过它与服务通信。
+     */
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
     }
 
+    /**
+     * 当所有客户端都通过 unbindService() 与服务断开连接时调用。
+     * @param intent 用于绑定的Intent。
+     * @return 返回一个布尔值，表示是否希望在客户端重新绑定时接收 onRebind() 回调。
+     */
     @Override
     public boolean onUnbind(Intent intent) {
-        // Since we cannot rely on {@link MainActivity.onDestroy()} to always complete,
-        // we unset clients here as well if it failed, so that we do not leave service and session
-        // clients with references to the activity.
+        // 由于我们不能保证 MainActivity.onDestroy() 总能执行完毕，
+        // 我们也在这里取消设置客户端，以防万一，这样服务和会话就不会持有对已销毁Activity的引用。
         if (mTermuxTerminalSessionActivityClient != null)
             unsetTermuxTerminalSessionClient();
         return false;
     }
 
     /**
-     * Make service run in foreground mode.
+     * 将服务置于前台运行模式。
      */
     private void runStartForeground() {
         setupNotificationChannel();
@@ -166,14 +186,14 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * Make service leave foreground mode.
+     * 使服务离开前台模式。
      */
     private void runStopForeground() {
         stopForeground(Service.STOP_FOREGROUND_REMOVE);
     }
 
     /**
-     * Request to stop service.
+     * 请求停止服务。
      */
     private void requestStopService() {
         runStopForeground();
@@ -181,7 +201,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * Process action to stop service.
+     * 处理停止服务的Action。
      */
     private void actionStopService() {
         mWantsToStop = true;
@@ -190,40 +210,22 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * Kill all TermuxSessions and TermuxTasks by sending SIGKILL to their processes.
+     * 通过向TermuxSessions和TermuxTasks的进程发送SIGKILL信号来杀死它们。
      * <p>
-     * For TermuxSessions, all sessions will be killed, whether user manually exited Termux or if
-     * onDestroy() was directly called because of unintended shutdown. The processing of results
-     * will only be done if user manually exited termux or if the session was started by a plugin
-     * which **expects** the result back via a pending intent.
+     * 对于TermuxSessions，所有会话都将被杀死，无论用户是手动退出Termux还是因为意外关闭导致onDestroy()被直接调用。
+     * 只有在用户手动退出或会话由期望通过PendingIntent返回结果的插件启动时，才会处理结果。
      * <p>
-     * For TermuxTasks, only tasks that were started by a plugin which **expects** the result
-     * back via a pending intent will be killed, whether user manually exited Termux or if
-     * onDestroy() was directly called because of unintended shutdown. The processing of results
-     * will always be done for the tasks that are killed. The remaining processes will keep on
-     * running until the termux app process is killed by android, like by OOM, so we let them run
-     * as long as they can.
+     * 对于TermuxTasks，只有那些由期望通过PendingIntent返回结果的插件启动的任务才会被杀死。
+     * 这些被杀死的任务的结果将总是被处理。其余的进程将继续运行，直到termux应用进程被Android系统杀死（例如OOM）。
      * <p>
-     * Some plugin execution commands may not have been processed and added to mTermuxSessions and
-     * mTermuxTasks lists before the service is killed, so we maintain a separate
-     * mPendingPluginExecutionCommands list for those, so that we can notify the pending intent
-     * creators that execution was cancelled.
+     * 有些插件执行命令可能在服务被杀死前还未被处理并添加到mTermuxSessions和mTermuxTasks列表中，
+     * 因此我们维护一个独立的mPendingPluginExecutionCommands列表来处理这些情况，以便通知pending intent的创建者执行已被取消。
      * <p>
-     * Note that if user didn't manually exit Termux and if onDestroy() was directly called because
-     * of unintended shutdown, like android deciding to kill the service, then there will be no
-     * guarantee that onDestroy() will be allowed to finish and termux app process may be killed before
-     * it has finished. This means that in those cases some results may not be sent back to their
-     * creators for plugin commands but we still try to process whatever results can be processed
-     * despite the unreliable behaviour of onDestroy().
+     * 注意，如果用户没有手动退出Termux，并且onDestroy()因为意外关闭（如Android决定杀死服务）被直接调用，
+     * 那么无法保证onDestroy()能够执行完毕，termux应用进程可能会在它完成前被杀死。
+     * 这意味着在这些情况下，某些插件命令的结果可能无法发送回其创建者，但我们仍会尽力处理。
      * <p>
-     * Note that if don't kill the processes started by plugins which **expect** the result back
-     * and notify their creators that they have been killed, then they may get stuck waiting for
-     * the results forever like in case of commands started by Termux:Tasker or RUN_COMMAND intent,
-     * since once TerminalService has been killed, no result will be sent back. They may still get
-     * stuck if termux app process gets killed, so for this case reasonable timeout values should
-     * be used, like in Tasker for the Termux:Tasker actions.
-     * <p>
-     * We make copies of each list since items are removed inside the loop.
+     * 我们为每个列表创建副本，因为在循环内部有元素被移除。
      */
     private synchronized void killAllTermuxExecutionCommands() {
         boolean processResult;
@@ -240,26 +242,33 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
 
     /**
-     * Process action to acquire Power and Wi-Fi WakeLocks.
+     * 处理获取电源和Wi-Fi唤醒锁的Action。
      */
     @SuppressLint("WakelockTimeout")
     private void actionAcquireWakeLock() {
         if (mWakeLock != null) return;
 
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TermuxConstants.TERMUX_APP_NAME.toLowerCase() + ":service-wakelock");
+        mWakeLock = pm.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            TermuxConstants.TERMUX_APP_NAME.toLowerCase() + ":service-wakelock"
+        );
         mWakeLock.acquire();
 
         // http://tools.android.com/tech-docs/lint-in-studio-2-3#TOC-WifiManager-Leak
-        WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        mWifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_LOW_LATENCY, TermuxConstants.TERMUX_APP_NAME.toLowerCase());
+        WifiManager wm = (WifiManager) getApplicationContext()
+            .getSystemService(Context.WIFI_SERVICE);
+        mWifiLock = wm.createWifiLock(
+            WifiManager.WIFI_MODE_FULL_LOW_LATENCY,
+            TermuxConstants.TERMUX_APP_NAME.toLowerCase()
+        );
         mWifiLock.acquire();
 
         updateNotification();
     }
 
     /**
-     * Process action to release Power and Wi-Fi WakeLocks.
+     * 处理释放电源和Wi-Fi唤醒锁的Action。
      */
     private void actionReleaseWakeLock(boolean updateNotification) {
         if (mWakeLock == null && mWifiLock == null) return;
@@ -278,8 +287,14 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * Create a {@link TermuxSession}.
-     * Currently called by {@link TermuxTerminalSessionActivityClient#addNewSession(String)} to add a new {@link TermuxSession}.
+     * 创建一个新的 {@link TermuxSession}。
+     * 当前由 {@link TermuxTerminalSessionActivityClient#addNewSession(String)} 调用以添加新会话。
+     * @param executablePath 可执行文件的路径，如果为null则使用默认shell。
+     * @param arguments 传递给可执行文件的参数。
+     * @param stdin 发送到stdin的初始文本。
+     * @param workingDirectory 会话的工作目录。
+     * @param sessionName 会话的自定义名称。
+     * @return 如果成功则返回创建的 {@link TermuxSession}，否则返回 null。
      */
     @Nullable
     public TermuxSession createTermuxSession(
@@ -304,9 +319,6 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
         executionCommand.terminalTranscriptRows = mProperties.getTerminalTranscriptRows();
 
-        // If the execution command was started for a plugin, only then will the stdout be set
-        // Otherwise if command was manually started by the user like by adding a new terminal session,
-        // then no need to set stdout
         TermuxSession newTermuxSession = TermuxSession.execute(
             this,
             executionCommand,
@@ -319,8 +331,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
         mTermuxSessions.add(newTermuxSession);
 
-        // Notify {@link TermuxSessionsListViewController} that sessions list has been updated if
-        // activity in is foreground
+        // 如果Activity在前台，通知TermuxSessionsListViewController会话列表已更新
         if (mTermuxTerminalSessionActivityClient != null)
             mTermuxTerminalSessionActivityClient.termuxSessionListNotifyUpdated();
 
@@ -330,7 +341,9 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * Remove a TermuxSession.
+     * 移除一个指定的TermuxSession。
+     * @param sessionToRemove 要移除的终端会话。
+     * @return 返回被移除会话在列表中的索引，如果未找到则为-1或更小。
      */
     public synchronized int removeTermuxSession(TerminalSession sessionToRemove) {
         int index = getIndexOfSession(sessionToRemove);
@@ -342,15 +355,15 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * Callback received when a {@link TermuxSession} finishes.
+     * 当一个 {@link TermuxSession} 结束时收到的回调。
+     * @param termuxSession 已退出的会话。
      */
     @Override
     public void onTermuxSessionExited(final TermuxSession termuxSession) {
         if (termuxSession != null) {
             mTermuxSessions.remove(termuxSession);
 
-            // Notify {@link TermuxSessionsListViewController} that sessions list has been updated if
-            // activity in is foreground
+            // 如果Activity在前台，通知TermuxSessionsListViewController会话列表已更新
             if (mTermuxTerminalSessionActivityClient != null)
                 mTermuxTerminalSessionActivityClient.termuxSessionListNotifyUpdated();
         }
@@ -360,75 +373,113 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
 
     /**
-     * If {@link MainActivity} has not bound to the {@link TerminalService} yet or is destroyed, then
-     * interface functions requiring the activity should not be available to the terminal sessions,
-     * so we just return the {@link #mTermuxTerminalSessionServiceClient}. Once {@link MainActivity} bind
-     * callback is received, it should call {@link #setTermuxTerminalSessionClient} to set the
-     * {@link TerminalService#mTermuxTerminalSessionActivityClient} so that further terminal sessions are directly
-     * passed the {@link TermuxTerminalSessionActivityClient} object which fully implements the
-     * {@link TerminalSessionClient} interface.
+     * 如果 {@link MainActivity} 尚未绑定到 {@link TerminalService} 或已被销毁，
+     * 那么需要Activity的接口功能对终端会话应不可用，因此我们只返回 {@link #mTermuxTerminalSessionServiceClient}。
+     * 一旦收到 {@link MainActivity} 的绑定回调，它应调用 {@link #setTermuxTerminalSessionClient} 来设置
+     * {@link TerminalService#mTermuxTerminalSessionActivityClient}，以便后续的终端会话能直接传递
+     * 完整实现了 {@link TerminalSessionClient} 接口的 {@link TermuxTerminalSessionActivityClient} 对象。
      *
-     * @return Returns the {@link TermuxTerminalSessionActivityClient} if {@link MainActivity} has bound with
-     * {@link TerminalService}, otherwise {@link TermuxTerminalSessionServiceClient}.
+     * @return 如果 {@link MainActivity} 已绑定，则返回 {@link TermuxTerminalSessionActivityClient}，否则返回 {@link TermuxTerminalSessionServiceClient}。
      */
     public synchronized TermuxTerminalSessionClientBase getTermuxTerminalSessionClient() {
-        return Objects.requireNonNullElse(mTermuxTerminalSessionActivityClient, mTermuxTerminalSessionServiceClient);
+        return Objects.requireNonNullElse(
+            mTermuxTerminalSessionActivityClient,
+            mTermuxTerminalSessionServiceClient
+        );
     }
 
     /**
-     * This should be called when {@link MainActivity#onServiceConnected} is called to set the
-     * {@link TerminalService#mTermuxTerminalSessionActivityClient} variable and update the {@link TerminalSession}
-     * and {@link TerminalEmulator} clients in case they were passed {@link TermuxTerminalSessionServiceClient}
-     * earlier.
+     * 当 {@link MainActivity#onServiceConnected} 被调用时应调用此方法，
+     * 以设置 {@link TerminalService#mTermuxTerminalSessionActivityClient} 变量，
+     * 并更新 {@link TerminalSession} 和 {@link TerminalEmulator} 的客户端，
+     * 以防它们之前被传递了 {@link TermuxTerminalSessionServiceClient}。
      *
-     * @param termuxTerminalSessionActivityClient The {@link TermuxTerminalSessionActivityClient} object that fully
-     *                                            implements the {@link TerminalSessionClient} interface.
+     * @param termuxTerminalSessionActivityClient 完整实现 {@link TerminalSessionClient} 接口的 {@link TermuxTerminalSessionActivityClient} 对象。
      */
-    public synchronized void setTermuxTerminalSessionClient(TermuxTerminalSessionActivityClient termuxTerminalSessionActivityClient) {
+    public synchronized void setTermuxTerminalSessionClient(
+        TermuxTerminalSessionActivityClient termuxTerminalSessionActivityClient
+    ) {
         mTermuxTerminalSessionActivityClient = termuxTerminalSessionActivityClient;
 
         for (int i = 0; i < mTermuxSessions.size(); i++)
-            mTermuxSessions.get(i).getTerminalSession().updateTerminalSessionClient(mTermuxTerminalSessionActivityClient);
+            mTermuxSessions.get(i)
+                .getTerminalSession()
+                .updateTerminalSessionClient(mTermuxTerminalSessionActivityClient);
     }
 
     /**
-     * This should be called when {@link MainActivity} has been destroyed and in {@link #onUnbind(Intent)}
-     * so that the {@link TerminalService} and {@link TerminalSession} and {@link TerminalEmulator}
-     * clients do not hold an activity references.
+     * 当 {@link MainActivity} 被销毁时以及在 {@link #onUnbind(Intent)} 中应调用此方法，
+     * 以确保 {@link TerminalService}、{@link TerminalSession} 和 {@link TerminalEmulator}
+     * 的客户端不持有对Activity的引用。
      */
     public synchronized void unsetTermuxTerminalSessionClient() {
         for (int i = 0; i < mTermuxSessions.size(); i++)
-            mTermuxSessions.get(i).getTerminalSession().updateTerminalSessionClient(mTermuxTerminalSessionServiceClient);
+            mTermuxSessions.get(i)
+                .getTerminalSession()
+                .updateTerminalSessionClient(mTermuxTerminalSessionServiceClient);
 
         mTermuxTerminalSessionActivityClient = null;
     }
 
+    /**
+     * 构建用于前台服务的通知。
+     * @return 返回构建好的 {@link Notification} 对象。
+     */
     private Notification buildNotification() {
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent contentIntent = PendingIntent.getActivity(
+            this,
+            0,
+            notificationIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        );
 
         int sessionCount = getTermuxSessionsSize();
         String notificationText;
         final boolean wakeLockHeld = mWakeLock != null;
-        if (wakeLockHeld) notificationText = getString(R.string.notification_title_sessions_wakelock, sessionCount);
+        if (wakeLockHeld) notificationText = getString(
+            R.string.notification_title_sessions_wakelock,
+            sessionCount
+        );
         else notificationText = getString(R.string.notification_title_sessions, sessionCount);
 
-        Intent exitIntent = new Intent(this, TerminalService.class).setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
-        PendingIntent exitPendingIntent = PendingIntent.getService(this, 0, exitIntent, PendingIntent.FLAG_IMMUTABLE);
+        Intent exitIntent = new Intent(this, TerminalService.class)
+            .setAction(TERMUX_SERVICE.ACTION_STOP_SERVICE);
+        PendingIntent exitPendingIntent = PendingIntent.getService(
+            this,
+            0,
+            exitIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        );
         Notification.Action exitAction = new Notification.Action.Builder(
             Icon.createWithResource(this, android.R.drawable.ic_delete),
             getString(R.string.notification_action_exit),
             exitPendingIntent
         ).build();
 
-        String newWakeAction = wakeLockHeld ? TERMUX_SERVICE.ACTION_WAKE_UNLOCK : TERMUX_SERVICE.ACTION_WAKE_LOCK;
-        Intent toggleWakeLockIntent = new Intent(this, TerminalService.class).setAction(newWakeAction);
-        String actionTitle = getString(wakeLockHeld ? R.string.notification_action_wake_unlock : R.string.notification_action_wake_lock);
-        Icon actionIcon = Icon.createWithResource(this,
-            wakeLockHeld ? android.R.drawable.ic_lock_idle_lock : android.R.drawable.ic_lock_lock
+        String newWakeAction = wakeLockHeld ?
+            TERMUX_SERVICE.ACTION_WAKE_UNLOCK :
+            TERMUX_SERVICE.ACTION_WAKE_LOCK;
+        Intent toggleWakeLockIntent = new Intent(this, TerminalService.class)
+            .setAction(newWakeAction);
+        String actionTitle = getString(
+            wakeLockHeld ?
+                R.string.notification_action_wake_unlock :
+                R.string.notification_action_wake_lock
         );
-        PendingIntent toggleWakeLockPendingIntent = PendingIntent.getService(this, 0, toggleWakeLockIntent, PendingIntent.FLAG_IMMUTABLE);
+        Icon actionIcon = Icon.createWithResource(
+            this,
+            wakeLockHeld ?
+                android.R.drawable.ic_lock_idle_lock :
+                android.R.drawable.ic_lock_lock
+        );
+        PendingIntent toggleWakeLockPendingIntent = PendingIntent.getService(
+            this,
+            0,
+            toggleWakeLockIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        );
         Notification.Action toggleWakeLockAction = new Notification.Action.Builder(
             actionIcon, actionTitle, toggleWakeLockPendingIntent
         ).build();
@@ -444,6 +495,10 @@ public final class TerminalService extends Service implements TermuxSession.Term
             .build();
     }
 
+    /**
+     * 为服务通知设置通知渠道。
+     * 这是 Android Oreo (API 26) 及以上版本所必需的。
+     */
     private void setupNotificationChannel() {
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         NotificationChannel channel = new NotificationChannel(
@@ -455,30 +510,47 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * Update the shown foreground service notification after making any changes that affect it.
+     * 在做出任何会影响前台服务通知的更改后，更新该通知。
      */
     public synchronized void updateNotification() {
         if (mWakeLock == null && mTermuxSessions.isEmpty()) {
-            // Exit if we are updating after the user disabled all locks with no sessions or tasks running.
+            // 如果在用户禁用了所有锁且没有会话或任务在运行时进行更新，则退出服务。
             requestStopService();
         } else {
-            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).notify(TermuxConstants.TERMUX_APP_NOTIFICATION_ID, buildNotification());
+            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE))
+                .notify(TermuxConstants.TERMUX_APP_NOTIFICATION_ID, buildNotification());
         }
     }
 
-
+    /**
+     * 检查当前是否有活动的终端会话。
+     * @return 如果会话列表为空则返回 {@code true}，否则返回 {@code false}。
+     */
     public synchronized boolean isTermuxSessionsEmpty() {
         return mTermuxSessions.isEmpty();
     }
 
+    /**
+     * 获取当前活动终端会话的数量。
+     * @return 返回会话列表的大小。
+     */
     public synchronized int getTermuxSessionsSize() {
         return mTermuxSessions.size();
     }
 
+    /**
+     * 获取可变的终端会话列表。
+     * @return 返回 {@link #mTermuxSessions} 的引用。
+     */
     public synchronized List<TermuxSession> getTermuxSessions() {
         return mTermuxSessions;
     }
 
+    /**
+     * 根据索引获取一个终端会话。
+     * @param index 要获取的会话的索引。
+     * @return 返回指定索引处的 {@link TermuxSession}，如果索引无效则返回 {@code null}。
+     */
     @Nullable
     public synchronized TermuxSession getTermuxSession(int index) {
         if (index >= 0 && index < mTermuxSessions.size())
@@ -486,6 +558,11 @@ public final class TerminalService extends Service implements TermuxSession.Term
         else return null;
     }
 
+    /**
+     * 根据给定的 {@link TerminalSession} 获取包装它的 {@link TermuxSession}。
+     * @param terminalSession 内部的终端会话。
+     * @return 返回匹配的 {@link TermuxSession}，如果未找到则返回 {@code null}。
+     */
     @Nullable
     public synchronized TermuxSession getTermuxSessionForTerminalSession(TerminalSession terminalSession) {
         if (terminalSession == null) return null;
@@ -498,10 +575,19 @@ public final class TerminalService extends Service implements TermuxSession.Term
         return null;
     }
 
+    /**
+     * 获取最后一个（即最近创建的）终端会话。
+     * @return 返回列表中的最后一个 {@link TermuxSession}，如果列表为空则返回 {@code null}。
+     */
     public synchronized TermuxSession getLastTermuxSession() {
         return mTermuxSessions.isEmpty() ? null : mTermuxSessions.getLast();
     }
 
+    /**
+     * 获取给定 {@link TerminalSession} 在列表中的索引。
+     * @param terminalSession 要查找的内部终端会话。
+     * @return 返回会话的索引，如果未找到则返回 -1。
+     */
     public synchronized int getIndexOfSession(TerminalSession terminalSession) {
         if (terminalSession == null) return -1;
 
@@ -512,6 +598,11 @@ public final class TerminalService extends Service implements TermuxSession.Term
         return -1;
     }
 
+    /**
+     * 根据会话句柄（handle）获取一个 {@link TerminalSession}。
+     * @param sessionHandle 要查找的会话句柄字符串。
+     * @return 返回匹配的 {@link TerminalSession}，如果未找到则返回 {@code null}。
+     */
     public synchronized TerminalSession getTerminalSessionForHandle(String sessionHandle) {
         TerminalSession terminalSession;
         for (int i = 0, len = mTermuxSessions.size(); i < len; i++) {
@@ -522,7 +613,10 @@ public final class TerminalService extends Service implements TermuxSession.Term
         return null;
     }
 
-
+    /**
+     * 检查服务是否已被请求停止。
+     * @return 如果 {@link #mWantsToStop} 为真则返回 {@code true}。
+     */
     public boolean wantsToStop() {
         return mWantsToStop;
     }
