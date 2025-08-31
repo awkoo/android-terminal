@@ -550,9 +550,8 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     public void finishActivityIfNotFinishing() {
         // 防止在从多个地方调用时重复调用 finish()
-        if (!MainActivity.this.isFinishing()) {
+        if (!MainActivity.this.isFinishing())
             finish();
-        }
     }
 
 
