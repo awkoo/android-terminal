@@ -580,7 +580,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     private void onResetTerminalSession(TerminalSession session) {
         if (session != null) {
             session.reset();
-            UI.showToast(this, getResources().getString(R.string.msg_terminal_reset), true);
+            UI.showToast(this, getString(R.string.msg_terminal_reset), true);
 
             if (mTermuxTerminalSessionActivityClient != null)
                 mTermuxTerminalSessionActivityClient.onResetTerminalSession();

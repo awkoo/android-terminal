@@ -38,8 +38,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
     private final MainActivity mActivity;
 
-    private static final int MAX_SESSIONS = 8;
-
     private SoundPool mBellSoundPool;
 
     private int mBellSoundId;
@@ -318,7 +316,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             setCurrentSession(termuxSession.getTerminalSession());
     }
 
-    @SuppressLint("InflateParams")
     public void renameSession(final TerminalSession sessionToRename) {
         if (sessionToRename == null) return;
 
@@ -353,42 +350,34 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        if (service.getTermuxSessionsSize() >= MAX_SESSIONS) {
-            new AlertDialog.Builder(mActivity)
-                .setTitle(R.string.title_max_terminals_reached)
-                .setMessage(R.string.msg_max_terminals_reached)
-                .setPositiveButton(android.R.string.ok, null)
-                .show();
+        TerminalSession currentSession = mActivity.getCurrentSession();
+
+        String workingDirectory;
+        if (currentSession != null) {
+            workingDirectory = currentSession.getCwd();
         } else {
-            TerminalSession currentSession = mActivity.getCurrentSession();
-
-            String workingDirectory;
-            if (currentSession != null) {
-                workingDirectory = currentSession.getCwd();
-            } else {
-                workingDirectory = mActivity.getFilesDir().getAbsolutePath();
-            }
-
-            TermuxSession newTermuxSession = service.createTermuxSession(
-                null,
-                null,
-                null,
-                workingDirectory,
-                sessionName
-            );
-            if (newTermuxSession == null) return;
-
-            TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
-            setCurrentSession(newTerminalSession);
-
-            String shell_startup_commands = PreferenceManager.getDefaultSharedPreferences(
-                mActivity
-            ).getString("shell_startup_commands", "");
-            if (!shell_startup_commands.isEmpty())
-                newTerminalSession.write(shell_startup_commands + "\n");
-
-            mActivity.getDrawer().closeDrawers();
+            workingDirectory = mActivity.getFilesDir().getAbsolutePath();
         }
+
+        TermuxSession newTermuxSession = service.createTermuxSession(
+            null,
+            null,
+            null,
+            workingDirectory,
+            sessionName
+        );
+        if (newTermuxSession == null) return;
+
+        TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
+        setCurrentSession(newTerminalSession);
+
+        String shell_startup_commands = PreferenceManager.getDefaultSharedPreferences(
+            mActivity
+        ).getString("shell_startup_commands", "");
+        if (!shell_startup_commands.isEmpty())
+            newTerminalSession.write(shell_startup_commands + "\n");
+
+        mActivity.getDrawer().closeDrawers();
     }
 
     public void setCurrentStoredSession() {
