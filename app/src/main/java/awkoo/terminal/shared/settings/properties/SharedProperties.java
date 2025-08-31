@@ -9,8 +9,6 @@ import androidx.annotation.Nullable;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.primitives.Primitives;
-import awkoo.terminal.shared.file.FileUtils;
-import awkoo.terminal.shared.file.filesystem.FileType;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import awkoo.terminal.shared.file.FileUtils;
+import awkoo.terminal.shared.file.filesystem.FileType;
 
 /**
  * An implementation similar to android's {@link android.content.SharedPreferences} interface for

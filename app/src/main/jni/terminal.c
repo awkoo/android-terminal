@@ -32,7 +32,7 @@ static int create_subprocess(
         jint columns,
         jint cell_width,
         jint cell_height
-        ) {
+) {
     int ptm = open("/dev/ptmx", O_RDWR | O_CLOEXEC);
     if (ptm < 0) return throw_runtime_exception(env, "Cannot open /dev/ptmx");
 
@@ -131,7 +131,7 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
         jint columns,
         jint cell_width,
         jint cell_height
-        ) {
+) {
     jsize size = args ? (*env)->GetArrayLength(env, args) : 0;
     char **argv = NULL;
     if (size > 0) {
@@ -178,7 +178,7 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
             columns,
             cell_width,
             cell_height
-            );
+    );
     (*env)->ReleaseStringUTFChars(env, cmd, cmd_utf8);
     (*env)->ReleaseStringUTFChars(env, cmd, cmd_cwd);
 
@@ -196,7 +196,7 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
         return throw_runtime_exception(
                 env,
                 "JNI call GetPrimitiveArrayCritical(processIdArray, &isCopy) failed"
-                );
+        );
 
     *pProcId = procId;
     (*env)->ReleasePrimitiveArrayCritical(env, processIdArray, pProcId, 0);
@@ -211,7 +211,7 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setPtyWindowSize(
         jint cols,
         jint cell_width,
         jint cell_height
-        ) {
+) {
     struct winsize sz = {
             .ws_row = (unsigned short) rows,
             .ws_col = (unsigned short) cols,
@@ -226,7 +226,7 @@ Java_awkoo_terminal_terminal_JNI_waitFor(
         JNIEnv *TERMUX_UNUSED(env),
         jclass TERMUX_UNUSED(clazz),
         jint pid
-        ) {
+) {
     int status;
     waitpid(pid, &status, 0);
     if (WIFEXITED(status)) {
@@ -244,6 +244,6 @@ Java_awkoo_terminal_terminal_JNI_close(
         JNIEnv *TERMUX_UNUSED(env),
         jclass TERMUX_UNUSED(clazz),
         jint fileDescriptor
-        ) {
+) {
     close(fileDescriptor);
 }

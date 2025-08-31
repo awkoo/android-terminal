@@ -302,7 +302,8 @@ public final class TerminalSession extends TerminalOutput {
         if (isRunning()) {
             try {
                 Os.kill(mShellPid, OsConstants.SIGKILL);
-            } catch (ErrnoException ignored) {}
+            } catch (ErrnoException ignored) {
+            }
         }
     }
 
@@ -371,13 +372,15 @@ public final class TerminalSession extends TerminalOutput {
                 outputPathWithTrailingSlash += '/';
             if (!cwdSymlink.equals(outputPathWithTrailingSlash))
                 return outputPath;
-        } catch (IOException | SecurityException ignored) {}
+        } catch (IOException | SecurityException ignored) {
+        }
         return null;
     }
 
     private static class MainThreadHandler extends Handler {
 
         private final WeakReference<TerminalSession> terminalSessionWeakReference;
+
         MainThreadHandler(TerminalSession terminalSession) {
             super(Looper.getMainLooper());
             terminalSessionWeakReference = new WeakReference<>(terminalSession);

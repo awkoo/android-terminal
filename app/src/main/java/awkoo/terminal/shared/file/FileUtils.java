@@ -4,16 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.common.io.RecursiveDeleteOption;
-import awkoo.terminal.shared.data.DataUtils;
-import awkoo.terminal.shared.errors.Error;
-import awkoo.terminal.shared.errors.FunctionErrno;
-import awkoo.terminal.shared.file.filesystem.FileType;
-import awkoo.terminal.shared.file.filesystem.FileTypes;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import awkoo.terminal.shared.data.DataUtils;
+import awkoo.terminal.shared.errors.Error;
+import awkoo.terminal.shared.errors.FunctionErrno;
+import awkoo.terminal.shared.file.filesystem.FileType;
+import awkoo.terminal.shared.file.filesystem.FileTypes;
 
 public class FileUtils {
 

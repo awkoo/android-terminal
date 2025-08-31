@@ -19,9 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.button.MaterialButton;
-import awkoo.terminal.R;
-import awkoo.terminal.shared.termux.terminal.io.TerminalExtraKeys;
-import awkoo.terminal.shared.theme.ThemeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +29,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+
+import awkoo.terminal.R;
+import awkoo.terminal.shared.termux.terminal.io.TerminalExtraKeys;
+import awkoo.terminal.shared.theme.ThemeUtils;
 
 /**
  * A {@link View} showing extra keys (such as Escape, Ctrl, Alt) not normally available on an Android soft

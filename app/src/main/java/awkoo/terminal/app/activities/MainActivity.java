@@ -145,6 +145,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * Activity 创建时的回调。
+     *
      * @param savedInstanceState 如果 Activity 被重新创建，则包含先前保存的状态。
      */
     @Override
@@ -296,6 +297,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 保存实例状态的回调。
+     *
      * @param savedInstanceState 用于保存状态的 Bundle。
      */
     @Override
@@ -349,6 +351,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 服务断开连接时的回调。
+     *
      * @param name 断开连接的服务组件名称。
      */
     @Override
@@ -417,6 +420,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 设置终端工具栏视图。
+     *
      * @param savedInstanceState 如果 Activity 被重新创建，则包含先前保存的状态。
      */
     private void setTerminalToolbarView(Bundle savedInstanceState) {
@@ -481,6 +485,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 保存终端工具栏的文本输入。
+     *
      * @param savedInstanceState 用于保存状态的 Bundle。
      */
     private void saveTerminalToolbarTextInput(Bundle savedInstanceState) {
@@ -557,8 +562,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 创建上下文菜单时的回调。
-     * @param menu 上下文菜单。
-     * @param v 视图。
+     *
+     * @param menu     上下文菜单。
+     * @param v        视图。
      * @param menuInfo 菜单信息。
      */
     @Override
@@ -585,6 +591,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * Hook 系统菜单以显示上下文菜单。
+     *
      * @param menu 选项菜单。
      * @return 总是返回 false，因为我们显示的是上下文菜单。
      */
@@ -596,6 +603,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 上下文菜单项被选中时的回调。
+     *
      * @param item 被选中的菜单项。
      * @return 如果事件被处理则返回 true，否则返回 false。
      */
@@ -648,6 +656,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 上下文菜单关闭时的回调。
+     *
      * @param menu 关闭的菜单。
      */
     @Override
@@ -659,6 +668,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 显示杀死会话的对话框。
+     *
      * @param session 要杀死的会话。
      */
     private void showKillSessionDialog(TerminalSession session) {
@@ -677,6 +687,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 重置终端会话。
+     *
      * @param session 要重置的会话。
      */
     private void onResetTerminalSession(TerminalSession session) {
@@ -704,6 +715,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取额外按键视图。
+     *
      * @return 额外按键视图。
      */
     public ExtraKeysView getExtraKeysView() {
@@ -712,6 +724,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取 Termux 终端额外按键。
+     *
      * @return Termux 终端额外按键。
      */
     public TermuxTerminalExtraKeys getTermuxTerminalExtraKeys() {
@@ -720,6 +733,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 设置额外按键视图。
+     *
      * @param extraKeysView 额外按键视图。
      */
     public void setExtraKeysView(ExtraKeysView extraKeysView) {
@@ -728,6 +742,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取抽屉布局。
+     *
      * @return 抽屉布局。
      */
     public DrawerLayout getDrawer() {
@@ -736,6 +751,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取终端工具栏的 ViewPager。
+     *
      * @return 终端工具栏的 ViewPager。
      */
     public ViewPager getTerminalToolbarViewPager() {
@@ -744,6 +760,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取终端工具栏的默认高度。
+     *
      * @return 终端工具栏的默认高度。
      */
     public float getTerminalToolbarDefaultHeight() {
@@ -752,6 +769,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 检查终端视图是否被选中。
+     *
      * @return 如果终端视图被选中则返回 true，否则返回 false。
      */
     public boolean isTerminalViewSelected() {
@@ -760,6 +778,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 检查终端工具栏的文本输入视图是否被选中。
+     *
      * @return 如果终端工具栏的文本输入视图被选中则返回 true，否则返回 false。
      */
     public boolean isTerminalToolbarTextInputViewSelected() {
@@ -775,6 +794,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 检查 Activity 是否可见。
+     *
      * @return 如果 Activity 可见则返回 true，否则返回 false。
      */
     public boolean isVisible() {
@@ -783,6 +803,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 检查 onResume 是否在 onCreate 之后调用。
+     *
      * @return 如果 onResume 在 onCreate 之后调用则返回 true，否则返回 false。
      */
     public boolean isOnResumeAfterOnCreate() {
@@ -791,6 +812,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 检查 Activity 是否被重新创建。
+     *
      * @return 如果 Activity 被重新创建则返回 true，否则返回 false。
      */
     public boolean isActivityRecreated() {
@@ -799,6 +821,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取 Termux 服务。
+     *
      * @return Termux 服务。
      */
     public TerminalService getTermuxService() {
@@ -807,6 +830,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取终端视图。
+     *
      * @return 终端视图。
      */
     public TerminalView getTerminalView() {
@@ -815,6 +839,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取 Termux 终端会话客户端。
+     *
      * @return Termux 终端会话客户端。
      */
     public TermuxTerminalSessionActivityClient getTermuxTerminalSessionClient() {
@@ -823,6 +848,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取当前会话。
+     *
      * @return 当前会话，如果不存在则返回 null。
      */
     @Nullable
@@ -832,6 +858,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取应用的首选项。
+     *
      * @return 应用的首选项。
      */
     public TermuxAppSharedPreferences getPreferences() {
@@ -840,6 +867,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     /**
      * 获取应用的属性。
+     *
      * @return 应用的属性。
      */
     public TermuxAppSharedProperties getProperties() {

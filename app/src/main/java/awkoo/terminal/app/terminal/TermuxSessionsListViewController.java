@@ -18,14 +18,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
+import java.util.List;
+
 import awkoo.terminal.R;
 import awkoo.terminal.app.activities.MainActivity;
 import awkoo.terminal.shared.termux.shell.TermuxSession;
 import awkoo.terminal.shared.theme.NightMode;
 import awkoo.terminal.shared.theme.ThemeUtils;
 import awkoo.terminal.terminal.TerminalSession;
-
-import java.util.List;
 
 public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession> implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 

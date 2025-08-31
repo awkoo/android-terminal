@@ -1,10 +1,10 @@
 package awkoo.terminal.shared.shell.command;
 
-import awkoo.terminal.shared.errors.Errno;
-import awkoo.terminal.shared.shell.command.result.ResultConfig;
-
 import java.util.Formatter;
 import java.util.IllegalFormatException;
+
+import awkoo.terminal.shared.errors.Errno;
+import awkoo.terminal.shared.shell.command.result.ResultConfig;
 
 public class ShellCommandConstants {
 

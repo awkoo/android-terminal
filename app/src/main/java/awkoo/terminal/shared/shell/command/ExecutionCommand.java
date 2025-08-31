@@ -1,17 +1,9 @@
 package awkoo.terminal.shared.shell.command;
 
-import android.content.Intent;
+import java.util.List;
 
-import androidx.annotation.NonNull;
-
-import awkoo.terminal.shared.data.DataUtils;
-import awkoo.terminal.shared.data.IntentUtils;
-import awkoo.terminal.shared.logger.Logger;
-import awkoo.terminal.shared.shell.command.environment.ShellEnvironment;
 import awkoo.terminal.shared.shell.command.result.ResultData;
 import awkoo.terminal.terminal.TerminalSession;
-
-import java.util.List;
 
 public class ExecutionCommand {
 
@@ -168,7 +160,6 @@ public class ExecutionCommand {
 //     * The {@link ShellCreateMode} of commands.
 //     */
 //    public String shellCreateMode;
-
 
 
     /**

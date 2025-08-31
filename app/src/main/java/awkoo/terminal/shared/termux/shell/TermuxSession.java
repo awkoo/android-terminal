@@ -7,6 +7,12 @@ import android.system.OsConstants;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
 import awkoo.terminal.R;
 import awkoo.terminal.shared.errors.Errno;
 import awkoo.terminal.shared.shell.ShellUtils;
@@ -16,12 +22,6 @@ import awkoo.terminal.shared.shell.command.environment.ShellEnvironmentUtils;
 import awkoo.terminal.shared.shell.command.result.ResultData;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * A class that maintains info for foreground Termux sessions.

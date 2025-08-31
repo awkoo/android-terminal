@@ -16,6 +16,10 @@ import android.os.PowerManager;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import awkoo.terminal.R;
 import awkoo.terminal.app.activities.MainActivity;
 import awkoo.terminal.app.terminal.TermuxTerminalSessionActivityClient;
@@ -30,10 +34,6 @@ import awkoo.terminal.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import awkoo.terminal.terminal.TerminalEmulator;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * 一个后台服务，持有一系列 {@link TermuxSession}，并在运行时显示一个前台通知以防止被系统终止。
@@ -103,8 +103,9 @@ public final class TerminalService extends Service implements TermuxSession.Term
     /**
      * 服务启动命令的回调。
      * 根据接收到的Intent Action执行相应操作，例如停止服务、获取/释放唤醒锁。
-     * @param intent 启动时传递的Intent。
-     * @param flags 关于启动请求的附加数据。
+     *
+     * @param intent  启动时传递的Intent。
+     * @param flags   关于启动请求的附加数据。
      * @param startId 请求的唯一整数ID。
      * @return 返回服务的启动粘性，这里是 START_NOT_STICKY，表示服务被杀死后不会自动重启。
      */
@@ -153,6 +154,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 当客户端通过 bindService() 绑定到服务时调用。
+     *
      * @param intent 用于绑定的Intent。
      * @return 返回一个 IBinder 对象，客户端可以通过它与服务通信。
      */
@@ -163,6 +165,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 当所有客户端都通过 unbindService() 与服务断开连接时调用。
+     *
      * @param intent 用于绑定的Intent。
      * @return 返回一个布尔值，表示是否希望在客户端重新绑定时接收 onRebind() 回调。
      */
@@ -287,11 +290,12 @@ public final class TerminalService extends Service implements TermuxSession.Term
     /**
      * 创建一个新的 {@link TermuxSession}。
      * 当前由 {@link TermuxTerminalSessionActivityClient#addNewSession(String)} 调用以添加新会话。
-     * @param executablePath 可执行文件的路径，如果为null则使用默认shell。
-     * @param arguments 传递给可执行文件的参数。
-     * @param stdin 发送到stdin的初始文本。
+     *
+     * @param executablePath   可执行文件的路径，如果为null则使用默认shell。
+     * @param arguments        传递给可执行文件的参数。
+     * @param stdin            发送到stdin的初始文本。
      * @param workingDirectory 会话的工作目录。
-     * @param sessionName 会话的自定义名称。
+     * @param sessionName      会话的自定义名称。
      * @return 如果成功则返回创建的 {@link TermuxSession}，否则返回 null。
      */
     @Nullable
@@ -340,6 +344,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 移除一个指定的TermuxSession。
+     *
      * @param sessionToRemove 要移除的终端会话。
      * @return 返回被移除会话在列表中的索引，如果未找到则为-1或更小。
      */
@@ -354,6 +359,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 当一个 {@link TermuxSession} 结束时收到的回调。
+     *
      * @param termuxSession 已退出的会话。
      */
     @Override
@@ -421,6 +427,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 构建用于前台服务的通知。
+     *
      * @return 返回构建好的 {@link Notification} 对象。
      */
     private Notification buildNotification() {
@@ -522,6 +529,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 检查当前是否有活动的终端会话。
+     *
      * @return 如果会话列表为空则返回 {@code true}，否则返回 {@code false}。
      */
     public synchronized boolean isTermuxSessionsEmpty() {
@@ -530,6 +538,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 获取当前活动终端会话的数量。
+     *
      * @return 返回会话列表的大小。
      */
     public synchronized int getTermuxSessionsSize() {
@@ -538,6 +547,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 获取可变的终端会话列表。
+     *
      * @return 返回 {@link #mTermuxSessions} 的引用。
      */
     public synchronized List<TermuxSession> getTermuxSessions() {
@@ -546,6 +556,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 根据索引获取一个终端会话。
+     *
      * @param index 要获取的会话的索引。
      * @return 返回指定索引处的 {@link TermuxSession}，如果索引无效则返回 {@code null}。
      */
@@ -558,6 +569,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 根据给定的 {@link TerminalSession} 获取包装它的 {@link TermuxSession}。
+     *
      * @param terminalSession 内部的终端会话。
      * @return 返回匹配的 {@link TermuxSession}，如果未找到则返回 {@code null}。
      */
@@ -575,6 +587,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 获取最后一个（即最近创建的）终端会话。
+     *
      * @return 返回列表中的最后一个 {@link TermuxSession}，如果列表为空则返回 {@code null}。
      */
     public synchronized TermuxSession getLastTermuxSession() {
@@ -583,6 +596,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 获取给定 {@link TerminalSession} 在列表中的索引。
+     *
      * @param terminalSession 要查找的内部终端会话。
      * @return 返回会话的索引，如果未找到则返回 -1。
      */
@@ -598,6 +612,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 根据会话句柄（handle）获取一个 {@link TerminalSession}。
+     *
      * @param sessionHandle 要查找的会话句柄字符串。
      * @return 返回匹配的 {@link TerminalSession}，如果未找到则返回 {@code null}。
      */
@@ -613,6 +628,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
     /**
      * 检查服务是否已被请求停止。
+     *
      * @return 如果 {@link #mWantsToStop} 为真则返回 {@code true}。
      */
     public boolean wantsToStop() {

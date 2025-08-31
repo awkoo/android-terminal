@@ -4,15 +4,15 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import awkoo.terminal.shared.data.DataUtils;
-import awkoo.terminal.shared.settings.properties.SharedProperties;
-import awkoo.terminal.shared.settings.properties.SharedPropertiesParser;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+
+import awkoo.terminal.shared.data.DataUtils;
+import awkoo.terminal.shared.settings.properties.SharedProperties;
+import awkoo.terminal.shared.settings.properties.SharedPropertiesParser;
 
 public abstract class TermuxSharedProperties {
 
@@ -137,8 +137,8 @@ public abstract class TermuxSharedProperties {
      * A static function that should return the internal termux {@link Object} for a key/value pair
      * read from properties file.
      *
-     * @param key     The key for which the internal object is required.
-     * @param value   The literal value for the property found is the properties file.
+     * @param key   The key for which the internal object is required.
+     * @param value The literal value for the property found is the properties file.
      * @return Returns the internal termux {@link Object} object.
      */
     public static Object getInternalTermuxPropertyValueFromValue(String key, String value) {

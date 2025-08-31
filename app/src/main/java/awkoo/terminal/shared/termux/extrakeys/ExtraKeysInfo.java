@@ -5,12 +5,13 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.button.MaterialButton;
-import awkoo.terminal.shared.termux.extrakeys.ExtraKeysConstants.EXTRA_KEY_DISPLAY_MAPS;
-import awkoo.terminal.shared.termux.terminal.io.TerminalExtraKeys;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import awkoo.terminal.shared.termux.extrakeys.ExtraKeysConstants.EXTRA_KEY_DISPLAY_MAPS;
+import awkoo.terminal.shared.termux.terminal.io.TerminalExtraKeys;
 
 /**
  * A {@link Class} that defines the info needed by {@link ExtraKeysView} to display the extra key

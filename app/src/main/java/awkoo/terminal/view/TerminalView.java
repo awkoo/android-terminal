@@ -35,13 +35,13 @@ import android.widget.Scroller;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 import awkoo.terminal.terminal.KeyHandler;
 import awkoo.terminal.terminal.TerminalEmulator;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
 import awkoo.terminal.view.textselection.TextSelectionCursorController;
-
-import java.util.Objects;
 
 /**
  * View displaying and interacting with a {@link TerminalSession}.
@@ -1134,7 +1134,8 @@ public final class TerminalView extends View {
                 mAutoFillHints = autoFillHints;
                 autofillManager.requestAutofill(this);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     public synchronized void cancelRequestAutoFill() {
@@ -1146,7 +1147,8 @@ public final class TerminalView extends View {
                 resetAutoFill();
                 autofillManager.cancel();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
 

@@ -2,13 +2,13 @@ package awkoo.terminal.shared.shell.command.result;
 
 import androidx.annotation.NonNull;
 
-import awkoo.terminal.shared.data.DataUtils;
-import awkoo.terminal.shared.errors.Error;
-import awkoo.terminal.shared.logger.Logger;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import awkoo.terminal.shared.data.DataUtils;
+import awkoo.terminal.shared.errors.Error;
+import awkoo.terminal.shared.logger.Logger;
 
 public class ResultData implements Serializable {
 

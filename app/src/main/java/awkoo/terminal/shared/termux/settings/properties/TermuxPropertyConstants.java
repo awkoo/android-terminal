@@ -1,15 +1,16 @@
 package awkoo.terminal.shared.termux.settings.properties;
 
 import com.google.common.collect.ImmutableBiMap;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import awkoo.terminal.shared.settings.properties.SharedProperties;
 import awkoo.terminal.shared.termux.TermuxConstants;
 import awkoo.terminal.shared.theme.NightMode;
 import awkoo.terminal.terminal.TerminalEmulator;
 import awkoo.terminal.view.TerminalView;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 /*
  * Version: v0.18.0

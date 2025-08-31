@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import java.util.Properties;
+
 import awkoo.terminal.R;
 import awkoo.terminal.app.TerminalService;
 import awkoo.terminal.app.activities.MainActivity;
@@ -22,8 +24,6 @@ import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
 import awkoo.terminal.terminal.TextStyle;
 import awkoo.terminal.utils.UI;
-
-import java.util.Properties;
 
 /**
  * The {@link TerminalSessionClient} implementation that may require an {@link Activity} for its interface methods.
@@ -252,7 +252,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             text -> {
                 renameSession(sessionToRename, text);
                 termuxSessionListNotifyUpdated();
-                },
+            },
             -1,
             null,
             -1,
@@ -435,7 +435,8 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 //            final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
             final Typeface newTypeface = Typeface.MONOSPACE;
             mActivity.getTerminalView().setTypeface(newTypeface);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
     }
 
     public void updateBackgroundColor() {

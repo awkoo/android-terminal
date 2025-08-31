@@ -7,6 +7,8 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import org.json.JSONException;
+
 import awkoo.terminal.app.activities.MainActivity;
 import awkoo.terminal.app.terminal.TermuxTerminalSessionActivityClient;
 import awkoo.terminal.app.terminal.TermuxTerminalViewClient;
@@ -16,8 +18,6 @@ import awkoo.terminal.shared.termux.settings.properties.TermuxPropertyConstants;
 import awkoo.terminal.shared.termux.terminal.io.TerminalExtraKeys;
 import awkoo.terminal.utils.UI;
 import awkoo.terminal.view.TerminalView;
-
-import org.json.JSONException;
 
 public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
 

@@ -4,9 +4,9 @@ import android.app.PendingIntent;
 
 import androidx.annotation.NonNull;
 
-import awkoo.terminal.shared.logger.Logger;
-
 import java.util.Formatter;
+
+import awkoo.terminal.shared.logger.Logger;
 
 public class ResultConfig {
 

@@ -4,13 +4,13 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import awkoo.terminal.shared.logger.Logger;
-import awkoo.terminal.utils.UI;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import awkoo.terminal.shared.logger.Logger;
+import awkoo.terminal.utils.UI;
 
 public class Error implements Serializable {
 
