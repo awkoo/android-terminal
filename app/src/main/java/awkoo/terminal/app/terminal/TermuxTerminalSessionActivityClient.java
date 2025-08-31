@@ -153,7 +153,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     public void onTerminalCursorStateChange(boolean enabled) {
         // Do not start cursor blinking thread if activity is not visible
         if (enabled && !mActivity.isVisible()) {
-            //        logMessage(Log.VERBOSE, tag, message);
             return;
         }
 
@@ -258,7 +257,8 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             null,
             -1,
             null,
-            null);
+            null
+        );
     }
 
     private void renameSession(TerminalSession sessionToRename, String text) {
@@ -387,7 +387,9 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
         termuxSessionsListView.setItemChecked(indexOfSession, true);
         // Delay is necessary otherwise sometimes scroll to newly added session does not happen
-        termuxSessionsListView.postDelayed(() -> termuxSessionsListView.smoothScrollToPosition(indexOfSession), 1000);
+        termuxSessionsListView.postDelayed(
+            () -> termuxSessionsListView.smoothScrollToPosition(indexOfSession), 1000
+        );
     }
 
 
@@ -433,16 +435,22 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 //            final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
             final Typeface newTypeface = Typeface.MONOSPACE;
             mActivity.getTerminalView().setTypeface(newTypeface);
-        } catch (Exception e) {
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
-        }
+        } catch (Exception ignored) {}
     }
 
     public void updateBackgroundColor() {
         if (!mActivity.isVisible()) return;
         TerminalSession session = mActivity.getCurrentSession();
         if (session != null && session.getEmulator() != null) {
-            mActivity.getWindow().getDecorView().setBackgroundColor(session.getEmulator().mColors.mCurrentColors[TextStyle.COLOR_INDEX_BACKGROUND]);
+            mActivity
+                .getWindow()
+                .getDecorView()
+                .setBackgroundColor(
+                    session
+                        .getEmulator()
+                        .mColors
+                        .mCurrentColors[TextStyle.COLOR_INDEX_BACKGROUND]
+                );
         }
     }
 
