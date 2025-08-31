@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.view.View;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.WindowInsetsCompat;
 
 public class KeyboardUtils {
 
@@ -110,29 +108,6 @@ public class KeyboardUtils {
     }
 
     /**
-     * Check if soft keyboard is visible.
-     * Does not work on android 7 but does on android 11 avd.
-     *
-     * @param activity The Activity of the root view for which the visibility should be checked.
-     * @return Returns {@code true} if soft keyboard is visible, otherwise {@code false}.
-     */
-    public static boolean isSoftKeyboardVisible(final Activity activity) {
-        if (activity != null && activity.getWindow() != null) {
-            WindowInsets insets = activity.getWindow().getDecorView().getRootWindowInsets();
-            if (insets != null) {
-                WindowInsetsCompat insetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets);
-                if (insetsCompat.isVisible(WindowInsetsCompat.Type.ime())) {
-                    //        logMessage(Log.VERBOSE, tag, message);
-                    return true;
-                }
-            }
-        }
-
-        //        logMessage(Log.VERBOSE, tag, message);
-        return false;
-    }
-
-    /**
      * Check if hardware keyboard is connected.
      * Based on default implementation of {@link InputMethodService#onEvaluateInputViewShown()}.
      * <p>
@@ -181,9 +156,8 @@ public class KeyboardUtils {
              */
             // If soft keyboard is disabled by user only if hardware keyboard is connected
             if (isSoftKeyboardEnabledOnlyIfNoHardware) {
-                boolean isHardKeyboardConnected = KeyboardUtils.isHardKeyboardConnected(context);
                 //        logMessage(Log.VERBOSE, tag, message);
-                return isHardKeyboardConnected;
+                return KeyboardUtils.isHardKeyboardConnected(context);
             } else {
                 return false;
             }

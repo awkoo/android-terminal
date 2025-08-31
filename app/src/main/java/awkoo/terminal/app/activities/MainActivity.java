@@ -1,10 +1,8 @@
 package awkoo.terminal.app.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
@@ -19,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -29,7 +26,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.PackageManagerCompat;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -76,11 +73,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      * {@link #onServiceConnected(ComponentName, IBinder)}.
      */
     TerminalService mTerminalService;
-
-    /**
-     * The {@link TerminalView} shown in  {@link MainActivity} that displays the terminal.
-     */
-    TerminalView mTerminalView;
 
     /**
      * The {@link TerminalViewClient} interface implementation to allow for communication between
@@ -167,13 +159,13 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         reloadProperties();
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(binding.getRoot());
 
         getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                if (getDrawer().isDrawerOpen(Gravity.LEFT))
-                    getDrawer().closeDrawers();
+                if (binding.drawerLayout.isDrawerOpen(Gravity.LEFT))
+                    binding.drawerLayout.closeDrawers();
                 else finishActivityIfNotFinishing();
             }
         });
@@ -188,7 +180,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         setNewSessionButtonView();
         setToggleKeyboardView();
 
-        registerForContextMenu(mTerminalView);
+        registerForContextMenu(binding.terminalView);
 
         try {
             // Start the {@link TerminalService} and make it run regardless of who is bound to it
@@ -208,10 +200,13 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
-            int keyboardHeight = insets.getInsets(WindowInsetsCompat.Type.ime()).bottom;
+            Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+
+            v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, 0);
+
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            int navBarHeight = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
-            params.bottomMargin = Math.max(keyboardHeight, navBarHeight);
+            params.bottomMargin = Math.max(systemBarsInsets.bottom, imeInsets.bottom);
             v.setLayoutParams(params);
             return WindowInsetsCompat.CONSUMED;
         });
@@ -260,7 +255,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         if (mTermuxTerminalViewClient != null)
             mTermuxTerminalViewClient.onStop();
-        getDrawer().closeDrawers();
+        binding.drawerLayout.closeDrawers();
     }
 
     @Override
@@ -347,7 +342,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
 
     private void setMargins() {
-        RelativeLayout relativeLayout = findViewById(R.id.activity_termux_root_relative_layout);
+        RelativeLayout relativeLayout = binding.activityTermuxRootRelativeLayout;
         int marginHorizontal = mProperties.getTerminalMarginHorizontal();
         int marginVertical = mProperties.getTerminalMarginVertical();
         ViewUtils.setLayoutMarginsInDp(relativeLayout, marginHorizontal, marginVertical, marginHorizontal, marginVertical);
@@ -360,18 +355,16 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         mTermuxTerminalViewClient = new TermuxTerminalViewClient(this, mTermuxTerminalSessionActivityClient);
 
         // Set termux terminal view
-        mTerminalView = findViewById(R.id.terminal_view);
-        mTerminalView.setTerminalViewClient(mTermuxTerminalViewClient);
+        binding.terminalView.setTerminalViewClient(mTermuxTerminalViewClient);
 
-        if (mTermuxTerminalViewClient != null)
-            mTermuxTerminalViewClient.onCreate();
+        mTermuxTerminalViewClient.onCreate();
 
         if (mTermuxTerminalSessionActivityClient != null)
             mTermuxTerminalSessionActivityClient.onCreate();
     }
 
     private void setTermuxSessionsListView() {
-        ListView termuxSessionsListView = findViewById(R.id.terminal_sessions_list);
+        ListView termuxSessionsListView = binding.terminalSessionsList;
         mTermuxSessionListViewController = new TermuxSessionsListViewController(this, mTerminalService.getTermuxSessions());
         termuxSessionsListView.setAdapter(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);
@@ -380,10 +373,14 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
 
     private void setTerminalToolbarView(Bundle savedInstanceState) {
-        mTermuxTerminalExtraKeys = new TermuxTerminalExtraKeys(this, mTerminalView,
-            mTermuxTerminalViewClient, mTermuxTerminalSessionActivityClient);
+        mTermuxTerminalExtraKeys = new TermuxTerminalExtraKeys(
+            this,
+            binding.terminalView,
+            mTermuxTerminalViewClient,
+            mTermuxTerminalSessionActivityClient
+        );
 
-        final ViewPager terminalToolbarViewPager = getTerminalToolbarViewPager();
+        final ViewPager terminalToolbarViewPager = binding.terminalToolbarViewPager;
         if (mPreferences.shouldShowTerminalToolbar())
             terminalToolbarViewPager.setVisibility(View.VISIBLE);
 
@@ -401,8 +398,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     private void setTerminalToolbarHeight() {
-        final ViewPager terminalToolbarViewPager = getTerminalToolbarViewPager();
-        if (terminalToolbarViewPager == null) return;
+        final ViewPager terminalToolbarViewPager = binding.terminalToolbarViewPager;
 
         ViewGroup.LayoutParams layoutParams = terminalToolbarViewPager.getLayoutParams();
         layoutParams.height = Math.round(mTerminalToolbarDefaultHeight *
@@ -412,12 +408,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     public void toggleTerminalToolbar() {
-        final ViewPager terminalToolbarViewPager = getTerminalToolbarViewPager();
-        if (terminalToolbarViewPager == null) return;
-
         final boolean showNow = mPreferences.toogleShowTerminalToolbar();
         UI.showToast(this, (showNow ? getString(R.string.msg_enabling_terminal_toolbar) : getString(R.string.msg_disabling_terminal_toolbar)), true);
-        terminalToolbarViewPager.setVisibility(showNow ? View.VISIBLE : View.GONE);
+        binding.terminalToolbarViewPager.setVisibility(showNow ? View.VISIBLE : View.GONE);
         if (showNow && isTerminalToolbarTextInputViewSelected()) {
             // Focus the text input view if just revealed.
             findViewById(R.id.terminal_toolbar_text_input).requestFocus();
@@ -437,12 +430,19 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
 
     private void setSettingsButtonView() {
-        ImageButton settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(v -> ActivityUtils.startActivity(this, new Intent(this, SettingsActivity.class)));
+        binding.settingsButton.setOnClickListener(
+            v -> ActivityUtils.startActivity(
+                this,
+                new Intent(
+                    this,
+                    SettingsActivity.class
+                )
+            )
+        );
     }
 
     private void setNewSessionButtonView() {
-        View newSessionButton = findViewById(R.id.new_session_button);
+        View newSessionButton = binding.newSessionButton;
         newSessionButton.setOnClickListener(v -> mTermuxTerminalSessionActivityClient.addNewSession(null));
         newSessionButton.setOnLongClickListener(v -> {
             TextInputDialogUtils.textInput(
@@ -462,12 +462,12 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     private void setToggleKeyboardView() {
-        findViewById(R.id.toggle_keyboard_button).setOnClickListener(v -> {
+        binding.toggleKeyboardButton.setOnClickListener(v -> {
             mTermuxTerminalViewClient.onToggleSoftKeyboardRequest();
-            getDrawer().closeDrawers();
+            binding.drawerLayout.closeDrawers();
         });
 
-        findViewById(R.id.toggle_keyboard_button).setOnLongClickListener(v -> {
+        binding.toggleKeyboardButton.setOnLongClickListener(v -> {
             toggleTerminalToolbar();
             return true;
         });
@@ -486,11 +486,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         TerminalSession currentSession = getCurrentSession();
         if (currentSession == null) return;
 
-        boolean autoFillEnabled = mTerminalView.isAutoFillEnabled();
+        boolean autoFillEnabled = binding.terminalView.isAutoFillEnabled();
 
         menu.add(Menu.NONE, CONTEXT_MENU_SELECT_URL_ID, Menu.NONE, R.string.action_select_url);
         menu.add(Menu.NONE, CONTEXT_MENU_SHARE_TRANSCRIPT_ID, Menu.NONE, R.string.action_share_transcript);
-        if (!DataUtils.isNullOrEmpty(mTerminalView.getStoredSelectedText()))
+        if (!DataUtils.isNullOrEmpty(binding.terminalView.getStoredSelectedText()))
             menu.add(Menu.NONE, CONTEXT_MENU_SHARE_SELECTED_TEXT, Menu.NONE, R.string.action_share_selected_text);
         if (autoFillEnabled)
             menu.add(Menu.NONE, CONTEXT_MENU_AUTOFILL_USERNAME, Menu.NONE, R.string.action_autofill_username);
@@ -507,7 +507,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        mTerminalView.showContextMenu();
+        binding.terminalView.showContextMenu();
         return false;
     }
 
@@ -529,11 +529,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
                 yield true;
             }
             case CONTEXT_MENU_AUTOFILL_USERNAME -> {
-                mTerminalView.requestAutoFillUsername();
+                binding.terminalView.requestAutoFillUsername();
                 yield true;
             }
             case CONTEXT_MENU_AUTOFILL_PASSWORD -> {
-                mTerminalView.requestAutoFillPassword();
+                binding.terminalView.requestAutoFillPassword();
                 yield true;
             }
             case CONTEXT_MENU_RESET_TERMINAL_ID -> {
@@ -560,7 +560,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     public void onContextMenuClosed(@NonNull Menu menu) {
         super.onContextMenuClosed(menu);
         // onContextMenuClosed() is triggered twice if back button is pressed to dismiss instead of tap for some reason
-        mTerminalView.onContextMenuClosed();
+        binding.terminalView.onContextMenuClosed();
     }
 
     private void showKillSessionDialog(TerminalSession session) {
@@ -588,11 +588,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     private void toggleKeepScreenOn() {
-        if (mTerminalView.getKeepScreenOn()) {
-            mTerminalView.setKeepScreenOn(false);
+        if (binding.terminalView.getKeepScreenOn()) {
+            binding.terminalView.setKeepScreenOn(false);
             mPreferences.setKeepScreenOn(false);
         } else {
-            mTerminalView.setKeepScreenOn(true);
+            binding.terminalView.setKeepScreenOn(true);
             mPreferences.setKeepScreenOn(true);
         }
     }
@@ -611,12 +611,12 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     public DrawerLayout getDrawer() {
-        return findViewById(R.id.drawer_layout);
+        return binding.drawerLayout;
     }
 
 
     public ViewPager getTerminalToolbarViewPager() {
-        return findViewById(R.id.terminal_toolbar_view_pager);
+        return binding.terminalToolbarViewPager;
     }
 
     public float getTerminalToolbarDefaultHeight() {
@@ -624,11 +624,11 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     public boolean isTerminalViewSelected() {
-        return getTerminalToolbarViewPager().getCurrentItem() == 0;
+        return binding.terminalToolbarViewPager.getCurrentItem() == 0;
     }
 
     public boolean isTerminalToolbarTextInputViewSelected() {
-        return getTerminalToolbarViewPager().getCurrentItem() == 1;
+        return binding.terminalToolbarViewPager.getCurrentItem() == 1;
     }
 
 
@@ -654,7 +654,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     public TerminalView getTerminalView() {
-        return mTerminalView;
+        return binding.terminalView;
     }
 
     public TermuxTerminalSessionActivityClient getTermuxTerminalSessionClient() {
@@ -663,10 +663,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     @Nullable
     public TerminalSession getCurrentSession() {
-        if (mTerminalView != null)
-            return mTerminalView.getCurrentSession();
-        else
-            return null;
+        return binding.terminalView.getCurrentSession();
     }
 
     public TermuxAppSharedPreferences getPreferences() {
@@ -675,13 +672,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
     public TermuxAppSharedProperties getProperties() {
         return mProperties;
-    }
-
-
-    public static Intent newInstance(@NonNull final Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
     }
 
 }

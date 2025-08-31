@@ -404,7 +404,8 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     private Notification buildNotification() {
-        Intent notificationIntent = MainActivity.newInstance(this);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE);
 
         int sessionCount = getTermuxSessionsSize();
