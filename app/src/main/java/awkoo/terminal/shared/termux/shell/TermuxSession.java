@@ -82,13 +82,10 @@ public class TermuxSession {
         HashMap<String, String> additionalEnvironment,
         Boolean setStdoutOnExit
     ) {
-        if (executionCommand.executable != null && executionCommand.executable.isEmpty())
-            executionCommand.executable = null;
+        if (executionCommand.executable == null || executionCommand.executable.isEmpty())
+            executionCommand.executable = ShellEnvironment.LOGIN_SHELL_NAME;
         if (executionCommand.workingDirectory == null || executionCommand.workingDirectory.isEmpty())
             executionCommand.workingDirectory = ShellEnvironment.getDefaultWorkingPath();
-
-        if (executionCommand.executable == null)
-            executionCommand.executable = ShellEnvironment.LOGIN_SHELL_NAME;
 
         // Setup command args
         List<String> result = new ArrayList<>();
@@ -97,9 +94,9 @@ public class TermuxSession {
         boolean rootMode = preferences.getBoolean("session_with_root", false);
         if (rootMode) {
             result.add(preferences.getString("su_path", "su"));
-            result.add("-c");
-        } else
-            result.add(executionCommand.executable);
+            result.add("-s");
+        }
+        result.add(executionCommand.executable);
         if (executionCommand.arguments != null)
             Collections.addAll(result, executionCommand.arguments);
         String[] commandArgs = result.toArray(new String[0]);

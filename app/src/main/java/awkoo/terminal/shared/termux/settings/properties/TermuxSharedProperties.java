@@ -152,8 +152,6 @@ public abstract class TermuxSharedProperties {
          */
         switch (key) {
             /* int */
-            case TermuxPropertyConstants.KEY_BELL_BEHAVIOUR:
-                return getBellBehaviourInternalPropertyValueFromValue(value);
             case TermuxPropertyConstants.KEY_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT:
                 return getDeleteTMPDIRFilesOlderThanXDaysOnExitInternalPropertyValueFromValue(value);
             case TermuxPropertyConstants.KEY_TERMINAL_CURSOR_BLINK_RATE:
@@ -213,18 +211,6 @@ public abstract class TermuxSharedProperties {
         }
     }
 
-
-    /**
-     * Returns the internal value after mapping it based on
-     * {@code TermuxPropertyConstants#MAP_BELL_BEHAVIOUR} if the value is not {@code null}
-     * and is valid, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_BELL_BEHAVIOUR}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static int getBellBehaviourInternalPropertyValueFromValue(String value) {
-        return (int) SharedProperties.getDefaultIfNotInMap(TermuxPropertyConstants.KEY_BELL_BEHAVIOUR, TermuxPropertyConstants.MAP_BELL_BEHAVIOUR, SharedProperties.toLowerCase(value), TermuxPropertyConstants.DEFAULT_IVALUE_BELL_BEHAVIOUR, true, LOG_TAG);
-    }
 
     /**
      * Returns the int for the value if its not null and is between
@@ -488,10 +474,6 @@ public abstract class TermuxSharedProperties {
 
     public boolean isUsingCtrlSpaceWorkaround() {
         return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_USE_CTRL_SPACE_WORKAROUND, true);
-    }
-
-    public int getBellBehaviour() {
-        return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_BELL_BEHAVIOUR, true);
     }
 
     public int getTerminalCursorBlinkRate() {

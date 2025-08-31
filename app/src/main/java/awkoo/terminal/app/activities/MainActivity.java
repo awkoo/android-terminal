@@ -247,9 +247,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         super.onResume();
         if (mIsInvalidState) return;
 
-        if (mTermuxTerminalSessionActivityClient != null)
-            mTermuxTerminalSessionActivityClient.onResume();
-
         if (mTermuxTerminalViewClient != null)
             mTermuxTerminalViewClient.onResume();
 
@@ -503,11 +500,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     private void setSettingsButtonView() {
         binding.settingsButton.setOnClickListener(
             v -> ActivityUtils.startActivity(
-                this,
-                new Intent(
-                    this,
-                    SettingsActivity.class
-                )
+                this, new Intent(this, SettingsActivity.class)
             )
         );
     }

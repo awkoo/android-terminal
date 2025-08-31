@@ -15,8 +15,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
 
 import awkoo.terminal.R;
 import awkoo.terminal.app.activities.MainActivity;

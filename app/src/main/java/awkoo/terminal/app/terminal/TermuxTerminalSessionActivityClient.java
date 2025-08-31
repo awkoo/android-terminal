@@ -1,12 +1,8 @@
 package awkoo.terminal.app.terminal;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.media.AudioAttributes;
-import android.media.SoundPool;
 import android.text.TextUtils;
 import android.widget.ListView;
 
@@ -19,10 +15,8 @@ import awkoo.terminal.app.TerminalService;
 import awkoo.terminal.app.activities.MainActivity;
 import awkoo.terminal.shared.interact.ShareUtils;
 import awkoo.terminal.shared.termux.interact.TextInputDialogUtils;
-import awkoo.terminal.shared.termux.settings.properties.TermuxPropertyConstants;
 import awkoo.terminal.shared.termux.shell.TermuxSession;
 import awkoo.terminal.shared.termux.terminal.TermuxTerminalSessionClientBase;
-import awkoo.terminal.shared.termux.terminal.io.BellHandler;
 import awkoo.terminal.terminal.TerminalColors;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
@@ -37,10 +31,6 @@ import java.util.Properties;
 public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionClientBase {
 
     private final MainActivity mActivity;
-
-    private SoundPool mBellSoundPool;
-
-    private int mBellSoundId;
 
     public TermuxTerminalSessionActivityClient(MainActivity activity) {
         this.mActivity = activity;
@@ -72,28 +62,12 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     }
 
     /**
-     * Should be called when mActivity.onResume() is called
-     */
-    public void onResume() {
-        // Just initialize the mBellSoundPool and load the sound, otherwise bell might not run
-        // the first time bell key is pressed and play() is called, since sound may not be loaded
-        // quickly enough before the call to play(). https://stackoverflow.com/questions/35435625
-        loadBellSoundPool();
-    }
-
-    /**
      * Should be called when mActivity.onStop() is called
      */
     public void onStop() {
         // Store current session in shared preferences so that it can be restored later in
         // {@link #onStart} if needed.
         setCurrentStoredSession();
-
-        // Release mBellSoundPool resources, specially to prevent exceptions like the following to be thrown
-        // java.util.concurrent.TimeoutException: android.media.SoundPool.finalize() timed out after 10 seconds
-        // Bell is not played in background anyways
-        // Related: https://stackoverflow.com/a/28708351/14686958
-        releaseBellSoundPool();
     }
 
 
@@ -170,25 +144,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     }
 
     @Override
-    public void onBell(@NonNull TerminalSession session) {
-        if (!mActivity.isVisible()) return;
-
-        switch (mActivity.getProperties().getBellBehaviour()) {
-            case TermuxPropertyConstants.IVALUE_BELL_BEHAVIOUR_VIBRATE:
-                BellHandler.getInstance(mActivity).doBell();
-                break;
-            case TermuxPropertyConstants.IVALUE_BELL_BEHAVIOUR_BEEP:
-                loadBellSoundPool();
-                if (mBellSoundPool != null)
-                    mBellSoundPool.play(mBellSoundId, 1.f, 1.f, 1, 0, 1.f);
-                break;
-            case TermuxPropertyConstants.IVALUE_BELL_BEHAVIOUR_IGNORE:
-                // Ignore the bell character.
-                break;
-        }
-    }
-
-    @Override
     public void onColorsChanged(@NonNull TerminalSession changedSession) {
         if (mActivity.getCurrentSession() == changedSession)
             updateBackgroundColor();
@@ -231,35 +186,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
     @Override
     public Integer getTerminalCursorStyle() {
         return mActivity.getProperties().getTerminalCursorStyle();
-    }
-
-
-    /**
-     * Load mBellSoundPool
-     */
-    private synchronized void loadBellSoundPool() {
-        if (mBellSoundPool == null) {
-            mBellSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(
-                new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).build()).build();
-
-            try {
-                mBellSoundId = mBellSoundPool.load(mActivity, R.raw.bell, 1);
-            } catch (Exception e) {
-                // Catch java.lang.RuntimeException: Unable to resume activity {awkoo.terminal/awkoo.terminal.app.activities.MainActivity}: android.content.res.Resources$NotFoundException: File res/raw/bell.ogg from drawable resource ID
-                //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
-            }
-        }
-    }
-
-    /**
-     * Release mBellSoundPool resources
-     */
-    private synchronized void releaseBellSoundPool() {
-        if (mBellSoundPool != null) {
-            mBellSoundPool.release();
-            mBellSoundPool = null;
-        }
     }
 
 
@@ -353,7 +279,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         TerminalSession currentSession = mActivity.getCurrentSession();
 
         String workingDirectory;
-        if (currentSession != null) {
+        if (currentSession != null && currentSession.isRunning()) {
             workingDirectory = currentSession.getCwd();
         } else {
             workingDirectory = mActivity.getFilesDir().getAbsolutePath();
