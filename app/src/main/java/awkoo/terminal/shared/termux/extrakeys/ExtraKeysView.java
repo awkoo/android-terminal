@@ -349,13 +349,6 @@ public final class ExtraKeysView extends GridLayout {
         return mButtonTextColor;
     }
 
-    /**
-     * Set {@link #mButtonTextColor}.
-     */
-    public void setButtonTextColor(int buttonTextColor) {
-        mButtonTextColor = buttonTextColor;
-    }
-
 
     /**
      * Get {@link #mButtonActiveTextColor}.
@@ -388,33 +381,12 @@ public final class ExtraKeysView extends GridLayout {
 
 
     /**
-     * Get {@link #mButtonActiveBackgroundColor}.
-     */
-    public int getButtonActiveBackgroundColor() {
-        return mButtonActiveBackgroundColor;
-    }
-
-    /**
-     * Set {@link #mButtonActiveBackgroundColor}.
-     */
-    public void setButtonActiveBackgroundColor(int buttonActiveBackgroundColor) {
-        mButtonActiveBackgroundColor = buttonActiveBackgroundColor;
-    }
-
-    /**
      * Set {@link #mButtonTextAllCaps}.
      */
     public void setButtonTextAllCaps(boolean buttonTextAllCaps) {
         mButtonTextAllCaps = buttonTextAllCaps;
     }
 
-
-    /**
-     * Get {@link #mLongPressTimeout}.
-     */
-    public int getLongPressTimeout() {
-        return mLongPressTimeout;
-    }
 
     /**
      * Set {@link #mLongPressTimeout}.
@@ -425,13 +397,6 @@ public final class ExtraKeysView extends GridLayout {
         } else {
             mLongPressTimeout = FALLBACK_LONG_PRESS_DURATION;
         }
-    }
-
-    /**
-     * Get {@link #mLongPressRepeatDelay}.
-     */
-    public int getLongPressRepeatDelay() {
-        return mLongPressRepeatDelay;
     }
 
     /**

@@ -9,7 +9,9 @@ android {
 
     defaultConfig {
         applicationId = "awkoo.terminal"
-        minSdk = 35
+        minSdk = 28
+        //noinspection ExpiredTargetSdkVersion
+        targetSdk = 28
         versionCode = 100
         versionName = "1.0.0"
         signingConfig = signingConfigs.debug
@@ -51,11 +53,10 @@ android {
 dependencies {
     implementation "androidx.appcompat:appcompat:1.7.1"
     implementation "androidx.annotation:annotation:1.9.1"
-    implementation "androidx.core:core:1.16.0"
+    implementation "androidx.core:core:1.17.0"
     implementation 'androidx.drawerlayout:drawerlayout:1.2.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.viewpager:viewpager:1.1.0'
-    implementation 'androidx.window:window:1.4.0'
-    implementation 'com.google.android.material:material:1.14.0-alpha03'
+    implementation 'com.google.android.material:material:1.14.0-alpha04'
     implementation 'com.google.guava:guava:33.4.8-jre'
 }

@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -46,7 +45,6 @@ import awkoo.terminal.shared.termux.extrakeys.ExtraKeysView;
 import awkoo.terminal.shared.termux.interact.TextInputDialogUtils;
 import awkoo.terminal.shared.termux.settings.preferences.TermuxAppSharedPreferences;
 import awkoo.terminal.shared.termux.settings.properties.TermuxAppSharedProperties;
-import awkoo.terminal.shared.view.ViewUtils;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
 import awkoo.terminal.utils.UI;
@@ -175,7 +173,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         // 如果 TermuxConstants.TERMUX_PACKAGE_NAME 与 applicationId 不等，此操作也会失败
         mPreferences = TermuxAppSharedPreferences.build(this);
 
-        setMargins();
         setTermuxTerminalViewAndClients();
         setTerminalToolbarView(savedInstanceState);
         setSettingsButtonView();
@@ -229,15 +226,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         if (mTermuxTerminalSessionActivityClient != null)
             mTermuxTerminalSessionActivityClient.onStart();
-
-        if (ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        )
-            registerForActivityResult(
-                new ActivityResultContracts.RequestPermission(),
-                (isGranted) -> mTerminalService.updateNotification()
-            ).launch(Manifest.permission.POST_NOTIFICATIONS);
     }
 
     /**
@@ -371,22 +359,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     /**
-     * 设置边距。
-     */
-    private void setMargins() {
-        RelativeLayout relativeLayout = binding.activityTermuxRootRelativeLayout;
-        int marginHorizontal = mProperties.getTerminalMarginHorizontal();
-        int marginVertical = mProperties.getTerminalMarginVertical();
-        ViewUtils.setLayoutMarginsInDp(
-            relativeLayout,
-            marginHorizontal,
-            marginVertical,
-            marginHorizontal,
-            marginVertical
-        );
-    }
-
-    /**
      * 设置 Termux 终端视图和客户端。
      */
     private void setTermuxTerminalViewAndClients() {
@@ -460,8 +432,10 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         ViewGroup.LayoutParams layoutParams = terminalToolbarViewPager.getLayoutParams();
         layoutParams.height = Math.round(mTerminalToolbarDefaultHeight *
-            (mTermuxTerminalExtraKeys.getExtraKeysInfo() == null ?
-                0 : mTermuxTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
+            (
+                mTermuxTerminalExtraKeys.getExtraKeysInfo() == null ?
+                    0 :
+                    mTermuxTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
             ) * mProperties.getTerminalToolbarHeightScaleFactor());
         terminalToolbarViewPager.setLayoutParams(layoutParams);
     }

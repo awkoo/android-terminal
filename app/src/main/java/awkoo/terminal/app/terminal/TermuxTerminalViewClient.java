@@ -149,7 +149,7 @@ public class TermuxTerminalViewClient extends TermuxTerminalViewClientBase {
             LinkedHashSet<CharSequence> urlSet = TermuxUrlUtils.extractUrls(wordAtTap);
 
             if (!urlSet.isEmpty()) {
-                String url = (String) urlSet.getFirst();
+                String url = (String) urlSet.iterator().next();
                 ShareUtils.openUrl(mActivity, url);
                 return;
             }

@@ -172,9 +172,8 @@ public final class TerminalSession extends TerminalOutput {
         mShellPid = processId[0];
         mClient.setTerminalShellPid(this, mShellPid);
 
-        final ParcelFileDescriptor terminalFD;
         try {
-            terminalFD = ParcelFileDescriptor.fromFd(mTerminalFileDescriptor);
+            final ParcelFileDescriptor terminalFD = ParcelFileDescriptor.fromFd(mTerminalFileDescriptor);
             new Thread("TermSessionInputReader[pid=" + mShellPid + "]") {
                 @Override
                 public void run() {

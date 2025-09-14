@@ -1940,7 +1940,7 @@ public final class TerminalEmulator {
                         mTitleStack.push(mTitle);
                         if (mTitleStack.size() > 20) {
                             // Limit size
-                            mTitleStack.removeFirst();
+                            mTitleStack.remove(0);
                         }
                         break;
                     case 23: // Like 22 above but restore from stack.

@@ -260,7 +260,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
         WifiManager wm = (WifiManager) getApplicationContext()
             .getSystemService(Context.WIFI_SERVICE);
         mWifiLock = wm.createWifiLock(
-            WifiManager.WIFI_MODE_FULL_LOW_LATENCY,
+            WifiManager.WIFI_MODE_FULL,
             TermuxConstants.TERMUX_APP_NAME.toLowerCase()
         );
         mWifiLock.acquire();
@@ -591,7 +591,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
      * @return 返回列表中的最后一个 {@link TermuxSession}，如果列表为空则返回 {@code null}。
      */
     public synchronized TermuxSession getLastTermuxSession() {
-        return mTermuxSessions.isEmpty() ? null : mTermuxSessions.getLast();
+        return mTermuxSessions.isEmpty() ? null : mTermuxSessions.get(mTermuxSessions.size() - 1);
     }
 
     /**
