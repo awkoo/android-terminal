@@ -176,8 +176,10 @@ public final class TerminalSession extends TerminalOutput {
         mShellPid = processId[0];
         mClient.setTerminalShellPid(this, mShellPid);
 
-        if (stdin != null && !stdin.isEmpty())
+        if (stdin != null && !stdin.isEmpty()) {
+            JNI.setStdinEcho(mTerminalFileDescriptor, false); // 禁用回显，解决多余的命令显示
             write(stdin + "\n");
+        }
 
         try {
             final ParcelFileDescriptor terminalFD = ParcelFileDescriptor.fromFd(mTerminalFileDescriptor);

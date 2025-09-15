@@ -221,6 +221,23 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setPtyWindowSize(
     ioctl(fd, TIOCSWINSZ, &sz);
 }
 
+// 禁用回显，解决多余的命令显示
+JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setStdinEcho(
+        JNIEnv *TERMUX_UNUSED(env),
+        jclass TERMUX_UNUSED(clazz),
+        jint fd,
+        jboolean enabled
+) {
+    struct termios tios;
+    tcgetattr(fd, &tios);
+    if (enabled) {
+        tios.c_lflag |= ECHO;
+    } else {
+        tios.c_lflag &= ~ECHO;
+    }
+    tcsetattr(fd, TCSANOW, &tios);
+}
+
 JNIEXPORT jint JNICALL
 Java_awkoo_terminal_terminal_JNI_waitFor(
         JNIEnv *TERMUX_UNUSED(env),
