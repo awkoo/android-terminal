@@ -1076,7 +1076,7 @@ public final class TerminalEmulator {
                         char c;
                         for (int i = 0; i < part.length(); i += 2) {
                             try {
-                                c = (char) Long.decode("0x" + part.charAt(i) + "" + part.charAt(i + 1)).longValue();
+                                c = (char) Long.decode("0x" + part.charAt(i) + part.charAt(i + 1)).longValue();
                             } catch (NumberFormatException e) {
 //                                    Logger.logStackTraceWithMessage(mClient, LOG_TAG, "Invalid device termcap/terminfo encoded name \"" + part + "\"", e);
                                 continue;

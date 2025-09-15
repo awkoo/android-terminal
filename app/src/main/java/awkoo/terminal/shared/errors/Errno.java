@@ -20,8 +20,6 @@ public class Errno {
 
 
     public static final Errno ERRNO_SUCCESS = new Errno(TYPE, Activity.RESULT_OK, "Success");
-    public static final Errno ERRNO_CANCELLED = new Errno(TYPE, Activity.RESULT_CANCELED, "Cancelled");
-    public static final Errno ERRNO_MINOR_FAILURES = new Errno(TYPE, Activity.RESULT_FIRST_USER, "Minor failure");
     public static final Errno ERRNO_FAILED = new Errno(TYPE, Activity.RESULT_FIRST_USER + 1, "Failed");
 
     /**
@@ -36,8 +34,6 @@ public class Errno {
      * The errno message.
      */
     protected final String message;
-
-    private static final String LOG_TAG = "Errno";
 
 
     public Errno(@NonNull final String type, final int code, @NonNull final String message) {
@@ -65,18 +61,6 @@ public class Errno {
     @NonNull
     public String getMessage() {
         return message;
-    }
-
-
-    /**
-     * Get the {@link Errno} of a specific type and code.
-     *
-     * @param type The unique type of the {@link Errno}.
-     * @param code The unique code of the {@link Errno}.
-     */
-    public static Errno valueOf(String type, Integer code) {
-        if (type == null || type.isEmpty() || code == null) return null;
-        return map.get(type + ":" + code);
     }
 
 
@@ -116,11 +100,6 @@ public class Errno {
             // Return unformatted message as a backup
             return new Error(getType(), getCode(), getMessage() + ": " + Arrays.toString(args), throwablesList);
         }
-    }
-
-    public boolean equalsErrorTypeAndCode(Error error) {
-        if (error == null) return false;
-        return type.equals(error.getType()) && code == error.getCode();
     }
 
 }

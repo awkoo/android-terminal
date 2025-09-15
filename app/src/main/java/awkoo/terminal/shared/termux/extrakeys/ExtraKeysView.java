@@ -271,13 +271,6 @@ public final class ExtraKeysView extends GridLayout {
 
 
     /**
-     * Get {@link #mExtraKeysViewClient}.
-     */
-    public IExtraKeysView getExtraKeysViewClient() {
-        return mExtraKeysViewClient;
-    }
-
-    /**
      * Set {@link #mExtraKeysViewClient}.
      */
     public void setExtraKeysViewClient(IExtraKeysView extraKeysViewClient) {
@@ -286,36 +279,12 @@ public final class ExtraKeysView extends GridLayout {
 
 
     /**
-     * Get {@link #mRepetitiveKeys}.
-     */
-    public List<String> getRepetitiveKeys() {
-        if (mRepetitiveKeys == null) return null;
-        return mRepetitiveKeys.stream().map(String::new).collect(Collectors.toList());
-    }
-
-    /**
      * Set {@link #mRepetitiveKeys}. Must not be {@code null}.
      */
     public void setRepetitiveKeys(@NonNull List<String> repetitiveKeys) {
         mRepetitiveKeys = repetitiveKeys;
     }
 
-
-    /**
-     * Get {@link #mSpecialButtons}.
-     */
-    public Map<SpecialButton, SpecialButtonState> getSpecialButtons() {
-        if (mSpecialButtons == null) return null;
-        return mSpecialButtons.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    /**
-     * Get {@link #mSpecialButtonsKeys}.
-     */
-    public Set<String> getSpecialButtonsKeys() {
-        if (mSpecialButtonsKeys == null) return null;
-        return mSpecialButtonsKeys.stream().map(String::new).collect(Collectors.toSet());
-    }
 
     /**
      * Set {@link #mSpecialButtonsKeys}. Must not be {@code null}.
@@ -355,28 +324,6 @@ public final class ExtraKeysView extends GridLayout {
      */
     public int getButtonActiveTextColor() {
         return mButtonActiveTextColor;
-    }
-
-    /**
-     * Set {@link #mButtonActiveTextColor}.
-     */
-    public void setButtonActiveTextColor(int buttonActiveTextColor) {
-        mButtonActiveTextColor = buttonActiveTextColor;
-    }
-
-
-    /**
-     * Get {@link #mButtonBackgroundColor}.
-     */
-    public int getButtonBackgroundColor() {
-        return mButtonBackgroundColor;
-    }
-
-    /**
-     * Set {@link #mButtonBackgroundColor}.
-     */
-    public void setButtonBackgroundColor(int buttonBackgroundColor) {
-        mButtonBackgroundColor = buttonBackgroundColor;
     }
 
 

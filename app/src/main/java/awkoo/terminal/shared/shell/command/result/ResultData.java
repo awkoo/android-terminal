@@ -26,14 +26,14 @@ public class ResultData implements Serializable {
      */
     public List<Error> errorsList = new ArrayList<>();
 
-    public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
+    public synchronized void setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
         if (errorsList == null)
             errorsList = new ArrayList<>();
 
         Error error = new Error();
         errorsList.add(error);
 
-        return error.setStateFailed(type, code, message, throwablesList);
+        error.setStateFailed(type, code, message, throwablesList);
     }
 
     public boolean isStateFailed() {

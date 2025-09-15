@@ -15,10 +15,6 @@ import awkoo.terminal.utils.UI;
 public class Error implements Serializable {
 
     /**
-     * The optional error label.
-     */
-    private String label;
-    /**
      * The error type.
      */
     private String type;
@@ -91,11 +87,6 @@ public class Error implements Serializable {
 
         if (throwablesList != null)
             this.throwablesList = throwablesList;
-    }
-
-    public Error setLabel(String label) {
-        this.label = label;
-        return this;
     }
 
 

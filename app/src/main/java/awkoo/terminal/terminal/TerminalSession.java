@@ -10,7 +10,6 @@ import android.system.Os;
 import android.system.OsConstants;
 
 import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.FileOutputStream;

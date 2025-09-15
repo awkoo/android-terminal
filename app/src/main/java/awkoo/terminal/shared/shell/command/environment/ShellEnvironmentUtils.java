@@ -26,7 +26,7 @@ public class ShellEnvironmentUtils {
         String value;
         for (String name : environmentMap.keySet()) {
             value = environmentMap.get(name);
-            if (isValidEnvironmentVariableNameValuePair(name, value, true))
+            if (isValidEnvironmentVariableNameValuePair(name, value))
                 environmentList.add(name + "=" + environmentMap.get(name));
         }
         return environmentList;
@@ -39,7 +39,7 @@ public class ShellEnvironmentUtils {
      * Check {@link #isValidEnvironmentVariableName(String)} and {@link #isValidEnvironmentVariableValue(String)}
      * for valid variable names and values.
      */
-    public static boolean isValidEnvironmentVariableNameValuePair(@Nullable String name, @Nullable String value, boolean logErrors) {
+    public static boolean isValidEnvironmentVariableNameValuePair(@Nullable String name, @Nullable String value) {
         return isValidEnvironmentVariableName(name) && isValidEnvironmentVariableValue(value);
     }
 
