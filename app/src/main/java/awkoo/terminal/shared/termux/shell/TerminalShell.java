@@ -93,8 +93,6 @@ public class TerminalShell {
         // Setup command environment
         ShellEnvironment environment = new ShellEnvironment();
         environment.put("HOME", context.getFilesDir().getAbsolutePath());
-        //在使用su前设置，防止被覆盖
-        environment.put("SHELL", shellCommand.executable);
         if (additionalEnvironment != null)
             environment.putAll(additionalEnvironment);
         List<String> environmentList = ShellEnvironmentUtils.convertEnvironmentToEnviron(environment);
