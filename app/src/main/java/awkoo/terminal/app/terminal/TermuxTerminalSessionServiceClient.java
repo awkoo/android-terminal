@@ -5,7 +5,7 @@ import android.app.Service;
 import androidx.annotation.NonNull;
 
 import awkoo.terminal.app.TerminalService;
-import awkoo.terminal.shared.termux.shell.TermuxSession;
+import awkoo.terminal.shared.termux.shell.TerminalShell;
 import awkoo.terminal.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
@@ -23,9 +23,9 @@ public class TermuxTerminalSessionServiceClient extends TermuxTerminalSessionCli
 
     @Override
     public void setTerminalShellPid(@NonNull TerminalSession terminalSession, int pid) {
-        TermuxSession termuxSession = mService.getTermuxSessionForTerminalSession(terminalSession);
-        if (termuxSession != null)
-            termuxSession.getExecutionCommand().mPid = pid;
+        TerminalShell terminalShell = mService.getTermuxSessionForTerminalSession(terminalSession);
+        if (terminalShell != null)
+            terminalShell.getExecutionCommand().mPid = pid;
     }
 
 }

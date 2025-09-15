@@ -1,6 +1,7 @@
 package awkoo.terminal.app.terminal;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.text.TextUtils;
@@ -17,7 +18,7 @@ import awkoo.terminal.app.TerminalService;
 import awkoo.terminal.app.activities.MainActivity;
 import awkoo.terminal.shared.interact.ShareUtils;
 import awkoo.terminal.shared.termux.interact.TextInputDialogUtils;
-import awkoo.terminal.shared.termux.shell.TermuxSession;
+import awkoo.terminal.shared.termux.shell.TerminalShell;
 import awkoo.terminal.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import awkoo.terminal.terminal.TerminalColors;
 import awkoo.terminal.terminal.TerminalSession;
@@ -166,9 +167,9 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        TermuxSession termuxSession = service.getTermuxSessionForTerminalSession(terminalSession);
-        if (termuxSession != null)
-            termuxSession.getExecutionCommand().mPid = pid;
+        TerminalShell terminalShell = service.getTermuxSessionForTerminalSession(terminalSession);
+        if (terminalShell != null)
+            terminalShell.getExecutionCommand().mPid = pid;
     }
 
 
@@ -227,18 +228,18 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             if (--index < 0) index = size - 1;
         }
 
-        TermuxSession termuxSession = service.getTermuxSession(index);
-        if (termuxSession != null)
-            setCurrentSession(termuxSession.getTerminalSession());
+        TerminalShell terminalShell = service.getTermuxSession(index);
+        if (terminalShell != null)
+            setCurrentSession(terminalShell.getTerminalSession());
     }
 
     public void switchToSession(int index) {
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        TermuxSession termuxSession = service.getTermuxSession(index);
-        if (termuxSession != null)
-            setCurrentSession(termuxSession.getTerminalSession());
+        TerminalShell terminalShell = service.getTermuxSession(index);
+        if (terminalShell != null)
+            setCurrentSession(terminalShell.getTerminalSession());
     }
 
     public void renameSession(final TerminalSession sessionToRename) {
@@ -266,13 +267,15 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         sessionToRename.mSessionName = text;
         TerminalService service = mActivity.getTermuxService();
         if (service != null) {
-            TermuxSession termuxSession = service.getTermuxSessionForTerminalSession(sessionToRename);
-            if (termuxSession != null)
-                termuxSession.getExecutionCommand().shellName = text;
+            TerminalShell terminalShell = service.getTermuxSessionForTerminalSession(sessionToRename);
+            if (terminalShell != null)
+                terminalShell.getExecutionCommand().shellName = text;
         }
     }
 
     public void addNewSession(String sessionName) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mActivity);
+
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
@@ -285,21 +288,20 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             workingDirectory = mActivity.getFilesDir().getAbsolutePath();
         }
 
-        TermuxSession newTermuxSession = service.createTermuxSession(
+        TerminalShell newTerminalShell = service.createSession(
             null,
             null,
             null,
             workingDirectory,
-            sessionName
+            sessionName,
+            preferences.getBoolean("session_with_root", false)
         );
-        if (newTermuxSession == null) return;
+        if (newTerminalShell == null) return;
 
-        TerminalSession newTerminalSession = newTermuxSession.getTerminalSession();
+        TerminalSession newTerminalSession = newTerminalShell.getTerminalSession();
         setCurrentSession(newTerminalSession);
 
-        String shell_startup_commands = PreferenceManager.getDefaultSharedPreferences(
-            mActivity
-        ).getString("shell_startup_commands", "");
+        String shell_startup_commands = preferences.getString("shell_startup_commands", "");
         if (!shell_startup_commands.isEmpty())
             newTerminalSession.write(shell_startup_commands + "\n");
 
@@ -328,9 +330,9 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             TerminalService service = mActivity.getTermuxService();
             if (service == null) return null;
 
-            TermuxSession termuxSession = service.getLastTermuxSession();
-            if (termuxSession != null)
-                return termuxSession.getTerminalSession();
+            TerminalShell terminalShell = service.getLastTermuxSession();
+            if (terminalShell != null)
+                return terminalShell.getTerminalSession();
             else
                 return null;
         }
@@ -355,7 +357,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        int index = service.removeTermuxSession(finishedSession);
+        int index = service.removeSession(finishedSession);
 
         int size = service.getTermuxSessionsSize();
         if (size == 0) {
@@ -365,9 +367,9 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
             if (index >= size) {
                 index = size - 1;
             }
-            TermuxSession termuxSession = service.getTermuxSession(index);
-            if (termuxSession != null)
-                setCurrentSession(termuxSession.getTerminalSession());
+            TerminalShell terminalShell = service.getTermuxSession(index);
+            if (terminalShell != null)
+                setCurrentSession(terminalShell.getTerminalSession());
         }
     }
 

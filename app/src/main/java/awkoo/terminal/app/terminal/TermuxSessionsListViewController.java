@@ -22,19 +22,19 @@ import java.util.List;
 
 import awkoo.terminal.R;
 import awkoo.terminal.app.activities.MainActivity;
-import awkoo.terminal.shared.termux.shell.TermuxSession;
+import awkoo.terminal.shared.termux.shell.TerminalShell;
 import awkoo.terminal.shared.theme.NightMode;
 import awkoo.terminal.shared.theme.ThemeUtils;
 import awkoo.terminal.terminal.TerminalSession;
 
-public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession> implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class TermuxSessionsListViewController extends ArrayAdapter<TerminalShell> implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     final MainActivity mActivity;
 
     final StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
     final StyleSpan italicSpan = new StyleSpan(Typeface.ITALIC);
 
-    public TermuxSessionsListViewController(MainActivity activity, List<TermuxSession> sessionList) {
+    public TermuxSessionsListViewController(MainActivity activity, List<TerminalShell> sessionList) {
         super(activity.getApplicationContext(), R.layout.item_terminal_sessions_list, sessionList);
         this.mActivity = activity;
     }
@@ -94,14 +94,14 @@ public class TermuxSessionsListViewController extends ArrayAdapter<TermuxSession
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TermuxSession clickedSession = getItem(position);
+        TerminalShell clickedSession = getItem(position);
         mActivity.getTermuxTerminalSessionClient().setCurrentSession(clickedSession.getTerminalSession());
         mActivity.getDrawer().closeDrawers();
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        final TermuxSession selectedSession = getItem(position);
+        final TerminalShell selectedSession = getItem(position);
         mActivity.getTermuxTerminalSessionClient().renameSession(selectedSession.getTerminalSession());
         return true;
     }

@@ -24,19 +24,18 @@ import awkoo.terminal.R;
 import awkoo.terminal.app.activities.MainActivity;
 import awkoo.terminal.app.terminal.TermuxTerminalSessionActivityClient;
 import awkoo.terminal.app.terminal.TermuxTerminalSessionServiceClient;
-import awkoo.terminal.shared.shell.command.ExecutionCommand;
-import awkoo.terminal.shared.shell.command.ExecutionCommand.Runner;
+import awkoo.terminal.shared.shell.command.ShellCommand;
 import awkoo.terminal.shared.termux.TermuxConstants;
 import awkoo.terminal.shared.termux.TermuxConstants.TERMUX_APP.TERMUX_SERVICE;
 import awkoo.terminal.shared.termux.settings.properties.TermuxAppSharedProperties;
-import awkoo.terminal.shared.termux.shell.TermuxSession;
+import awkoo.terminal.shared.termux.shell.TerminalShell;
 import awkoo.terminal.shared.termux.terminal.TermuxTerminalSessionClientBase;
 import awkoo.terminal.terminal.TerminalEmulator;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
 
 /**
- * 一个后台服务，持有一系列 {@link TermuxSession}，并在运行时显示一个前台通知以防止被系统终止。
+ * 一个后台服务，持有一系列 {@link TerminalShell}，并在运行时显示一个前台通知以防止被系统终止。
  * 用户通过 {@link MainActivity} 与会话交互，但此服务可能会在用户或系统销毁 Activity 后继续存在。
  * 在这种情况下，用户可以稍后重启 {@link MainActivity} 以再次访问这些会话。
  * <p/>
@@ -45,7 +44,7 @@ import awkoo.terminal.terminal.TerminalSessionClient;
  * <p/>
  * 服务还可以选择性地持有一个唤醒锁（wake lock）和一个Wi-Fi锁，并在通知中显示其状态 - 参见 {@link #buildNotification()}。
  */
-public final class TerminalService extends Service implements TermuxSession.TermuxSessionClient {
+public final class TerminalService extends Service implements TerminalShell.TermuxSessionClient {
 
     /**
      * 此服务仅在同一进程内部进行绑定，从不使用IPC（进程间通信）。
@@ -79,7 +78,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
     /**
      * 终端会话列表
      */
-    public final List<TermuxSession> mTermuxSessions = new ArrayList<>();
+    public final List<TerminalShell> mTerminalShells = new ArrayList<>();
     private static int SHELL_ID = 0;
 
     /**
@@ -231,13 +230,13 @@ public final class TerminalService extends Service implements TermuxSession.Term
     private synchronized void killAllTermuxExecutionCommands() {
         boolean processResult;
 
-        List<TermuxSession> termuxSessions = new ArrayList<>(mTermuxSessions);
+        List<TerminalShell> terminalShells = new ArrayList<>(mTerminalShells);
 
-        for (int i = 0; i < termuxSessions.size(); i++) {
+        for (int i = 0; i < terminalShells.size(); i++) {
             processResult = mWantsToStop;
-            termuxSessions.get(i).killIfExecuting(this, processResult);
+            terminalShells.get(i).killIfExecuting(this, processResult);
             if (!processResult)
-                mTermuxSessions.remove(termuxSessions.get(i));
+                mTerminalShells.remove(terminalShells.get(i));
         }
     }
 
@@ -288,7 +287,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
     }
 
     /**
-     * 创建一个新的 {@link TermuxSession}。
+     * 创建一个新的 {@link TerminalShell}。
      * 当前由 {@link TermuxTerminalSessionActivityClient#addNewSession(String)} 调用以添加新会话。
      *
      * @param executablePath   可执行文件的路径，如果为null则使用默认shell。
@@ -296,42 +295,41 @@ public final class TerminalService extends Service implements TermuxSession.Term
      * @param stdin            发送到stdin的初始文本。
      * @param workingDirectory 会话的工作目录。
      * @param sessionName      会话的自定义名称。
-     * @return 如果成功则返回创建的 {@link TermuxSession}，否则返回 null。
+     * @return 如果成功则返回创建的 {@link TerminalShell}，否则返回 null。
      */
     @Nullable
-    public TermuxSession createTermuxSession(
+    public TerminalShell createSession(
         String executablePath,
         String[] arguments,
         String stdin,
         String workingDirectory,
-        String sessionName
+        String sessionName,
+        boolean rootMode
     ) {
-        ExecutionCommand executionCommand = new ExecutionCommand(
+        ShellCommand shellCommand = new ShellCommand(
             SHELL_ID++,
             executablePath,
             arguments,
             stdin,
             workingDirectory,
-            Runner.TERMINAL_SESSION.getName()
+            rootMode ? ShellCommand.Mode.ROOT : ShellCommand.Mode.APP
         );
-        executionCommand.shellName = sessionName;
-        if (!Runner.TERMINAL_SESSION.equalsRunner(executionCommand.runner)) {
-            return null;
-        }
 
-        executionCommand.terminalTranscriptRows = mProperties.getTerminalTranscriptRows();
+        shellCommand.shellName = sessionName;
 
-        TermuxSession newTermuxSession = TermuxSession.execute(
+        shellCommand.terminalTranscriptRows = mProperties.getTerminalTranscriptRows();
+
+        TerminalShell newTerminalShell = TerminalShell.execute(
             this,
-            executionCommand,
+            shellCommand,
             getTermuxTerminalSessionClient(),
             this,
             null,
             false
         );
-        if (newTermuxSession == null) return null;
+        if (newTerminalShell == null) return null;
 
-        mTermuxSessions.add(newTermuxSession);
+        mTerminalShells.add(newTerminalShell);
 
         // 如果Activity在前台，通知TermuxSessionsListViewController会话列表已更新
         if (mTermuxTerminalSessionActivityClient != null)
@@ -339,7 +337,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
 
         updateNotification();
 
-        return newTermuxSession;
+        return newTerminalShell;
     }
 
     /**
@@ -348,24 +346,24 @@ public final class TerminalService extends Service implements TermuxSession.Term
      * @param sessionToRemove 要移除的终端会话。
      * @return 返回被移除会话在列表中的索引，如果未找到则为-1或更小。
      */
-    public synchronized int removeTermuxSession(TerminalSession sessionToRemove) {
+    public synchronized int removeSession(TerminalSession sessionToRemove) {
         int index = getIndexOfSession(sessionToRemove);
 
         if (index >= 0)
-            mTermuxSessions.get(index).finish();
+            mTerminalShells.get(index).finish();
 
         return index;
     }
 
     /**
-     * 当一个 {@link TermuxSession} 结束时收到的回调。
+     * 当一个 {@link TerminalShell} 结束时收到的回调。
      *
-     * @param termuxSession 已退出的会话。
+     * @param terminalShell 已退出的会话。
      */
     @Override
-    public void onTermuxSessionExited(final TermuxSession termuxSession) {
-        if (termuxSession != null) {
-            mTermuxSessions.remove(termuxSession);
+    public void onSessionExited(final TerminalShell terminalShell) {
+        if (terminalShell != null) {
+            mTerminalShells.remove(terminalShell);
 
             // 如果Activity在前台，通知TermuxSessionsListViewController会话列表已更新
             if (mTermuxTerminalSessionActivityClient != null)
@@ -405,8 +403,8 @@ public final class TerminalService extends Service implements TermuxSession.Term
     ) {
         mTermuxTerminalSessionActivityClient = termuxTerminalSessionActivityClient;
 
-        for (int i = 0; i < mTermuxSessions.size(); i++)
-            mTermuxSessions.get(i)
+        for (int i = 0; i < mTerminalShells.size(); i++)
+            mTerminalShells.get(i)
                 .getTerminalSession()
                 .updateTerminalSessionClient(mTermuxTerminalSessionActivityClient);
     }
@@ -417,8 +415,8 @@ public final class TerminalService extends Service implements TermuxSession.Term
      * 的客户端不持有对Activity的引用。
      */
     public synchronized void unsetTermuxTerminalSessionClient() {
-        for (int i = 0; i < mTermuxSessions.size(); i++)
-            mTermuxSessions.get(i)
+        for (int i = 0; i < mTerminalShells.size(); i++)
+            mTerminalShells.get(i)
                 .getTerminalSession()
                 .updateTerminalSessionClient(mTermuxTerminalSessionServiceClient);
 
@@ -518,7 +516,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
      * 在做出任何会影响前台服务通知的更改后，更新该通知。
      */
     public synchronized void updateNotification() {
-        if (mWakeLock == null && mTermuxSessions.isEmpty()) {
+        if (mWakeLock == null && mTerminalShells.isEmpty()) {
             // 如果在用户禁用了所有锁且没有会话或任务在运行时进行更新，则退出服务。
             requestStopService();
         } else {
@@ -533,7 +531,7 @@ public final class TerminalService extends Service implements TermuxSession.Term
      * @return 如果会话列表为空则返回 {@code true}，否则返回 {@code false}。
      */
     public synchronized boolean isTermuxSessionsEmpty() {
-        return mTermuxSessions.isEmpty();
+        return mTerminalShells.isEmpty();
     }
 
     /**
@@ -542,44 +540,44 @@ public final class TerminalService extends Service implements TermuxSession.Term
      * @return 返回会话列表的大小。
      */
     public synchronized int getTermuxSessionsSize() {
-        return mTermuxSessions.size();
+        return mTerminalShells.size();
     }
 
     /**
      * 获取可变的终端会话列表。
      *
-     * @return 返回 {@link #mTermuxSessions} 的引用。
+     * @return 返回 {@link #mTerminalShells} 的引用。
      */
-    public synchronized List<TermuxSession> getTermuxSessions() {
-        return mTermuxSessions;
+    public synchronized List<TerminalShell> getTermuxSessions() {
+        return mTerminalShells;
     }
 
     /**
      * 根据索引获取一个终端会话。
      *
      * @param index 要获取的会话的索引。
-     * @return 返回指定索引处的 {@link TermuxSession}，如果索引无效则返回 {@code null}。
+     * @return 返回指定索引处的 {@link TerminalShell}，如果索引无效则返回 {@code null}。
      */
     @Nullable
-    public synchronized TermuxSession getTermuxSession(int index) {
-        if (index >= 0 && index < mTermuxSessions.size())
-            return mTermuxSessions.get(index);
+    public synchronized TerminalShell getTermuxSession(int index) {
+        if (index >= 0 && index < mTerminalShells.size())
+            return mTerminalShells.get(index);
         else return null;
     }
 
     /**
-     * 根据给定的 {@link TerminalSession} 获取包装它的 {@link TermuxSession}。
+     * 根据给定的 {@link TerminalSession} 获取包装它的 {@link TerminalShell}。
      *
      * @param terminalSession 内部的终端会话。
-     * @return 返回匹配的 {@link TermuxSession}，如果未找到则返回 {@code null}。
+     * @return 返回匹配的 {@link TerminalShell}，如果未找到则返回 {@code null}。
      */
     @Nullable
-    public synchronized TermuxSession getTermuxSessionForTerminalSession(TerminalSession terminalSession) {
+    public synchronized TerminalShell getTermuxSessionForTerminalSession(TerminalSession terminalSession) {
         if (terminalSession == null) return null;
 
-        for (int i = 0; i < mTermuxSessions.size(); i++) {
-            if (mTermuxSessions.get(i).getTerminalSession().equals(terminalSession))
-                return mTermuxSessions.get(i);
+        for (int i = 0; i < mTerminalShells.size(); i++) {
+            if (mTerminalShells.get(i).getTerminalSession().equals(terminalSession))
+                return mTerminalShells.get(i);
         }
 
         return null;
@@ -588,10 +586,10 @@ public final class TerminalService extends Service implements TermuxSession.Term
     /**
      * 获取最后一个（即最近创建的）终端会话。
      *
-     * @return 返回列表中的最后一个 {@link TermuxSession}，如果列表为空则返回 {@code null}。
+     * @return 返回列表中的最后一个 {@link TerminalShell}，如果列表为空则返回 {@code null}。
      */
-    public synchronized TermuxSession getLastTermuxSession() {
-        return mTermuxSessions.isEmpty() ? null : mTermuxSessions.get(mTermuxSessions.size() - 1);
+    public synchronized TerminalShell getLastTermuxSession() {
+        return mTerminalShells.isEmpty() ? null : mTerminalShells.get(mTerminalShells.size() - 1);
     }
 
     /**
@@ -603,8 +601,8 @@ public final class TerminalService extends Service implements TermuxSession.Term
     public synchronized int getIndexOfSession(TerminalSession terminalSession) {
         if (terminalSession == null) return -1;
 
-        for (int i = 0; i < mTermuxSessions.size(); i++) {
-            if (mTermuxSessions.get(i).getTerminalSession().equals(terminalSession))
+        for (int i = 0; i < mTerminalShells.size(); i++) {
+            if (mTerminalShells.get(i).getTerminalSession().equals(terminalSession))
                 return i;
         }
         return -1;
@@ -618,8 +616,8 @@ public final class TerminalService extends Service implements TermuxSession.Term
      */
     public synchronized TerminalSession getTerminalSessionForHandle(String sessionHandle) {
         TerminalSession terminalSession;
-        for (int i = 0, len = mTermuxSessions.size(); i < len; i++) {
-            terminalSession = mTermuxSessions.get(i).getTerminalSession();
+        for (int i = 0, len = mTerminalShells.size(); i < len; i++) {
+            terminalSession = mTerminalShells.get(i).getTerminalSession();
             if (terminalSession.mHandle.equals(sessionHandle))
                 return terminalSession;
         }

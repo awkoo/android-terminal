@@ -1,21 +1,10 @@
 package awkoo.terminal.shared.shell;
 
-import androidx.annotation.Nullable;
-
-import awkoo.terminal.shared.file.FileUtils;
 import awkoo.terminal.terminal.TerminalBuffer;
 import awkoo.terminal.terminal.TerminalEmulator;
 import awkoo.terminal.terminal.TerminalSession;
 
 public class ShellUtils {
-
-    /**
-     * Get basename for executable.
-     */
-    @Nullable
-    public static String getExecutableBasename(@Nullable String executable) {
-        return FileUtils.getFileBasename(executable);
-    }
 
 
     /**
