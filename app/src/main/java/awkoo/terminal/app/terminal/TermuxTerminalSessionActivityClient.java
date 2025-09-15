@@ -291,7 +291,7 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
         TerminalShell newTerminalShell = service.createSession(
             null,
             null,
-            null,
+            preferences.getString("shell_startup_commands", ""),
             workingDirectory,
             sessionName,
             preferences.getBoolean("session_with_root", false)
@@ -300,10 +300,6 @@ public class TermuxTerminalSessionActivityClient extends TermuxTerminalSessionCl
 
         TerminalSession newTerminalSession = newTerminalShell.getTerminalSession();
         setCurrentSession(newTerminalSession);
-
-        String shell_startup_commands = preferences.getString("shell_startup_commands", "");
-        if (!shell_startup_commands.isEmpty())
-            newTerminalSession.write(shell_startup_commands + "\n");
 
         mActivity.getDrawer().closeDrawers();
     }

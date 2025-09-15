@@ -10,6 +10,7 @@ import android.system.Os;
 import android.system.OsConstants;
 
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,6 +91,7 @@ public final class TerminalSession extends TerminalOutput {
     private final String[] mEnv;
     private final Integer mTranscriptRows;
     private final Context context;
+    private final String stdin;
 
 
     public TerminalSession(
@@ -98,6 +100,7 @@ public final class TerminalSession extends TerminalOutput {
         String cwd,
         String[] args,
         String[] env,
+        String stdin,
         Integer transcriptRows,
         TerminalSessionClient client
     ) {
@@ -106,6 +109,7 @@ public final class TerminalSession extends TerminalOutput {
         this.mCwd = cwd;
         this.mArgs = args;
         this.mEnv = env;
+        this.stdin = stdin;
         this.mTranscriptRows = transcriptRows;
         this.mClient = client;
     }
@@ -171,6 +175,9 @@ public final class TerminalSession extends TerminalOutput {
         );
         mShellPid = processId[0];
         mClient.setTerminalShellPid(this, mShellPid);
+
+        if (stdin != null && !stdin.isEmpty())
+            write(stdin + "\n");
 
         try {
             final ParcelFileDescriptor terminalFD = ParcelFileDescriptor.fromFd(mTerminalFileDescriptor);

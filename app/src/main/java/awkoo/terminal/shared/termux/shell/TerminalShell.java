@@ -139,6 +139,7 @@ public class TerminalShell {
             shellCommand.workingDirectory,
             shellCommand.arguments,
             environmentArray,
+            shellCommand.stdin,
             shellCommand.terminalTranscriptRows,
             terminalSessionClient
         );
