@@ -20,9 +20,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import awkoo.terminal.shared.file.FileUtils;
-import awkoo.terminal.shared.file.filesystem.FileType;
-
 /**
  * An implementation similar to android's {@link android.content.SharedPreferences} interface for
  * reading and writing to and from ".properties" files which also maintains an in-memory cache for
@@ -255,13 +252,8 @@ public class SharedProperties {
 
         for (String propertiesFilePath : propertiesFilePaths) {
             File propertiesFile = new File(propertiesFilePath);
-
-            // Symlinks **will not** be followed.
-            FileType fileType = FileUtils.getFileType(propertiesFilePath, false);
-            if (fileType == FileType.REGULAR) {
-                if (propertiesFile.canRead())
-                    return propertiesFile;
-            }
+            if (propertiesFile.canRead())
+                return propertiesFile;
         }
         return null;
     }

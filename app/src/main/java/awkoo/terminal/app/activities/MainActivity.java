@@ -21,9 +21,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
@@ -197,17 +194,17 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             mIsInvalidState = true;
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
-            Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
-
-            v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, 0);
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.bottomMargin = Math.max(systemBarsInsets.bottom, imeInsets.bottom);
-            v.setLayoutParams(params);
-            return WindowInsetsCompat.CONSUMED;
-        });
+//        ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), (v, insets) -> {
+//            Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+//            Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+//
+//            v.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, 0);
+//
+//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+//            params.bottomMargin = Math.max(systemBarsInsets.bottom, imeInsets.bottom);
+//            v.setLayoutParams(params);
+//            return WindowInsetsCompat.CONSUMED;
+//        });
     }
 
     /**

@@ -10,6 +10,7 @@ public class ShellEnvironment extends HashMap<String, String> {
     public ShellEnvironment() {
         super();
         this.putAll(System.getenv());
+        this.put("SHELL", defaultShell);
         this.put("COLORTERM", "truecolor");
         this.put("TERM", "xterm-256color");
     }
