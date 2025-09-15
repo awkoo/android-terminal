@@ -1,14 +1,10 @@
 package awkoo.terminal.shared.shell.command.result;
 
-import androidx.annotation.NonNull;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import awkoo.terminal.shared.data.DataUtils;
 import awkoo.terminal.shared.errors.Error;
-import awkoo.terminal.shared.logger.Logger;
 
 public class ResultData implements Serializable {
 
@@ -50,71 +46,5 @@ public class ResultData implements Serializable {
         return false;
     }
 
-
-    @NonNull
-    @Override
-    public String toString() {
-        return getResultDataLogString(this, true);
-    }
-
-    /**
-     * Get a log friendly {@link String} for {@link ResultData} parameters.
-     *
-     * @param resultData         The {@link ResultData} to convert.
-     * @param logStdoutAndStderr Set to {@code true} if {@link #stdout} and {@link #stderr} should be logged.
-     * @return Returns the log friendly {@link String}.
-     */
-    public static String getResultDataLogString(final ResultData resultData, boolean logStdoutAndStderr) {
-        if (resultData == null) return "null";
-
-        StringBuilder logString = new StringBuilder();
-
-        if (logStdoutAndStderr) {
-            logString.append("\n").append(resultData.getStdoutLogString());
-            logString.append("\n").append(resultData.getStderrLogString());
-        }
-        logString.append("\n").append(resultData.getExitCodeLogString());
-
-        logString.append("\n\n").append(getErrorsListLogString(resultData));
-
-        return logString.toString();
-    }
-
-
-    public String getStdoutLogString() {
-        if (stdout.toString().isEmpty())
-            return Logger.getSingleLineLogStringEntry("Stdout", null, "-");
-        else
-            return Logger.getMultiLineLogStringEntry("Stdout", DataUtils.getTruncatedCommandOutput(stdout.toString(), Logger.LOGGER_ENTRY_MAX_SAFE_PAYLOAD / 5, false, false, true), "-");
-    }
-
-    public String getStderrLogString() {
-        if (stderr.toString().isEmpty())
-            return Logger.getSingleLineLogStringEntry("Stderr", null, "-");
-        else
-            return Logger.getMultiLineLogStringEntry("Stderr", DataUtils.getTruncatedCommandOutput(stderr.toString(), Logger.LOGGER_ENTRY_MAX_SAFE_PAYLOAD / 5, false, false, true), "-");
-    }
-
-    public String getExitCodeLogString() {
-        return Logger.getSingleLineLogStringEntry("Exit Code", exitCode, "-");
-    }
-
-    public static String getErrorsListLogString(final ResultData resultData) {
-        if (resultData == null) return "null";
-
-        StringBuilder logString = new StringBuilder();
-
-        if (resultData.errorsList != null) {
-            for (Error error : resultData.errorsList) {
-                if (error.isStateFailed()) {
-                    if (!logString.toString().isEmpty())
-                        logString.append("\n");
-                    logString.append(Error.getErrorLogString(error));
-                }
-            }
-        }
-
-        return logString.toString();
-    }
 
 }

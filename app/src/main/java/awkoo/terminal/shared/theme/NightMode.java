@@ -1,7 +1,6 @@
 package awkoo.terminal.shared.theme;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
 /**
@@ -30,8 +29,6 @@ public enum NightMode {
      */
     private static NightMode APP_NIGHT_MODE;
 
-    private static final String LOG_TAG = "NightMode";
-
     private final String name;
     private final @AppCompatDelegate.NightMode int mode;
 
@@ -48,48 +45,6 @@ public enum NightMode {
         return mode;
     }
 
-
-    /**
-     * Get {@link NightMode} for {@code name} if found, otherwise {@code null}.
-     */
-    @Nullable
-    public static NightMode modeOf(String name) {
-        for (NightMode v : NightMode.values()) {
-            if (v.name.equals(name)) {
-                return v;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Get {@link NightMode} for {@code name} if found, otherwise {@code def}.
-     */
-    @NonNull
-    public static NightMode modeOf(@Nullable String name, @NonNull NightMode def) {
-        NightMode nightMode = modeOf(name);
-        return nightMode != null ? nightMode : def;
-    }
-
-
-    /**
-     * Set {@link #APP_NIGHT_MODE}.
-     */
-    public static void setAppNightMode(@Nullable String name) {
-        if (name == null || name.isEmpty()) {
-            APP_NIGHT_MODE = SYSTEM;
-        } else {
-            NightMode nightMode = NightMode.modeOf(name);
-            if (nightMode == null) {
-                //        logMessage(Log.ERROR, tag, message);
-                return;
-            }
-            APP_NIGHT_MODE = nightMode;
-        }
-
-        //        logMessage(Log.VERBOSE, tag, message);
-    }
 
     /**
      * Get {@link #APP_NIGHT_MODE}.
