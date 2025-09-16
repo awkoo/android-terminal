@@ -17,7 +17,7 @@
         <intent
             android:action="android.intent.action.RUN"
             android:targetPackage="awkoo.terminal"
-            android:targetClass="awkoo.terminal.app.activities.MainActivity"
+            android:targetClass="awkoo.terminal.activities.MainActivity"
             android:name="android.shortcut.conversation" />
     </shortcut>
 
@@ -29,7 +29,7 @@
         <intent
             android:action="android.intent.action.RUN"
             android:targetPackage="awkoo.terminal"
-            android:targetClass="awkoo.terminal.app.activities.MainActivity"
+            android:targetClass="awkoo.terminal.activities.MainActivity"
             android:name="android.shortcut.conversation">
             <extra
                 android:name="awkoo.terminal.app.failsafe_session"
@@ -45,7 +45,7 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="awkoo.terminal"
-            android:targetClass="awkoo.terminal.app.activities.SettingsActivity"
+            android:targetClass="awkoo.terminal.activities.SettingsActivity"
             android:name="android.shortcut.conversation" />
     </shortcut>
 

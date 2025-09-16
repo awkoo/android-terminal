@@ -1401,7 +1401,7 @@ public final class TerminalView extends View {
 
         if (mTextSelectionCursorController != null) {
             // Might solve the following exception
-            // android.view.WindowLeaked: Activity awkoo.terminal.app.activities.MainActivity has leaked window android.widget.PopupWindow
+            // android.view.WindowLeaked: Activity awkoo.terminal.activities.MainActivity has leaked window android.widget.PopupWindow
             stopTextSelectionMode();
 
             getViewTreeObserver().removeOnTouchModeChangeListener(mTextSelectionCursorController);
