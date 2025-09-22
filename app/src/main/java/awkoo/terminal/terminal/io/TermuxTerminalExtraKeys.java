@@ -27,8 +27,6 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
     final TerminalViewClient mTerminalViewClient;
     final TerminalSessionActivityClient mTerminalSessionActivityClient;
 
-    private static final String LOG_TAG = "TermuxTerminalExtraKeys";
-
     public TermuxTerminalExtraKeys(MainActivity activity, @NonNull TerminalView terminalView,
                                    TerminalViewClient terminalViewClient,
                                    TerminalSessionActivityClient terminalSessionActivityClient) {
@@ -63,7 +61,7 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
 
             mExtraKeysInfo = new ExtraKeysInfo(extrakeys, extraKeysStyle, ExtraKeysConstants.CONTROL_CHARS_ALIASES);
         } catch (JSONException e) {
-            UI.showToast(mActivity, "Could not load and set the \"" + TermuxPropertyConstants.KEY_EXTRA_KEYS + "\" property from the properties file: " + e.toString(), true);
+            UI.showToast(mActivity, "Could not load and set the \"" + TermuxPropertyConstants.KEY_EXTRA_KEYS + "\" property from the properties file: " + e, true);
             //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
 
             try {

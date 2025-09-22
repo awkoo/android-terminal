@@ -20,8 +20,6 @@ public interface TerminalSessionClient {
 
     void onPasteTextFromClipboard(@Nullable TerminalSession session);
 
-    void onBell(@NonNull TerminalSession session);
-
     void onColorsChanged(@NonNull TerminalSession session);
 
     void onTerminalCursorStateChange(boolean state);

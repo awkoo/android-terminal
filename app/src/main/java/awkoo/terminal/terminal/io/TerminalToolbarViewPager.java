@@ -89,11 +89,9 @@ public class TerminalToolbarViewPager {
     public static class OnPageChangeListener extends ViewPager.SimpleOnPageChangeListener {
 
         final MainActivity mActivity;
-        final ViewPager mTerminalToolbarViewPager;
 
-        public OnPageChangeListener(MainActivity activity, ViewPager viewPager) {
+        public OnPageChangeListener(MainActivity activity) {
             this.mActivity = activity;
-            this.mTerminalToolbarViewPager = viewPager;
         }
 
         @Override
@@ -101,7 +99,7 @@ public class TerminalToolbarViewPager {
             if (position == 0) {
                 mActivity.getTerminalView().requestFocus();
             } else {
-                final EditText editText = mTerminalToolbarViewPager.findViewById(R.id.terminal_toolbar_text_input);
+                final EditText editText = mActivity.findViewById(R.id.terminal_toolbar_text_input);
                 if (editText != null) editText.requestFocus();
             }
         }

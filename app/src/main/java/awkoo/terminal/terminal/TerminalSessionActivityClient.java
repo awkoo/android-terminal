@@ -22,7 +22,7 @@ import awkoo.terminal.shell.TerminalShell;
 import awkoo.terminal.utils.UI;
 
 /**
- * The {@link TerminalSessionClient} implementation that may require an {@link Activity} for its interface methods.
+ * {@link TerminalSessionClient} 的实现，可能需要 {@link Activity} 来实现其接口方法。
  */
 public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
@@ -33,36 +33,34 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
     }
 
     /**
-     * Should be called when mActivity.onCreate() is called
+     * 应在 mActivity.onCreate() 调用时调用
      */
     public void onCreate() {
-        // Set terminal fonts and colors
-        checkForFontAndColors();
+        // 设置终端字体和颜色
+//        checkForFontAndColors();
     }
 
     /**
-     * Should be called when mActivity.onStart() is called
+     * 应在 mActivity.onStart() 调用时调用
      */
     public void onStart() {
-        // The service has connected, but data may have changed since we were last in the foreground.
-        // Get the session stored in shared preferences stored by {@link #onStop} if its valid,
-        // otherwise get the last session currently running.
+        // 服务已连接，但数据可能自上次在前台以来已更改。
+        // 获取由 {@link #onStop} 存储在共享首选项中的会话（如果有效），
+        // 否则获取当前正在运行的最后一个会话。
         if (mActivity.getTermuxService() != null) {
             setCurrentSession(getCurrentStoredSessionOrLast());
             termuxSessionListNotifyUpdated();
         }
 
-        // The current terminal session may have changed while being away, force
-        // a refresh of the displayed terminal.
+        // 当前终端会话可能在离开期间已更改，强制刷新显示的终端。
         mActivity.getTerminalView().onScreenUpdated();
     }
 
     /**
-     * Should be called when mActivity.onStop() is called
+     * 应在 mActivity.onStop() 调用时调用
      */
     public void onStop() {
-        // Store current session in shared preferences so that it can be restored later in
-        // {@link #onStart} if needed.
+        // 将当前会话存储在共享首选项中，以便以后在 {@link #onStart} 中需要时恢复。
         setCurrentStoredSession();
     }
 
@@ -80,9 +78,9 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         if (!mActivity.isVisible()) return;
 
         if (updatedSession != mActivity.getCurrentSession()) {
-            // Only show toast for other sessions than the current one, since the user
-            // probably consciously caused the title change to change in the current session
-            // and don't want an annoying toast for that.
+            // 仅显示非当前会话的 toast，因为用户
+            // 可能有意识地导致当前会话中的标题更改，
+            // 并且不希望因此出现烦人的 toast。
             UI.showToast(mActivity, toToastTitle(updatedSession), true);
         }
 
@@ -94,7 +92,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         TerminalService service = mActivity.getTermuxService();
 
         if (service == null || service.wantsToStop()) {
-            // The service wants to stop as soon as possible.
+            // 服务希望尽快停止。
             mActivity.finishActivityIfNotFinishing();
             return;
         }
@@ -102,21 +100,21 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         int index = service.getIndexOfSession(finishedSession);
 
         if (mActivity.isVisible() && finishedSession != mActivity.getCurrentSession()) {
-            // Show toast for non-current sessions that exit.
-            // Verify that session was not removed before we got told about it finishing:
+            // 显示非当前会话退出时的 toast。
+            // 验证会话在我们被告知其结束之前未被删除：
             if (index >= 0)
                 UI.showToast(mActivity, toToastTitle(finishedSession) + " - exited", true);
         }
 
         if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
-            // On Android TV devices we need to use older behaviour because we may
-            // not be able to have multiple launcher icons.
+            // 在 Android TV 设备上，我们需要使用旧的行为，因为我们可能
+            // 无法拥有多个启动器图标。
             if (service.getTermuxSessionsSize() > 1) {
                 removeFinishedSession(finishedSession);
             }
         } else {
-            // Once we have a separate launcher icon for the failsafe session, it
-            // should be safe to auto-close session on exit code '0' or '130'.
+            // 一旦我们为故障安全会话提供了单独的启动器图标，
+            // 退出代码为 '0' 或 '130' 时，自动关闭会话应该安全。
             if (finishedSession.getExitStatus() == 0 || finishedSession.getExitStatus() == 130) {
                 removeFinishedSession(finishedSession);
             }
@@ -147,13 +145,13 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
     @Override
     public void onTerminalCursorStateChange(boolean enabled) {
-        // Do not start cursor blinking thread if activity is not visible
+        // 如果活动不可见，则不启动光标闪烁线程
         if (enabled && !mActivity.isVisible()) {
             return;
         }
 
-        // If cursor is to enabled now, then start cursor blinking if blinking is enabled
-        // otherwise stop cursor blinking
+        // 如果现在光标已启用，则如果闪烁已启用则启动光标闪烁
+        // 否则停止光标闪烁
         mActivity.getTerminalView().setTerminalCursorBlinkerState(enabled, false);
     }
 
@@ -169,11 +167,11 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
 
     /**
-     * Should be called when mActivity.onResetTerminalSession() is called
+     * 应在 mActivity.onResetTerminalSession() 调用时调用
      */
     public void onResetTerminalSession() {
-        // Ensure blinker starts again after reset if cursor blinking was disabled before reset like
-        // with "tput civis" which would have called onTerminalCursorStateChange()
+        // 确保在重置后重新开始闪烁，如果光标闪烁在重置前被禁用，例如
+        // 使用 "tput civis" 会调用 onTerminalCursorStateChange()
         mActivity.getTerminalView().setTerminalCursorBlinkerState(true, true);
     }
 
@@ -185,18 +183,18 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
 
     /**
-     * Try switching to session.
+     * 尝试切换会话。
      */
     public void setCurrentSession(TerminalSession session) {
         if (session == null) return;
 
         if (mActivity.getTerminalView().attachSession(session)) {
-            // notify about switched session if not already displaying the session
+            // 如果尚未显示会话，则通知会话已切换
             notifyOfSessionChange();
         }
 
-        // We call the following even when the session is already being displayed since config may
-        // be stale, like current session not selected or scrolled to.
+        // 即使会话已在显示，我们也会调用以下方法，因为配置可能已过时，
+        // 例如未选择或未滚动到当前会话。
         checkAndScrollToSession(session);
         updateBackgroundColor();
     }
@@ -242,9 +240,9 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
         TextInputDialogUtils.textInput(
             mActivity,
-            R.string.title_rename_session,
+            R.string.title_rename_session, // 会话重命名标题
             sessionToRename.mSessionName,
-            R.string.action_rename_session_confirm,
+            R.string.action_rename_session_confirm, // 确认重命名操作
             text -> {
                 renameSession(sessionToRename, text);
                 termuxSessionListNotifyUpdated();
@@ -274,22 +272,13 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        TerminalSession currentSession = mActivity.getCurrentSession();
-
-        String workingDirectory;
-        if (currentSession != null && currentSession.isRunning()) {
-            workingDirectory = currentSession.getCwd();
-        } else {
-            workingDirectory = mActivity.getFilesDir().getAbsolutePath();
-        }
-
         TerminalShell newTerminalShell = service.createSession(
             null,
             null,
-            preferences.getString("shell_startup_commands", ""),
-            workingDirectory,
+            preferences.getString("shell_startup_commands", ""), // 获取shell启动命令
+            mActivity.getFilesDir().getAbsolutePath(),
             sessionName,
-            preferences.getBoolean("session_with_root", false)
+            preferences.getBoolean("session_with_root", false) // 判断是否以root权限启动会话
         );
         if (newTerminalShell == null) return;
 
@@ -308,16 +297,16 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
     }
 
     /**
-     * The current session as stored or the last one if that does not exist.
+     * 已存储的当前会话，如果不存在则为最后一个会话。
      */
     public TerminalSession getCurrentStoredSessionOrLast() {
         TerminalSession stored = getCurrentStoredSession();
 
         if (stored != null) {
-            // If a stored session is in the list of currently running sessions, then return it
+            // 如果存储的会话在当前运行的会话列表中，则返回它
             return stored;
         } else {
-            // Else return the last session currently running
+            // 否则返回当前运行的最后一个会话
             TerminalService service = mActivity.getTermuxService();
             if (service == null) return null;
 
@@ -332,11 +321,11 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
     private TerminalSession getCurrentStoredSession() {
         String sessionHandle = mActivity.getPreferences().getCurrentSession();
 
-        // If no session is stored in shared preferences
+        // 如果共享首选项中没有存储会话
         if (sessionHandle == null)
             return null;
 
-        // Check if the session handle found matches one of the currently running sessions
+        // 检查找到的会话句柄是否与当前运行的会话之一匹配
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return null;
 
@@ -344,7 +333,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
     }
 
     public void removeFinishedSession(TerminalSession finishedSession) {
-        // Return pressed with finished session - remove it.
+        // 按下返回键并完成会话 - 删除它。
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
@@ -352,7 +341,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
         int size = service.getTermuxSessionsSize();
         if (size == 0) {
-            // There are no sessions to show, so finish the activity.
+            // 没有会话可显示，因此结束活动。
             mActivity.finishActivityIfNotFinishing();
         } else {
             if (index >= size) {
@@ -375,13 +364,12 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
         final int indexOfSession = service.getIndexOfSession(session);
         if (indexOfSession < 0) return;
-        final ListView termuxSessionsListView = mActivity.findViewById(R.id.terminal_sessions_list);
-        if (termuxSessionsListView == null) return;
 
-        termuxSessionsListView.setItemChecked(indexOfSession, true);
-        // Delay is necessary otherwise sometimes scroll to newly added session does not happen
-        termuxSessionsListView.postDelayed(
-            () -> termuxSessionsListView.smoothScrollToPosition(indexOfSession), 1000
+        ListView sessionsList = mActivity.binding.terminalSessionsList;
+        sessionsList.setItemChecked(indexOfSession, true);
+        // 延迟是必要的，否则有时不会滚动到新添加的会话
+        sessionsList.postDelayed(
+            () -> sessionsList.smoothScrollToPosition(indexOfSession), 1000
         );
     }
 
@@ -398,7 +386,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         }
         String title = session.getTitle();
         if (!TextUtils.isEmpty(title)) {
-            // Space to "[${NR}] or newline after session name:
+            // "[${NR}] 后的空格或会话名称后的换行符：
             toastTitle.append(session.mSessionName == null ? " " : "\n");
             toastTitle.append(title);
         }
@@ -408,8 +396,8 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
     public void checkForFontAndColors() {
         try {
-//            File colorsFile = Constants.TERMUX_COLOR_PROPERTIES_FILE;
-//            File fontFile = Constants.TERMUX_FONT_FILE;
+//            File colorsFile = Constants.TERMUX_COLOR_PROPERTIES_FILE; // 颜色文件
+//            File fontFile = Constants.TERMUX_FONT_FILE; // 字体文件
 
             final Properties props = new Properties();
 //            if (colorsFile.isFile()) {
@@ -426,7 +414,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             updateBackgroundColor();
 
 //            final Typeface newTypeface = (fontFile.exists() && fontFile.length() > 0) ? Typeface.createFromFile(fontFile) : Typeface.MONOSPACE;
-            final Typeface newTypeface = Typeface.MONOSPACE;
+            final Typeface newTypeface = Typeface.MONOSPACE; // 新字体为等宽字体
             mActivity.getTerminalView().setTypeface(newTypeface);
         } catch (Exception ignored) {
         }

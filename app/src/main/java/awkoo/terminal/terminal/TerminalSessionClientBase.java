@@ -27,10 +27,6 @@ public class TerminalSessionClientBase implements TerminalSessionClient {
     }
 
     @Override
-    public void onBell(@NonNull TerminalSession session) {
-    }
-
-    @Override
     public void onColorsChanged(@NonNull TerminalSession session) {
     }
 

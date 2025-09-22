@@ -54,7 +54,7 @@ import awkoo.terminal.view.TerminalView;
  */
 public final class MainActivity extends AppCompatActivity implements ServiceConnection {
 
-    ActivityMainBinding binding;
+    public ActivityMainBinding binding;
 
     /**
      * 与 {@link TerminalService} 的连接。在 {@link #onCreate(Bundle)} 中通过调用
@@ -295,7 +295,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         setTermuxSessionsListView();
 
-        final Intent intent = getIntent();
         setIntent(null);
 
         if (mTerminalService.isTermuxSessionsEmpty()) {
@@ -310,16 +309,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
                 finishActivityIfNotFinishing();
             }
         } else {
-            // 如果 Termux 是从启动器的“新会话”快捷方式启动且 Activity 被重新创建，
-            // 原始 Intent 会被重新传递，导致每次都重新添加一个新会话。
-            if (!mIsActivityRecreated && intent != null && Intent.ACTION_RUN.equals(intent.getAction())) {
-                // Android 7.1 应用快捷方式，来自 res/xml/shortcuts.xml
-                mTerminalSessionActivityClient.addNewSession(null);
-            } else {
-                mTerminalSessionActivityClient.setCurrentSession(
-                    mTerminalSessionActivityClient.getCurrentStoredSessionOrLast()
-                );
-            }
+            mTerminalSessionActivityClient.setCurrentSession(
+                mTerminalSessionActivityClient.getCurrentStoredSessionOrLast()
+            );
         }
 
         // 更新 {@link TerminalSession} 和 {@link TerminalEmulator} 的客户端
@@ -409,7 +401,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             new TerminalToolbarViewPager.PageAdapter(this, savedTextInput)
         );
         terminalToolbarViewPager.addOnPageChangeListener(
-            new TerminalToolbarViewPager.OnPageChangeListener(this, terminalToolbarViewPager)
+            new TerminalToolbarViewPager.OnPageChangeListener(this)
         );
     }
 

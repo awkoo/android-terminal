@@ -482,14 +482,6 @@ public abstract class TermuxSharedProperties {
         return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_CURSOR_STYLE, true);
     }
 
-    public int getTerminalMarginHorizontal() {
-        return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_MARGIN_HORIZONTAL, true);
-    }
-
-    public int getTerminalMarginVertical() {
-        return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_MARGIN_VERTICAL, true);
-    }
-
     public int getTerminalTranscriptRows() {
         return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_TRANSCRIPT_ROWS, true);
     }
@@ -501,10 +493,6 @@ public abstract class TermuxSharedProperties {
     public boolean isBackKeyTheEscapeKey() {
         return TermuxPropertyConstants.IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR, true));
     }
-
-//    public String getDefaultWorkingDirectory() {
-//        return (String) getInternalPropertyValue(TermuxPropertyConstants.KEY_DEFAULT_WORKING_DIRECTORY, true);
-//    }
 
     public boolean shouldEnableDisableSoftKeyboardOnToggle() {
         return TermuxPropertyConstants.IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR, true));

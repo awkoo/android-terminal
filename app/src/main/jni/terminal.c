@@ -207,7 +207,8 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
 JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setPtyWindowSize(
         JNIEnv *TERMUX_UNUSED(env),
         jclass TERMUX_UNUSED(clazz),
-        jint fd, jint rows,
+        jint fd,
+        jint rows,
         jint cols,
         jint cell_width,
         jint cell_height
@@ -238,8 +239,7 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setStdinEcho(
     tcsetattr(fd, TCSANOW, &tios);
 }
 
-JNIEXPORT jint JNICALL
-Java_awkoo_terminal_terminal_JNI_waitFor(
+JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_waitFor(
         JNIEnv *TERMUX_UNUSED(env),
         jclass TERMUX_UNUSED(clazz),
         jint pid
@@ -256,8 +256,7 @@ Java_awkoo_terminal_terminal_JNI_waitFor(
     }
 }
 
-JNIEXPORT void JNICALL
-Java_awkoo_terminal_terminal_JNI_close(
+JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_close(
         JNIEnv *TERMUX_UNUSED(env),
         jclass TERMUX_UNUSED(clazz),
         jint fileDescriptor

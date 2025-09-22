@@ -11,7 +11,6 @@ import android.system.OsConstants;
 
 import androidx.annotation.NonNull;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -362,26 +361,6 @@ public final class TerminalSession extends TerminalOutput {
 
     public int getPid() {
         return mShellPid;
-    }
-
-    /**
-     * Returns the shell's working directory or null if it was unavailable.
-     */
-    public String getCwd() {
-        if (mShellPid < 1) {
-            return null;
-        }
-        try {
-            final String cwdSymlink = String.format("/proc/%s/cwd/", mShellPid);
-            String outputPath = new File(cwdSymlink).getCanonicalPath();
-            String outputPathWithTrailingSlash = outputPath;
-            if (!outputPath.endsWith("/"))
-                outputPathWithTrailingSlash += '/';
-            if (!cwdSymlink.equals(outputPathWithTrailingSlash))
-                return outputPath;
-        } catch (IOException | SecurityException ignored) {
-        }
-        return null;
     }
 
     private static class MainThreadHandler extends Handler {
