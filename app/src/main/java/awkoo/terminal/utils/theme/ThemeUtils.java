@@ -2,7 +2,6 @@ package awkoo.terminal.utils.theme;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 
 import androidx.appcompat.app.AppCompatActivity;
