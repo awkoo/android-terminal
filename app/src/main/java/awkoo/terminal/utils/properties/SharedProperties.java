@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -235,27 +234,6 @@ public class SharedProperties {
             return sharedPropertiesParser.preProcessPropertiesOnReadFromDisk(context, properties);
         else
             return properties;
-    }
-
-    /**
-     * Returns the first {@link File} found in
-     * {@code propertiesFilePaths} from which app properties can be loaded. If the {@link File} found
-     * is not a regular file or is not readable, then {@code null} is returned. Symlinks **will not**
-     * be followed for potential security reasons.
-     *
-     * @param propertiesFilePaths The {@link List<String>} containing properties file paths.
-     * @return Returns the {@link File} object for Termux:Float app properties.
-     */
-    public static File getPropertiesFileFromList(List<String> propertiesFilePaths) {
-        if (propertiesFilePaths == null || propertiesFilePaths.isEmpty())
-            return null;
-
-        for (String propertiesFilePath : propertiesFilePaths) {
-            File propertiesFile = new File(propertiesFilePath);
-            if (propertiesFile.canRead())
-                return propertiesFile;
-        }
-        return null;
     }
 
 

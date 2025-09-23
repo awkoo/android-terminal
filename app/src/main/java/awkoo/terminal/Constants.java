@@ -1,10 +1,5 @@
 package awkoo.terminal;
 
-import android.annotation.SuppressLint;
-
-import java.util.Arrays;
-import java.util.List;
-
 public final class Constants {
 
     /*
@@ -27,63 +22,12 @@ public final class Constants {
      * Termux app core directory paths.
      */
 
-    /**
-     * Termux app internal private app data directory path
-     */
-    @SuppressLint("SdCardPath")
-    public static final String TERMUX_INTERNAL_PRIVATE_APP_DATA_DIR_PATH = "/data/data/" + TERMUX_PACKAGE_NAME; // Default: "/data/data/awkoo.terminal"
-
-
-    /**
-     * Termux app Files directory path
-     */
-    public static final String TERMUX_FILES_DIR_PATH = TERMUX_INTERNAL_PRIVATE_APP_DATA_DIR_PATH + "/files"; // Default: "/data/data/awkoo.terminal/files"
-
-
-    /**
-     * Termux app $HOME directory path
-     */
-    public static final String TERMUX_HOME_DIR_PATH = TERMUX_FILES_DIR_PATH + "/home"; // Default: "/data/data/awkoo.terminal/files/home"
-
-
-    /**
-     * Termux app config home directory path
-     */
-    public static final String TERMUX_CONFIG_HOME_DIR_PATH = TERMUX_HOME_DIR_PATH + "/.config/termux"; // Default: "/data/data/awkoo.terminal/files/home/.config/termux"
-
-
-    /**
-     * Termux app data home directory path
-     */
-    public static final String TERMUX_DATA_HOME_DIR_PATH = TERMUX_HOME_DIR_PATH + "/.termux"; // Default: "/data/data/awkoo.terminal/files/home/.termux"
-
 
 
 
     /*
      * Termux app and plugin preferences and properties file paths.
      */
-
-
-    /**
-     * Termux app properties primary file path
-     */
-    public static final String TERMUX_PROPERTIES_PRIMARY_FILE_PATH = TERMUX_DATA_HOME_DIR_PATH + "/termux.properties"; // Default: "/data/data/awkoo.terminal/files/home/.termux/termux.properties"
-
-    /**
-     * Termux app properties secondary file path
-     */
-    public static final String TERMUX_PROPERTIES_SECONDARY_FILE_PATH = TERMUX_CONFIG_HOME_DIR_PATH + "/termux.properties"; // Default: "/data/data/awkoo.terminal/files/home/.config/termux/termux.properties"
-
-    /**
-     * Termux app properties file paths list. **DO NOT** allow these files to be modified by
-     * {@link android.content.ContentProvider} exposed to external apps, since they may silently
-     * modify the values for security properties like {@link #PROP_ALLOW_EXTERNAL_APPS} set by users
-     * without their explicit consent.
-     */
-    public static final List<String> TERMUX_PROPERTIES_FILE_PATHS_LIST = Arrays.asList(
-        TERMUX_PROPERTIES_PRIMARY_FILE_PATH,
-        TERMUX_PROPERTIES_SECONDARY_FILE_PATH);
 
 
 

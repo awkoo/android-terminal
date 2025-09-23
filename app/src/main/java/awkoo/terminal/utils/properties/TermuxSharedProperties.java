@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -16,7 +15,6 @@ public abstract class TermuxSharedProperties {
 
     protected final Context mContext;
     protected final String mLabel;
-    protected final List<String> mPropertiesFilePaths;
     protected final Set<String> mPropertiesList;
     protected final SharedPropertiesParser mSharedPropertiesParser;
     protected File mPropertiesFile;
@@ -24,11 +22,10 @@ public abstract class TermuxSharedProperties {
 
     public static final String LOG_TAG = "TermuxSharedProperties";
 
-    public TermuxSharedProperties(@NonNull Context context, @NonNull String label, List<String> propertiesFilePaths,
+    public TermuxSharedProperties(@NonNull Context context, @NonNull String label,
                                   @NonNull Set<String> propertiesList, @NonNull SharedPropertiesParser sharedPropertiesParser) {
         mContext = context.getApplicationContext();
         mLabel = label;
-        mPropertiesFilePaths = propertiesFilePaths;
         mPropertiesList = propertiesList;
         mSharedPropertiesParser = sharedPropertiesParser;
         loadTermuxPropertiesFromDisk();
@@ -41,7 +38,7 @@ public abstract class TermuxSharedProperties {
         // Properties files must be searched everytime since no file may exist when constructor is
         // called or a higher priority file may have been created afterward. Otherwise, if no file
         // was found, then default props would keep loading, since mSharedProperties would be null. #2836
-        mPropertiesFile = SharedProperties.getPropertiesFileFromList(mPropertiesFilePaths);
+        mPropertiesFile = null;
         mSharedProperties = null;
         mSharedProperties = new SharedProperties(mContext, mPropertiesFile, mPropertiesList, mSharedPropertiesParser);
 
@@ -177,8 +174,6 @@ public abstract class TermuxSharedProperties {
             /* String (may be null) */
             case TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR:
                 return getBackKeyBehaviourInternalPropertyValueFromValue(value);
-            case TermuxPropertyConstants.KEY_DEFAULT_WORKING_DIRECTORY:
-                return getDefaultWorkingDirectoryInternalPropertyValueFromValue(value);
             case TermuxPropertyConstants.KEY_EXTRA_KEYS:
                 return getExtraKeysInternalPropertyValueFromValue(value);
             case TermuxPropertyConstants.KEY_EXTRA_KEYS_STYLE:
@@ -370,27 +365,6 @@ public abstract class TermuxSharedProperties {
      */
     public static String getBackKeyBehaviourInternalPropertyValueFromValue(String value) {
         return (String) SharedProperties.getDefaultIfNotInMap(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR, TermuxPropertyConstants.MAP_BACK_KEY_BEHAVIOUR, SharedProperties.toLowerCase(value), TermuxPropertyConstants.DEFAULT_IVALUE_BACK_KEY_BEHAVIOUR, true, LOG_TAG);
-    }
-
-    /**
-     * Returns the path itself if a directory exists at it and is readable, otherwise returns
-     * {@link TermuxPropertyConstants#DEFAULT_IVALUE_DEFAULT_WORKING_DIRECTORY}.
-     *
-     * @param path The {@link String} path to check.
-     * @return Returns the internal value for value.
-     */
-    public static String getDefaultWorkingDirectoryInternalPropertyValueFromValue(String path) {
-        if (path == null || path.isEmpty())
-            return TermuxPropertyConstants.DEFAULT_IVALUE_DEFAULT_WORKING_DIRECTORY;
-        File workDir = new File(path);
-        if (!workDir.exists() || !workDir.isDirectory() || !workDir.canRead()) {
-            // Fallback to default directory if user configured working directory does not exist,
-            // is not a directory or is not readable.
-            //        logMessage(Log.ERROR, tag, message);
-            return TermuxPropertyConstants.DEFAULT_IVALUE_DEFAULT_WORKING_DIRECTORY;
-        } else {
-            return path;
-        }
     }
 
     /**
