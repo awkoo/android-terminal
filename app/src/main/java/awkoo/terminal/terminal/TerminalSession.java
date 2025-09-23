@@ -21,15 +21,15 @@ import java.util.UUID;
 import awkoo.terminal.R;
 
 /**
- * A terminal session, consisting of a process coupled to a terminal interface.
+ * 终端会话，由一个与终端接口耦合的进程组成。
  * <p>
- * The subprocess will be executed by the constructor, and when the size is made known by a call to
- * {@link #updateSize(int, int, int, int)} terminal emulation will begin and threads will be spawned to handle the subprocess I/O.
- * All terminal emulation and callback methods will be performed on the main thread.
+ * 子进程将由构造函数执行，当通过调用
+ * {@link #updateSize(int, int, int, int)} 告知大小后，终端仿真将开始，并创建线程处理子进程I/O。
+ * 所有终端仿真和回调方法都将在主线程上执行。
  * <p>
- * The child process may be exited forcefully by using the {@link #finishIfRunning()} method.
+ * 子进程可以通过使用 {@link #finishIfRunning()} 方法强制退出。
  * <p>
- * NOTE: The terminal session may outlive the EmulatorView, so be careful with callbacks!
+ * 注意：终端会话可能会比 EmulatorView 寿命更长，所以请小心使用回调！
  */
 public final class TerminalSession extends TerminalOutput {
 
@@ -41,43 +41,42 @@ public final class TerminalSession extends TerminalOutput {
     TerminalEmulator mEmulator;
 
     /**
-     * A queue written to from a separate thread when the process outputs, and read by main thread to process by
-     * terminal emulator.
+     * 一个队列，当进程输出时从一个单独的线程写入，并由主线程读取以由终端模拟器处理。
      */
     final ByteQueue mProcessToTerminalIOQueue = new ByteQueue(4096);
     /**
-     * A queue written to from the main thread due to user interaction, and read by another thread which forwards by
-     * writing to the {@link #mTerminalFileDescriptor}.
+     * 一个队列，由主线程由于用户交互而写入，并由另一个线程通过写入
+     * {@link #mTerminalFileDescriptor} 进行转发。
      */
     final ByteQueue mTerminalToProcessIOQueue = new ByteQueue(4096);
     /**
-     * Buffer to write translate code points into utf8 before writing to mTerminalToProcessIOQueue
+     * 缓冲区，用于在写入 mTerminalToProcessIOQueue 之前将代码点转换为 utf8。
      */
     private final byte[] mUtf8InputBuffer = new byte[5];
 
     /**
-     * Callback which gets notified when a session finishes or changes title.
+     * 会话完成或标题更改时收到通知的回调。
      */
     TerminalSessionClient mClient;
 
     /**
-     * The pid of the shell process. 0 if not started and -1 if finished running.
+     * shell 进程的 pid。如果未启动为0，如果已完成运行为-1。
      */
     int mShellPid;
 
     /**
-     * The exit status of the shell process. Only valid if ${@link #mShellPid} is -1.
+     * shell 进程的退出状态。仅当 ${@link #mShellPid} 为 -1 时有效。
      */
     int mShellExitStatus;
 
     /**
-     * The file descriptor referencing the master half of a pseudo-terminal pair, resulting from calling
-     * {@link JNI#createSubprocess(String, String, String[], String[], int[], int, int, int, int)}.
+     * 引用伪终端对主控端的 文件描述符，通过调用
+     * {@link JNI#createSubprocess(String, String, String[], String[], int[], int, int, int, int)} 获得。
      */
     private int mTerminalFileDescriptor;
 
     /**
-     * Set by the application for user identification of session, not by terminal.
+     * 由应用程序设置用于会话的用户标识，而不是由终端设置。
      */
     public String mSessionName;
 
@@ -113,8 +112,8 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * @param client The {@link TerminalSessionClient} interface implementation to allow
-     *               for communication between {@link TerminalSession} and its client.
+     * @param client {@link TerminalSessionClient} 接口实现，允许
+     *               {@link TerminalSession} 与其客户端之间进行通信。
      */
     public void updateTerminalSessionClient(TerminalSessionClient client) {
         mClient = client;
@@ -124,7 +123,7 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * Inform the attached pty of the new size and reflow or initialize the emulator.
+     * 通知连接的 pty 新的大小，并重新布局或初始化模拟器。
      */
     public void updateSize(int columns, int rows, int cellWidthPixels, int cellHeightPixels) {
         if (mEmulator == null) {
@@ -136,17 +135,17 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * The terminal title as set through escape sequences or null if none set.
+     * 通过转义序列设置的终端标题，如果未设置则为 null。
      */
     public String getTitle() {
         return (mEmulator == null) ? null : mEmulator.getTitle();
     }
 
     /**
-     * Set the terminal emulator's window size and start terminal emulation.
+     * 设置终端模拟器的窗口大小并开始终端模拟。
      *
-     * @param columns The number of columns in the terminal window.
-     * @param rows    The number of rows in the terminal window.
+     * @param columns 终端窗口中的列数。
+     * @param rows    终端窗口中的行数。
      */
     public void initializeEmulator(int columns, int rows, int cellWidthPixels, int cellHeightPixels) {
         mEmulator = new TerminalEmulator(
@@ -193,7 +192,7 @@ public final class TerminalSession extends TerminalOutput {
                             mMainThreadHandler.sendEmptyMessage(MSG_NEW_INPUT);
                         }
                     } catch (Exception e) {
-                        // Ignore, just shutting down.
+                        // 忽略，只是关闭。
                     }
                 }
             }.start();
@@ -209,7 +208,7 @@ public final class TerminalSession extends TerminalOutput {
                             termOut.write(buffer, 0, bytesToWrite);
                         }
                     } catch (IOException e) {
-                        // Ignore.
+                        // 忽略。
                     }
                 }
             }.start();
@@ -236,7 +235,7 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * Write data to the shell process.
+     * 向 shell 进程写入数据。
      */
     @Override
     public void write(byte[] data, int offset, int count) {
@@ -244,39 +243,39 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * Write the Unicode code point to the terminal encoded in UTF-8.
+     * 将 Unicode 代码点以 UTF-8 编码写入终端。
      */
     public void writeCodePoint(boolean prependEscape, int codePoint) {
         if (codePoint > 1114111 || (codePoint >= 0xD800 && codePoint <= 0xDFFF)) {
-            // 1114111 (= 2**16 + 1024**2 - 1) is the highest code point, [0xD800,0xDFFF] is the surrogate range.
+            // 1114111 (= 2**16 + 1024**2 - 1) 是最高代码点，[0xD800,0xDFFF] 是代理范围。
             throw new IllegalArgumentException("Invalid code point: " + codePoint);
         }
 
         int bufferPosition = 0;
         if (prependEscape) mUtf8InputBuffer[bufferPosition++] = 27;
 
-        if (codePoint <= /* 7 bits */0b1111111) {
+        if (codePoint <= /* 7 位 */0b1111111) {
             mUtf8InputBuffer[bufferPosition++] = (byte) codePoint;
-        } else if (codePoint <= /* 11 bits */0b11111111111) {
-            /* 110xxxxx leading byte with leading 5 bits */
+        } else if (codePoint <= /* 11 位 */0b11111111111) {
+            /* 110xxxxx 前导字节，带前导 5 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b11000000 | (codePoint >> 6));
-            /* 10xxxxxx continuation byte with following 6 bits */
+            /* 10xxxxxx 延续字节，带后续 6 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
-        } else if (codePoint <= /* 16 bits */0b1111111111111111) {
-            /* 1110xxxx leading byte with leading 4 bits */
+        } else if (codePoint <= /* 16 位 */0b1111111111111111) {
+            /* 1110xxxx 前导字节，带前导 4 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b11100000 | (codePoint >> 12));
-            /* 10xxxxxx continuation byte with following 6 bits */
+            /* 10xxxxxx 延续字节，带后续 6 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 6) & 0b111111));
-            /* 10xxxxxx continuation byte with following 6 bits */
+            /* 10xxxxxx 延续字节，带后续 6 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
-        } else { /* We have checked codePoint <= 1114111 above, so we have max 21 bits = 0b111111111111111111111 */
-            /* 11110xxx leading byte with leading 3 bits */
+        } else { /* 我们已经检查了 codePoint <= 1114111，所以我们有最大 21 位 = 0b111111111111111111111 */
+            /* 11110xxx 前导字节，带前导 3 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b11110000 | (codePoint >> 18));
-            /* 10xxxxxx continuation byte with following 6 bits */
+            /* 10xxxxxx 延续字节，带后续 6 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 12) & 0b111111));
-            /* 10xxxxxx continuation byte with following 6 bits */
+            /* 10xxxxxx 延续字节，带后续 6 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 6) & 0b111111));
-            /* 10xxxxxx continuation byte with following 6 bits */
+            /* 10xxxxxx 延续字节，带后续 6 位 */
             mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
         }
         write(mUtf8InputBuffer, 0, bufferPosition);
@@ -287,14 +286,14 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * Notify the {@link #mClient} that the screen has changed.
+     * 通知 {@link #mClient} 屏幕已更改。
      */
     private void notifyScreenUpdate() {
         mClient.onTextChanged(this);
     }
 
     /**
-     * Reset state for terminal emulator state.
+     * 重置终端模拟器状态。
      */
     public void reset() {
         mEmulator.reset();
@@ -302,7 +301,7 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * Finish this terminal session by sending SIGKILL to the shell.
+     * 通过向 shell 发送 SIGKILL 来结束此终端会话。
      */
     public void finishIfRunning() {
         if (isRunning()) {
@@ -314,7 +313,7 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * Cleanup resources when the process exits.
+     * 进程退出时清理资源。
      */
     void cleanupResources(int exitStatus) {
         synchronized (this) {
@@ -322,7 +321,7 @@ public final class TerminalSession extends TerminalOutput {
             mShellExitStatus = exitStatus;
         }
 
-        // Stop the reader and writer threads, and close the I/O streams
+        // 停止读写线程，并关闭 I/O 流
         mTerminalToProcessIOQueue.close();
         mProcessToTerminalIOQueue.close();
         JNI.close(mTerminalFileDescriptor);
@@ -338,7 +337,7 @@ public final class TerminalSession extends TerminalOutput {
     }
 
     /**
-     * Only valid if not {@link #isRunning()}.
+     * 仅在未 {@link #isRunning()} 时有效。
      */
     public synchronized int getExitStatus() {
         return mShellExitStatus;

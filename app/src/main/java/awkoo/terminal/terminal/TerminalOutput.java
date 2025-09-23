@@ -3,12 +3,12 @@ package awkoo.terminal.terminal;
 import java.nio.charset.StandardCharsets;
 
 /**
- * A client which receives callbacks from events triggered by feeding input to a {@link TerminalEmulator}.
+ * 一个客户端，它接收由向 {@link TerminalEmulator} 提供输入而触发的事件的回调。
  */
 public abstract class TerminalOutput {
 
     /**
-     * Write a string using the UTF-8 encoding to the terminal client.
+     * 使用 UTF-8 编码向终端客户端写入字符串。
      */
     public final void write(String data) {
         if (data == null) return;
@@ -17,22 +17,22 @@ public abstract class TerminalOutput {
     }
 
     /**
-     * Write bytes to the terminal client.
+     * 将字节写入终端客户端。
      */
     public abstract void write(byte[] data, int offset, int count);
 
     /**
-     * Notify the terminal client that the terminal title has changed.
+     * 通知终端客户端终端标题已更改。
      */
     public abstract void titleChanged(String oldTitle, String newTitle);
 
     /**
-     * Notify the terminal client that text should be copied to clipboard.
+     * 通知终端客户端应将文本复制到剪贴板。
      */
     public abstract void onCopyTextToClipboard(String text);
 
     /**
-     * Notify the terminal client that text should be pasted from clipboard.
+     * 通知终端客户端应从剪贴板粘贴文本。
      */
     public abstract void onPasteTextFromClipboard();
 

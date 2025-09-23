@@ -39,7 +39,6 @@ import awkoo.terminal.utils.interact.TextInputDialogUtils;
 import awkoo.terminal.utils.preferences.TermuxAppSharedPreferences;
 import awkoo.terminal.utils.properties.TermuxAppSharedProperties;
 import awkoo.terminal.terminal.TerminalSession;
-import awkoo.terminal.terminal.TerminalSessionClient;
 import awkoo.terminal.utils.UI;
 import awkoo.terminal.view.TerminalView;
 
@@ -64,12 +63,12 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     TerminalService mTerminalService;
 
     /**
-     * {@link awkoo.terminal.view.TerminalViewClient} 接口的实现，用于 {@link TerminalView} 和 {@link MainActivity} 之间的通信。
+     * 用于 {@link TerminalView} 和 {@link MainActivity} 之间的通信。
      */
     TerminalViewClient mTerminalViewClient;
 
     /**
-     * {@link TerminalSessionClient} 接口的实现，用于 {@link TerminalSession} 和 {@link MainActivity} 之间的通信。
+     * 用于 {@link TerminalSession} 和 {@link MainActivity} 之间的通信。
      */
     TerminalSessionActivityClient mTerminalSessionActivityClient;
 
