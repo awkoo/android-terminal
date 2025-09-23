@@ -55,11 +55,6 @@ public class ShellCommand {
     public final Integer id;
 
     /**
-     * The process id of command.
-     */
-    public int mPid = -1;
-
-    /**
      * The current state of the {@link ShellCommand}.
      */
     private State currentState = State.PRE_EXECUTION;

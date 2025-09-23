@@ -155,16 +155,6 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         mActivity.getTerminalView().setTerminalCursorBlinkerState(enabled, false);
     }
 
-    @Override
-    public void setTerminalShellPid(@NonNull TerminalSession terminalSession, int pid) {
-        TerminalService service = mActivity.getTermuxService();
-        if (service == null) return;
-
-        TerminalShell terminalShell = service.getTermuxSessionForTerminalSession(terminalSession);
-        if (terminalShell != null)
-            terminalShell.getExecutionCommand().mPid = pid;
-    }
-
 
     /**
      * 应在 mActivity.onResetTerminalSession() 调用时调用
