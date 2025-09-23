@@ -22,7 +22,6 @@ import java.util.Objects;
 
 import awkoo.terminal.activities.MainActivity;
 import awkoo.terminal.terminal.TerminalSessionActivityClient;
-import awkoo.terminal.terminal.TerminalSessionServiceClient;
 import awkoo.terminal.shell.ShellCommand;
 import awkoo.terminal.Constants.TERMUX_APP.TERMUX_SERVICE;
 import awkoo.terminal.utils.properties.TermuxAppSharedProperties;
@@ -63,10 +62,10 @@ public final class TerminalService extends Service implements TerminalShell.Term
 
     /**
      * {@link TerminalSessionClient} 接口的基础实现，供 {@link TerminalSession} 使用，
-     * 它不持有 Activity 的引用，仅持有服务的引用。
+     * 它不持有任何引用。
      */
-    private final TerminalSessionServiceClient mTermuxTerminalSessionServiceClient
-        = new TerminalSessionServiceClient();
+    private final TerminalSessionClientBase mNullTerminalSessionClient
+        = new TerminalSessionClientBase();
 
     /**
      * Termux 应用的共享属性管理器，从 termux.properties 文件加载。
@@ -374,17 +373,17 @@ public final class TerminalService extends Service implements TerminalShell.Term
 
     /**
      * 如果 {@link MainActivity} 尚未绑定到 {@link TerminalService} 或已被销毁，
-     * 那么需要Activity的接口功能对终端会话应不可用，因此我们只返回 {@link #mTermuxTerminalSessionServiceClient}。
+     * 那么需要Activity的接口功能对终端会话应不可用，因此我们只返回 {@link #mNullTerminalSessionClient}。
      * 一旦收到 {@link MainActivity} 的绑定回调，它应调用 {@link #setTermuxTerminalSessionClient} 来设置
      * {@link TerminalService#mTerminalSessionActivityClient}，以便后续的终端会话能直接传递
      * 完整实现了 {@link TerminalSessionClient} 接口的 {@link TerminalSessionActivityClient} 对象。
      *
-     * @return 如果 {@link MainActivity} 已绑定，则返回 {@link TerminalSessionActivityClient}，否则返回 {@link TerminalSessionServiceClient}。
+     * @return 如果 {@link MainActivity} 已绑定，则返回 {@link TerminalSessionActivityClient}，否则返回 {@link TerminalSessionClientBase}。
      */
     public synchronized TerminalSessionClientBase getTermuxTerminalSessionClient() {
         return Objects.requireNonNullElse(
             mTerminalSessionActivityClient,
-            mTermuxTerminalSessionServiceClient
+            mNullTerminalSessionClient
         );
     }
 
@@ -392,7 +391,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * 当 {@link MainActivity#onServiceConnected} 被调用时应调用此方法，
      * 以设置 {@link TerminalService#mTerminalSessionActivityClient} 变量，
      * 并更新 {@link TerminalSession} 和 {@link TerminalEmulator} 的客户端，
-     * 以防它们之前被传递了 {@link TerminalSessionServiceClient}。
+     * 以防它们之前被传递了 {@link TerminalSessionClientBase}。
      *
      * @param terminalSessionActivityClient 完整实现 {@link TerminalSessionClient} 接口的 {@link TerminalSessionActivityClient} 对象。
      */
@@ -416,7 +415,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
         for (int i = 0; i < mTerminalShells.size(); i++)
             mTerminalShells.get(i)
                 .getTerminalSession()
-                .updateTerminalSessionClient(mTermuxTerminalSessionServiceClient);
+                .updateTerminalSessionClient(mNullTerminalSessionClient);
 
         mTerminalSessionActivityClient = null;
     }
