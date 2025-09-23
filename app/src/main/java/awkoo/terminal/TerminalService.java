@@ -66,7 +66,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * 它不持有 Activity 的引用，仅持有服务的引用。
      */
     private final TerminalSessionServiceClient mTermuxTerminalSessionServiceClient
-        = new TerminalSessionServiceClient(this);
+        = new TerminalSessionServiceClient();
 
     /**
      * Termux 应用的共享属性管理器，从 termux.properties 文件加载。

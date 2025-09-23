@@ -19,29 +19,29 @@ public class UrlUtils {
             "dns|" +                    // The DNS proto.
             "file|" +                   // File path.
             "finger|" +                 // The Finger proto.
-            "ftp(?:s?)|" +              // The FTP proto.
+            "ftps?|" +              // The FTP proto.
             "git|" +                    // The Git proto.
             "gemini|" +                 // The Gemini proto.
             "gopher|" +                 // The Gopher proto.
-            "http(?:s?)|" +             // The HTTP proto.
-            "imap(?:s?)|" +             // The IMAP proto.
-            "irc(?:[6s]?)|" +           // The IRC proto.
+            "https?|" +             // The HTTP proto.
+            "imaps?|" +             // The IMAP proto.
+            "irc[6s]?|" +           // The IRC proto.
             "ip[fn]s|" +                // The IPFS proto.
-            "ldap(?:s?)|" +             // The LDAP proto.
-            "pop3(?:s?)|" +             // The POP3 proto.
-            "redis(?:s?)|" +            // The Redis proto.
+            "ldaps?|" +             // The LDAP proto.
+            "pop3s?|" +             // The POP3 proto.
+            "rediss?|" +            // The Redis proto.
             "rsync|" +                  // The Rsync proto.
-            "rtsp(?:[su]?)|" +          // The RTSP proto.
+            "rtsp[su]?|" +          // The RTSP proto.
             "sftp|" +                   // The SFTP proto.
-            "smb(?:s?)|" +              // The SAMBA proto.
-            "smtp(?:s?)|" +             // The SMTP proto.
-            "svn(?:(?:\\+ssh)?)|" +     // The Subversion proto.
+            "smbs?|" +              // The SAMBA proto.
+            "smtps?|" +             // The SMTP proto.
+            "svn(?:\\+ssh)?|" +     // The Subversion proto.
             "tcp|" +                    // The TCP proto.
             "telnet|" +                 // The Telnet proto.
             "tftp|" +                   // The TFTP proto.
             "udp|" +                    // The UDP proto.
             "vnc|" +                    // The VNC proto.
-            "ws(?:s?)" +                // The Websocket proto.
+            "wss?" +                // The Websocket proto.
             ")://" +                    // End scheme group.
             ")" +                       // End first matching group.
 
@@ -59,10 +59,10 @@ public class UrlUtils {
             "(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|" +
 
             // Host name or domain.
-            "(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)(?:(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*){1,}[a-z\\u00a1-\\uffff0-9]{1,}))?|" +
+            "(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+(?:(?:\\.(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)*\\.(?:[a-z\\u00a1-\\uffff0-9]-*)+[a-z\\u00a1-\\uffff0-9]+)?|" +
 
             // Just path. Used in case of 'file://' scheme.
-            "/(?:(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+)" +
+            "/(?:[a-z\\u00a1-\\uffff0-9]-*)*[a-z\\u00a1-\\uffff0-9]+" +
 
             // End host group.
             ")" +
