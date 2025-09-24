@@ -67,10 +67,9 @@ public class TerminalShell {
 
 
         // 设置命令环境
-        ShellEnvironment environment = new ShellEnvironment();
-        environment.put("HOME", context.getFilesDir().getAbsolutePath());
+        mShellCommand.environment.put("HOME", context.getFilesDir().getAbsolutePath());
         if (additionalEnvironment != null)
-            environment.putAll(additionalEnvironment);
+            mShellCommand.environment.putAll(additionalEnvironment);
 
 
         // 设置命令参数
@@ -99,7 +98,7 @@ public class TerminalShell {
             mShellCommand.executable,
             mShellCommand.workingDirectory,
             mShellCommand.arguments,
-            environment.toArray(),
+            mShellCommand.environment.toArray(),
             mShellCommand.stdin,
             mShellCommand.terminalTranscriptRows,
             terminalSessionClient

@@ -98,6 +98,8 @@ public class ShellCommand {
      */
     public String commandLabel;
 
+    public final ShellEnvironment environment = new ShellEnvironment();
+
 
     /**
      * Defines the {@link ResultData} for the {@link ShellCommand} containing information
@@ -168,23 +170,5 @@ public class ShellCommand {
         return resultData.isStateFailed();
     }
 
-
-    public String getIdLogString() {
-        if (id != null)
-            return "(" + id + ") ";
-        else
-            return "";
-    }
-
-    public String getCommandLabelLogString() {
-        if (commandLabel != null && !commandLabel.isEmpty())
-            return commandLabel;
-        else
-            return "Execution Command";
-    }
-
-    public String getCommandIdAndLabelLogString() {
-        return getIdLogString() + getCommandLabelLogString();
-    }
 
 }
