@@ -54,12 +54,16 @@ public class TerminalShell {
         HashMap<String, String> additionalEnvironment,
         Boolean setStdoutOnExit
     ) {
-        if (shellCommand.executable == null || shellCommand.executable.isEmpty())
-            shellCommand.executable = ShellEnvironment.defaultShell;
-        if (shellCommand.workingDirectory == null || shellCommand.workingDirectory.isEmpty())
-            shellCommand.workingDirectory = ShellEnvironment.defaultWorkingPath;
-        if (shellCommand.commandLabel == null || shellCommand.commandLabel.isEmpty())
-            shellCommand.commandLabel = shellCommand.executable;
+        this.mShellCommand = shellCommand;
+        this.mTermuxSessionClient = termuxSessionClient;
+        this.mSetStdoutOnExit = setStdoutOnExit;
+
+        if (mShellCommand.executable == null || mShellCommand.executable.isEmpty())
+            mShellCommand.executable = ShellEnvironment.defaultShell;
+        if (mShellCommand.workingDirectory == null || mShellCommand.workingDirectory.isEmpty())
+            mShellCommand.workingDirectory = ShellEnvironment.defaultWorkingPath;
+        if (mShellCommand.commandLabel == null || mShellCommand.commandLabel.isEmpty())
+            mShellCommand.commandLabel = mShellCommand.executable;
 
 
         // 设置命令环境
@@ -72,43 +76,38 @@ public class TerminalShell {
         // 设置命令参数
         List<String> result = new ArrayList<>();
         // root权限
-        if (shellCommand.mode == ShellCommand.Mode.ROOT) {
+        if (mShellCommand.mode == ShellCommand.Mode.ROOT) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             result.add(preferences.getString("su_path", "/system/bin/su"));
             result.add("-s");
         }
-        result.add(shellCommand.executable);
-        if (shellCommand.arguments != null)
-            Collections.addAll(result, shellCommand.arguments);
+        result.add(mShellCommand.executable);
+        if (mShellCommand.arguments != null)
+            Collections.addAll(result, mShellCommand.arguments);
         String[] commandArgs = result.toArray(new String[0]);
-        shellCommand.executable = commandArgs[0];
+        mShellCommand.executable = commandArgs[0];
         String[] arguments = new String[commandArgs.length];
-        arguments[0] = shellCommand.executable;
+        arguments[0] = mShellCommand.executable;
         if (commandArgs.length > 1)
             System.arraycopy(commandArgs, 1, arguments, 1, commandArgs.length - 1);
-        shellCommand.arguments = arguments;
+        mShellCommand.arguments = arguments;
 
-        shellCommand.setState(ShellCommand.State.EXECUTING);
+        mShellCommand.setState(ShellCommand.State.EXECUTING);
 
-        TerminalSession terminalSession = new TerminalSession(
+        mTerminalSession = new TerminalSession(
             context,
-            shellCommand.executable,
-            shellCommand.workingDirectory,
-            shellCommand.arguments,
+            mShellCommand.executable,
+            mShellCommand.workingDirectory,
+            mShellCommand.arguments,
             environment.toArray(),
-            shellCommand.stdin,
-            shellCommand.terminalTranscriptRows,
+            mShellCommand.stdin,
+            mShellCommand.terminalTranscriptRows,
             terminalSessionClient
         );
 
-        if (shellCommand.shellName != null) {
-            terminalSession.mSessionName = shellCommand.shellName;
+        if (mShellCommand.shellName != null) {
+            mTerminalSession.mSessionName = mShellCommand.shellName;
         }
-
-        this.mTerminalSession = terminalSession;
-        this.mShellCommand = shellCommand;
-        this.mTermuxSessionClient = termuxSessionClient;
-        this.mSetStdoutOnExit = setStdoutOnExit;
     }
 
     /**
