@@ -68,18 +68,12 @@ public class TerminalShell {
         if (additionalEnvironment != null)
             environment.putAll(additionalEnvironment);
 
-        List<String> environmentList = new ArrayList<>(environment.size());
-        for (String name : environment.keySet())
-            environmentList.add(name + "=" + environment.get(name));
-        Collections.sort(environmentList);
-        String[] environmentArray = environmentList.toArray(new String[0]);
-
 
         // 设置命令参数
         List<String> result = new ArrayList<>();
         // root权限
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (shellCommand.mode == ShellCommand.Mode.ROOT) {
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             result.add(preferences.getString("su_path", "/system/bin/su"));
             result.add("-s");
         }
@@ -101,7 +95,7 @@ public class TerminalShell {
             shellCommand.executable,
             shellCommand.workingDirectory,
             shellCommand.arguments,
-            environmentArray,
+            environment.toArray(),
             shellCommand.stdin,
             shellCommand.terminalTranscriptRows,
             terminalSessionClient
