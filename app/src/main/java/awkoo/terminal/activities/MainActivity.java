@@ -40,7 +40,6 @@ import awkoo.terminal.utils.activity.ActivityUtils;
 import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.interact.TextInputDialogUtils;
 import awkoo.terminal.utils.preferences.TermuxAppSharedPreferences;
-import awkoo.terminal.utils.properties.TermuxAppSharedProperties;
 import awkoo.terminal.view.TerminalView;
 
 /**
@@ -77,11 +76,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      * Termux 应用的共享首选项管理器。
      */
     private TermuxAppSharedPreferences mPreferences;
-
-    /**
-     * 从 termux.properties 加载的 Termux 应用共享属性。
-     */
-    private TermuxAppSharedProperties mProperties;
 
     /**
      * 终端的额外按键视图。
@@ -146,8 +140,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         if (savedInstanceState != null)
             mIsActivityRecreated = savedInstanceState.getBoolean(ARG_ACTIVITY_RECREATED, false);
 
-        // 从磁盘加载 Termux 应用的 SharedProperties
-        mProperties = TermuxAppSharedProperties.getProperties();
         reloadProperties();
 
         super.onCreate(savedInstanceState);
@@ -333,8 +325,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      * 重新加载属性。
      */
     private void reloadProperties() {
-        mProperties.loadTermuxPropertiesFromDisk();
-
         if (mTerminalViewClient != null)
             mTerminalViewClient.onReloadProperties();
     }
@@ -818,15 +808,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     public TermuxAppSharedPreferences getPreferences() {
         return mPreferences;
-    }
-
-    /**
-     * 获取应用的属性。
-     *
-     * @return 应用的属性。
-     */
-    public TermuxAppSharedProperties getProperties() {
-        return mProperties;
     }
 
 }

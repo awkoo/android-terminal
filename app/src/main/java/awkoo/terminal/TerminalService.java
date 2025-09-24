@@ -29,7 +29,6 @@ import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionActivityClient;
 import awkoo.terminal.terminal.TerminalSessionClient;
 import awkoo.terminal.terminal.TerminalSessionClientBase;
-import awkoo.terminal.utils.properties.TermuxAppSharedProperties;
 
 /**
  * 一个后台服务，持有一系列 {@link TerminalShell}，并在运行时显示一个前台通知以防止被系统终止。
@@ -68,11 +67,6 @@ public final class TerminalService extends Service implements TerminalShell.Term
         = new TerminalSessionClientBase();
 
     /**
-     * Termux 应用的共享属性管理器，从 termux.properties 文件加载。
-     */
-    private TermuxAppSharedProperties mProperties;
-
-    /**
      * 终端会话列表
      */
     public final List<TerminalShell> mTerminalShells = new ArrayList<>();
@@ -91,8 +85,6 @@ public final class TerminalService extends Service implements TerminalShell.Term
      */
     @Override
     public void onCreate() {
-        // 获取Termux应用的SharedProperties，不从磁盘加载，因为Application已处理加载，MainActivity处理重载
-        mProperties = TermuxAppSharedProperties.getProperties();
         runStartForeground();
     }
 

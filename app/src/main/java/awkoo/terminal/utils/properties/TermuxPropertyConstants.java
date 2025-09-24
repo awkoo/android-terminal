@@ -2,12 +2,6 @@ package awkoo.terminal.utils.properties;
 
 import com.google.common.collect.ImmutableBiMap;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
-import awkoo.terminal.Constants;
-
 
 public final class TermuxPropertyConstants {
     /**
@@ -92,24 +86,5 @@ public final class TermuxPropertyConstants {
     public static final String IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME = "volume";
     public static final String DEFAULT_IVALUE_VOLUME_KEYS_BEHAVIOUR = IVALUE_VOLUME_KEY_BEHAVIOUR_VIRTUAL;
 
-
-    /**
-     * 定义了 Termux 加载的键集。
-     * 将此设置为 {@code null} 将导致 {@link SharedProperties} 抛出异常。
-     */
-    public static final Set<String> TERMUX_APP_PROPERTIES_LIST = new HashSet<>(Arrays.asList(
-        /* Integer */
-        KEY_SHORTCUT_CREATE_SESSION,
-        KEY_SHORTCUT_NEXT_SESSION,
-        KEY_SHORTCUT_PREVIOUS_SESSION,
-        KEY_SHORTCUT_RENAME_SESSION,
-
-        /* String */
-        KEY_BACK_KEY_BEHAVIOUR,
-        KEY_EXTRA_KEYS,
-        KEY_EXTRA_KEYS_STYLE,
-        KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR,
-        KEY_VOLUME_KEYS_BEHAVIOUR
-    ));
 
 }

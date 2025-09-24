@@ -1,70 +1,7 @@
 package awkoo.terminal.utils.properties;
 
-import androidx.annotation.NonNull;
-
-import java.util.Set;
-
 public abstract class TermuxSharedProperties {
 
-    protected final String mLabel;
-    protected final Set<String> mPropertiesList;
-    protected final SharedPropertiesParser mSharedPropertiesParser;
-    protected SharedProperties mSharedProperties;
-
-    public TermuxSharedProperties(@NonNull String label,
-                                  @NonNull Set<String> propertiesList,
-                                  @NonNull SharedPropertiesParser sharedPropertiesParser) {
-        mLabel = label;
-        mPropertiesList = propertiesList;
-        mSharedPropertiesParser = sharedPropertiesParser;
-        loadTermuxPropertiesFromDisk();
-    }
-
-    /**
-     * Reload the termux properties from disk into an in-memory cache.
-     */
-    public synchronized void loadTermuxPropertiesFromDisk() {
-        // Properties files must be searched everytime since no file may exist when constructor is
-        // called or a higher priority file may have been created afterward. Otherwise, if no file
-        // was found, then default props would keep loading, since mSharedProperties would be null. #2836
-        mSharedProperties = new SharedProperties(mPropertiesList, mSharedPropertiesParser);
-
-        mSharedProperties.loadPropertiesFromDisk();
-    }
-
-
-    public Object getInternalPropertyValue(String key) {
-        Object value = mSharedProperties.getInternalProperty(key);
-        // If the value is not null since key was found or if the value was null since the
-        // object stored for the key was itself null, we detect the later by checking if the key
-        // exists in the map.
-        if (value != null || mSharedProperties.getInternalProperties().containsKey(key)) {
-            return value;
-        } else {
-            // This should not happen normally unless mMap was modified after the
-            // {@link #loadTermuxPropertiesFromDisk()} call
-            // A null value can still be returned by
-            // {@link #getInternalPropertyValueFromValue(Context,String,String)} for some keys
-            return getInternalTermuxPropertyValueFromValue(key);
-        }
-    }
-
-
-    /**
-     * The class that implements the {@link SharedPropertiesParser} interface.
-     */
-    public static class SharedPropertiesParserClient implements SharedPropertiesParser {
-
-        /**
-         * Override the
-         * {@link SharedPropertiesParser#getInternalPropertyValueFromValue(String)}
-         * interface function.
-         */
-        @Override
-        public Object getInternalPropertyValueFromValue(String key) {
-            return getInternalTermuxPropertyValueFromValue(key);
-        }
-    }
 
 
     /**
@@ -107,16 +44,16 @@ public abstract class TermuxSharedProperties {
     }
 
 
-    public boolean isBackKeyTheEscapeKey() {
-        return TermuxPropertyConstants.IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR));
+    public static boolean isBackKeyTheEscapeKey() {
+        return TermuxPropertyConstants.IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE.equals(getInternalTermuxPropertyValueFromValue(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR));
     }
 
-    public boolean shouldEnableDisableSoftKeyboardOnToggle() {
-        return TermuxPropertyConstants.IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR));
+    public static boolean shouldEnableDisableSoftKeyboardOnToggle() {
+        return TermuxPropertyConstants.IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE.equals(getInternalTermuxPropertyValueFromValue(TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR));
     }
 
-    public boolean areVirtualVolumeKeysDisabled() {
-        return TermuxPropertyConstants.IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR));
+    public static boolean areVirtualVolumeKeysDisabled() {
+        return TermuxPropertyConstants.IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME.equals(getInternalTermuxPropertyValueFromValue(TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR));
     }
 
 

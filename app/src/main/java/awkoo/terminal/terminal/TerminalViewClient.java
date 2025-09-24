@@ -32,6 +32,7 @@ import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.data.UrlUtils;
 import awkoo.terminal.utils.interact.ShareUtils;
 import awkoo.terminal.utils.properties.TermuxPropertyConstants;
+import awkoo.terminal.utils.properties.TermuxSharedProperties;
 import awkoo.terminal.view.TerminalView;
 
 public class TerminalViewClient extends TerminalViewClientBase {
@@ -157,7 +158,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
     @Override
     public boolean shouldBackButtonBeMappedToEscape() {
-        return mActivity.getProperties().isBackKeyTheEscapeKey();
+        return TermuxSharedProperties.isBackKeyTheEscapeKey();
     }
 
     @Override
@@ -250,7 +251,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
      */
     private boolean handleVirtualKeys(int keyCode, KeyEvent event, boolean down) {
         InputDevice inputDevice = event.getDevice();
-        if (mActivity.getProperties().areVirtualVolumeKeysDisabled()) {
+        if (TermuxSharedProperties.areVirtualVolumeKeysDisabled()) {
             return false;
         } else if (inputDevice != null && inputDevice.getKeyboardType() == InputDevice.KEYBOARD_TYPE_ALPHABETIC) {
             // 不要从完整的外部键盘窃取专用按钮。
@@ -437,7 +438,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
         // {@link TermuxPropertyConstants#MAP_SESSION_SHORTCUTS} 存储会话快捷键和操作对
         for (Map.Entry<String, Integer> entry : TermuxPropertyConstants.MAP_SESSION_SHORTCUTS.entrySet()) {
             // mMap 在加载属性时存储会话快捷方式的代码点
-            Integer codePoint = (Integer) mActivity.getProperties().getInternalPropertyValue(entry.getKey());
+            Integer codePoint = (Integer) TermuxSharedProperties.getInternalTermuxPropertyValueFromValue(entry.getKey());
             // 如果 codePoint 为 null，则会话快捷方式在属性中不存在或无效
             // （如由 {@link #getCodePointForSessionShortcuts(String,String)} 解析）
             // 如果 codePoint 不为 null，则获取 MAP_SESSION_SHORTCUTS 键的操作并
@@ -459,7 +460,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
      */
     public void onToggleSoftKeyboardRequest() {
         // 如果软键盘切换行为是启用/禁用
-        if (mActivity.getProperties().shouldEnableDisableSoftKeyboardOnToggle()) {
+        if (TermuxSharedProperties.shouldEnableDisableSoftKeyboardOnToggle()) {
             // 如果软键盘可见
             if (!KeyboardUtils.areDisableSoftKeyboardFlagsSet(mActivity)) {
                 mActivity.getPreferences().setSoftKeyboardEnabled(false);
