@@ -1,30 +1,19 @@
 package awkoo.terminal.utils.properties;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Properties;
 import java.util.Set;
-
-import awkoo.terminal.utils.data.DataUtils;
 
 public abstract class TermuxSharedProperties {
 
-    protected final Context mContext;
     protected final String mLabel;
     protected final Set<String> mPropertiesList;
     protected final SharedPropertiesParser mSharedPropertiesParser;
-    protected File mPropertiesFile;
     protected SharedProperties mSharedProperties;
 
-    public static final String LOG_TAG = "TermuxSharedProperties";
-
-    public TermuxSharedProperties(@NonNull Context context, @NonNull String label,
-                                  @NonNull Set<String> propertiesList, @NonNull SharedPropertiesParser sharedPropertiesParser) {
-        mContext = context.getApplicationContext();
+    public TermuxSharedProperties(@NonNull String label,
+                                  @NonNull Set<String> propertiesList,
+                                  @NonNull SharedPropertiesParser sharedPropertiesParser) {
         mLabel = label;
         mPropertiesList = propertiesList;
         mSharedPropertiesParser = sharedPropertiesParser;
@@ -38,27 +27,12 @@ public abstract class TermuxSharedProperties {
         // Properties files must be searched everytime since no file may exist when constructor is
         // called or a higher priority file may have been created afterward. Otherwise, if no file
         // was found, then default props would keep loading, since mSharedProperties would be null. #2836
-        mPropertiesFile = null;
-        mSharedProperties = null;
-        mSharedProperties = new SharedProperties(mContext, mPropertiesFile, mPropertiesList, mSharedPropertiesParser);
+        mSharedProperties = new SharedProperties(mPropertiesList, mSharedPropertiesParser);
 
         mSharedProperties.loadPropertiesFromDisk();
     }
 
 
-    /**
-     * Get the internal {@link Object} value for the key passed from the {@link #mPropertiesFile} file.
-     * If cache is {@code true}, then value is returned from the {@link HashMap <>} in-memory cache,
-     * so a call to {@link #loadTermuxPropertiesFromDisk()} must be made before this.
-     *
-     * @param key    The key to read from the {@link HashMap<>} in-memory cache.
-     * @param cached If {@code true}, then the value is returned from the the {@link HashMap <>} in-memory cache,
-     *               but if the value is null, then an attempt is made to return the default value.
-     *               If {@code false}, then the {@link Properties} object is read directly from the file
-     *               and internal value is returned for the property value against the key.
-     * @return Returns the {@link Object} object. This will be {@code null} if key is not found or
-     * the object stored against the key is {@code null}.
-     */
     public Object getInternalPropertyValue(String key, boolean cached) {
         Object value;
         if (cached) {
@@ -73,13 +47,11 @@ public abstract class TermuxSharedProperties {
                 // {@link #loadTermuxPropertiesFromDisk()} call
                 // A null value can still be returned by
                 // {@link #getInternalPropertyValueFromValue(Context,String,String)} for some keys
-                value = getInternalTermuxPropertyValueFromValue(key, null);
-                //        logMessage(Log.WARN, tag, message);
-                return value;
+                return getInternalTermuxPropertyValueFromValue(key);
             }
         } else {
             // We get the property value directly from file and return its internal value
-            return getInternalTermuxPropertyValueFromValue(key, mSharedProperties.getProperty(key, false));
+            return getInternalTermuxPropertyValueFromValue(key);
         }
     }
 
@@ -88,43 +60,16 @@ public abstract class TermuxSharedProperties {
      * The class that implements the {@link SharedPropertiesParser} interface.
      */
     public static class SharedPropertiesParserClient implements SharedPropertiesParser {
-        @NonNull
-        @Override
-        public Properties preProcessPropertiesOnReadFromDisk(@NonNull Context context, @NonNull Properties properties) {
-            return replaceUseBlackUIProperty(properties);
-        }
 
         /**
          * Override the
-         * {@link SharedPropertiesParser#getInternalPropertyValueFromValue(Context, String, String)}
+         * {@link SharedPropertiesParser#getInternalPropertyValueFromValue(String)}
          * interface function.
          */
         @Override
-        public Object getInternalPropertyValueFromValue(@NonNull Context context, String key, String value) {
-            return getInternalTermuxPropertyValueFromValue(key, value);
+        public Object getInternalPropertyValueFromValue(String key) {
+            return getInternalTermuxPropertyValueFromValue(key);
         }
-    }
-
-    @NonNull
-    public static Properties replaceUseBlackUIProperty(@NonNull Properties properties) {
-        String useBlackUIStringValue = properties.getProperty(TermuxPropertyConstants.KEY_USE_BLACK_UI);
-        if (useBlackUIStringValue == null) return properties;
-
-        //        logMessage(Log.WARN, tag, message);
-        properties.remove(TermuxPropertyConstants.KEY_USE_BLACK_UI);
-
-        // If KEY_NIGHT_MODE is not set
-        if (properties.getProperty(TermuxPropertyConstants.KEY_NIGHT_MODE) == null) {
-            Boolean useBlackUI = SharedProperties.getBooleanValueForStringValue(useBlackUIStringValue);
-            if (useBlackUI != null) {
-                String termuxAppTheme = useBlackUI ? TermuxPropertyConstants.IVALUE_NIGHT_MODE_TRUE :
-                    TermuxPropertyConstants.IVALUE_NIGHT_MODE_FALSE;
-                //        logMessage(Log.WARN, tag, message);
-                properties.put(TermuxPropertyConstants.KEY_NIGHT_MODE, termuxAppTheme);
-            }
-        }
-
-        return properties;
     }
 
 
@@ -133,10 +78,9 @@ public abstract class TermuxSharedProperties {
      * read from properties file.
      *
      * @param key   The key for which the internal object is required.
-     * @param value The literal value for the property found is the properties file.
      * @return Returns the internal termux {@link Object} object.
      */
-    public static Object getInternalTermuxPropertyValueFromValue(String key, String value) {
+    public static Object getInternalTermuxPropertyValueFromValue(String key) {
         if (key == null) return null;
         /*
           For keys where a MAP_* is checked by respective functions. Note that value to this function
@@ -147,276 +91,83 @@ public abstract class TermuxSharedProperties {
          */
         switch (key) {
             /* int */
-            case TermuxPropertyConstants.KEY_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT:
-                return getDeleteTMPDIRFilesOlderThanXDaysOnExitInternalPropertyValueFromValue(value);
             case TermuxPropertyConstants.KEY_TERMINAL_CURSOR_BLINK_RATE:
-                return getTerminalCursorBlinkRateInternalPropertyValueFromValue(value);
+                return getTerminalCursorBlinkRateInternalPropertyValueFromValue();
             case TermuxPropertyConstants.KEY_TERMINAL_CURSOR_STYLE:
-                return getTerminalCursorStyleInternalPropertyValueFromValue(value);
-            case TermuxPropertyConstants.KEY_TERMINAL_MARGIN_HORIZONTAL:
-                return getTerminalMarginHorizontalInternalPropertyValueFromValue(value);
-            case TermuxPropertyConstants.KEY_TERMINAL_MARGIN_VERTICAL:
-                return getTerminalMarginVerticalInternalPropertyValueFromValue(value);
+                return getTerminalCursorStyleInternalPropertyValueFromValue();
             case TermuxPropertyConstants.KEY_TERMINAL_TRANSCRIPT_ROWS:
-                return getTerminalTranscriptRowsInternalPropertyValueFromValue(value);
+                return getTerminalTranscriptRowsInternalPropertyValueFromValue();
 
             /* float */
             case TermuxPropertyConstants.KEY_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR:
-                return getTerminalToolbarHeightScaleFactorInternalPropertyValueFromValue(value);
+                return getTerminalToolbarHeightScaleFactorInternalPropertyValueFromValue();
 
             /* Integer (may be null) */
             case TermuxPropertyConstants.KEY_SHORTCUT_CREATE_SESSION:
             case TermuxPropertyConstants.KEY_SHORTCUT_NEXT_SESSION:
             case TermuxPropertyConstants.KEY_SHORTCUT_PREVIOUS_SESSION:
             case TermuxPropertyConstants.KEY_SHORTCUT_RENAME_SESSION:
-                return getCodePointForSessionShortcuts(key, value);
+                return null;
 
             /* String (may be null) */
             case TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR:
-                return getBackKeyBehaviourInternalPropertyValueFromValue(value);
+                return getBackKeyBehaviourInternalPropertyValueFromValue();
             case TermuxPropertyConstants.KEY_EXTRA_KEYS:
-                return getExtraKeysInternalPropertyValueFromValue(value);
+                return getExtraKeysInternalPropertyValueFromValue();
             case TermuxPropertyConstants.KEY_EXTRA_KEYS_STYLE:
-                return getExtraKeysStyleInternalPropertyValueFromValue(value);
-            case TermuxPropertyConstants.KEY_NIGHT_MODE:
-                return getNightModeInternalPropertyValueFromValue(value);
+                return getExtraKeysStyleInternalPropertyValueFromValue();
             case TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR:
-                return getSoftKeyboardToggleBehaviourInternalPropertyValueFromValue(value);
+                return getSoftKeyboardToggleBehaviourInternalPropertyValueFromValue();
             case TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR:
-                return getVolumeKeysBehaviourInternalPropertyValueFromValue(value);
+                return getVolumeKeysBehaviourInternalPropertyValueFromValue();
 
             default:
                 // default false boolean behaviour
                 if (TermuxPropertyConstants.TERMUX_DEFAULT_FALSE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST.contains(key))
-                    return SharedProperties.getBooleanValueForStringValue(key, value, false, true, LOG_TAG);
+                    return false;
                 // default true boolean behaviour
                 if (TermuxPropertyConstants.TERMUX_DEFAULT_TRUE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST.contains(key))
-                    return SharedProperties.getBooleanValueForStringValue(key, value, true, true, LOG_TAG);
-                    // default inverted false boolean behaviour
-                    //else if (TermuxPropertyConstants.TERMUX_DEFAULT_INVERETED_FALSE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST.contains(key))
-                    //    return (boolean) SharedProperties.getInvertedBooleanValueForStringValue(key, value, false, true, LOG_TAG);
-                    // default inverted true boolean behaviour
-                    // else if (TermuxPropertyConstants.TERMUX_DEFAULT_INVERETED_TRUE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST.contains(key))
-                    //    return (boolean) SharedProperties.getInvertedBooleanValueForStringValue(key, value, true, true, LOG_TAG);
-                    // just use String object as is (may be null)
+                    return true;
                 else
-                    return value;
+                    return null;
         }
     }
 
 
-    /**
-     * Returns the int for the value if its not null and is between
-     * {@link TermuxPropertyConstants#IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT_MIN} and
-     * {@link TermuxPropertyConstants#IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT_MAX},
-     * otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static int getDeleteTMPDIRFilesOlderThanXDaysOnExitInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNotInRange(TermuxPropertyConstants.KEY_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT,
-            DataUtils.getIntFromString(value, TermuxPropertyConstants.DEFAULT_IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT),
-            TermuxPropertyConstants.DEFAULT_IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT,
-            TermuxPropertyConstants.IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT_MIN,
-            TermuxPropertyConstants.IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT_MAX,
-            true, true, LOG_TAG);
+    public static int getTerminalCursorBlinkRateInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE;
     }
 
-    /**
-     * Returns the int for the value if its not null and is between
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_CURSOR_BLINK_RATE_MIN} and
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_CURSOR_BLINK_RATE_MAX},
-     * otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static int getTerminalCursorBlinkRateInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNotInRange(TermuxPropertyConstants.KEY_TERMINAL_CURSOR_BLINK_RATE,
-            DataUtils.getIntFromString(value, TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE),
-            TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE,
-            TermuxPropertyConstants.IVALUE_TERMINAL_CURSOR_BLINK_RATE_MIN,
-            TermuxPropertyConstants.IVALUE_TERMINAL_CURSOR_BLINK_RATE_MAX,
-            true, true, LOG_TAG);
+    public static int getTerminalCursorStyleInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_CURSOR_STYLE;
     }
 
-    /**
-     * Returns the internal value after mapping it based on
-     * {@link TermuxPropertyConstants#MAP_TERMINAL_CURSOR_STYLE} if the value is not {@code null}
-     * and is valid, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_TERMINAL_CURSOR_STYLE}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static int getTerminalCursorStyleInternalPropertyValueFromValue(String value) {
-        return (int) SharedProperties.getDefaultIfNotInMap(TermuxPropertyConstants.KEY_TERMINAL_CURSOR_STYLE, TermuxPropertyConstants.MAP_TERMINAL_CURSOR_STYLE, SharedProperties.toLowerCase(value), TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_CURSOR_STYLE, true, LOG_TAG);
+    public static int getTerminalTranscriptRowsInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TRANSCRIPT_ROWS;
     }
 
-    /**
-     * Returns the int for the value if its not null and is between
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_MARGIN_HORIZONTAL_MIN} and
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_MARGIN_HORIZONTAL_MAX},
-     * otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_TERMINAL_MARGIN_HORIZONTAL}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static int getTerminalMarginHorizontalInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNotInRange(TermuxPropertyConstants.KEY_TERMINAL_MARGIN_HORIZONTAL,
-            DataUtils.getIntFromString(value, TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_MARGIN_HORIZONTAL),
-            TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_MARGIN_HORIZONTAL,
-            TermuxPropertyConstants.IVALUE_TERMINAL_MARGIN_HORIZONTAL_MIN,
-            TermuxPropertyConstants.IVALUE_TERMINAL_MARGIN_HORIZONTAL_MAX,
-            true, true, LOG_TAG);
+    public static float getTerminalToolbarHeightScaleFactorInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR;
     }
 
-    /**
-     * Returns the int for the value if its not null and is between
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_MARGIN_VERTICAL_MIN} and
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_MARGIN_VERTICAL_MAX},
-     * otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_TERMINAL_MARGIN_VERTICAL}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static int getTerminalMarginVerticalInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNotInRange(TermuxPropertyConstants.KEY_TERMINAL_MARGIN_VERTICAL,
-            DataUtils.getIntFromString(value, TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_MARGIN_VERTICAL),
-            TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_MARGIN_VERTICAL,
-            TermuxPropertyConstants.IVALUE_TERMINAL_MARGIN_VERTICAL_MIN,
-            TermuxPropertyConstants.IVALUE_TERMINAL_MARGIN_VERTICAL_MAX,
-            true, true, LOG_TAG);
+    public static String getBackKeyBehaviourInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_BACK_KEY_BEHAVIOUR;
     }
 
-    /**
-     * Returns the int for the value if its not null and is between
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_TRANSCRIPT_ROWS_MIN} and
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_TRANSCRIPT_ROWS_MAX},
-     * otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_TERMINAL_TRANSCRIPT_ROWS}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static int getTerminalTranscriptRowsInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNotInRange(TermuxPropertyConstants.KEY_TERMINAL_TRANSCRIPT_ROWS,
-            DataUtils.getIntFromString(value, TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TRANSCRIPT_ROWS),
-            TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TRANSCRIPT_ROWS,
-            TermuxPropertyConstants.IVALUE_TERMINAL_TRANSCRIPT_ROWS_MIN,
-            TermuxPropertyConstants.IVALUE_TERMINAL_TRANSCRIPT_ROWS_MAX,
-            true, true, LOG_TAG);
+    public static String getExtraKeysInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS;
     }
 
-    /**
-     * Returns the int for the value if its not null and is between
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR_MIN} and
-     * {@link TermuxPropertyConstants#IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR_MAX},
-     * otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static float getTerminalToolbarHeightScaleFactorInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNotInRange(TermuxPropertyConstants.KEY_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR,
-            DataUtils.getFloatFromString(value, TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR),
-            TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR,
-            TermuxPropertyConstants.IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR_MIN,
-            TermuxPropertyConstants.IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR_MAX,
-            true, true, LOG_TAG);
+    public static String getExtraKeysStyleInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE;
     }
 
-    /**
-     * Returns the code point for the value if key is not {@code null} and value is not {@code null} and is valid,
-     * otherwise returns {@code null}.
-     *
-     * @param key   The key for session shortcut.
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static Integer getCodePointForSessionShortcuts(String key, String value) {
-        if (key == null) return null;
-        if (value == null) return null;
-        String[] parts = value.toLowerCase().trim().split("\\+");
-        String input = parts.length == 2 ? parts[1].trim() : null;
-        if (!(parts.length == 2 && parts[0].trim().equals("ctrl")) || input.isEmpty() || input.length() > 2) {
-            //        logMessage(Log.ERROR, tag, message);
-            return null;
-        }
-
-        char c = input.charAt(0);
-        int codePoint = c;
-        if (Character.isLowSurrogate(c)) {
-            if (input.length() != 2 || Character.isHighSurrogate(input.charAt(1))) {
-                //        logMessage(Log.ERROR, tag, message);
-                return null;
-            } else {
-                codePoint = Character.toCodePoint(input.charAt(1), c);
-            }
-        }
-
-        return codePoint;
+    public static String getSoftKeyboardToggleBehaviourInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR;
     }
 
-    /**
-     * Returns the value itself if it is not {@code null}, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_BACK_KEY_BEHAVIOUR}.
-     *
-     * @param value {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static String getBackKeyBehaviourInternalPropertyValueFromValue(String value) {
-        return (String) SharedProperties.getDefaultIfNotInMap(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR, TermuxPropertyConstants.MAP_BACK_KEY_BEHAVIOUR, SharedProperties.toLowerCase(value), TermuxPropertyConstants.DEFAULT_IVALUE_BACK_KEY_BEHAVIOUR, true, LOG_TAG);
-    }
-
-    /**
-     * Returns the value itself if it is not {@code null}, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_EXTRA_KEYS}.
-     *
-     * @param value The {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static String getExtraKeysInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNullOrEmpty(value, TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS);
-    }
-
-    /**
-     * Returns the value itself if it is not {@code null}, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_EXTRA_KEYS_STYLE}.
-     *
-     * @param value {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static String getExtraKeysStyleInternalPropertyValueFromValue(String value) {
-        return SharedProperties.getDefaultIfNullOrEmpty(value, TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE);
-    }
-
-    /**
-     * Returns the value itself if it is not {@code null}, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_NIGHT_MODE}.
-     *
-     * @param value {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static String getNightModeInternalPropertyValueFromValue(String value) {
-        return (String) SharedProperties.getDefaultIfNotInMap(TermuxPropertyConstants.KEY_NIGHT_MODE,
-            TermuxPropertyConstants.MAP_NIGHT_MODE, SharedProperties.toLowerCase(value),
-            TermuxPropertyConstants.DEFAULT_IVALUE_NIGHT_MODE, true, LOG_TAG);
-    }
-
-    /**
-     * Returns the value itself if it is not {@code null}, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR}.
-     *
-     * @param value {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static String getSoftKeyboardToggleBehaviourInternalPropertyValueFromValue(String value) {
-        return (String) SharedProperties.getDefaultIfNotInMap(TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR, TermuxPropertyConstants.MAP_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR, SharedProperties.toLowerCase(value), TermuxPropertyConstants.DEFAULT_IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR, true, LOG_TAG);
-    }
-
-    /**
-     * Returns the value itself if it is not {@code null}, otherwise returns {@link TermuxPropertyConstants#DEFAULT_IVALUE_VOLUME_KEYS_BEHAVIOUR}.
-     *
-     * @param value {@link String} value to convert.
-     * @return Returns the internal value for value.
-     */
-    public static String getVolumeKeysBehaviourInternalPropertyValueFromValue(String value) {
-        return (String) SharedProperties.getDefaultIfNotInMap(TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR, TermuxPropertyConstants.MAP_VOLUME_KEYS_BEHAVIOUR, SharedProperties.toLowerCase(value), TermuxPropertyConstants.DEFAULT_IVALUE_VOLUME_KEYS_BEHAVIOUR, true, LOG_TAG);
+    public static String getVolumeKeysBehaviourInternalPropertyValueFromValue() {
+        return TermuxPropertyConstants.DEFAULT_IVALUE_VOLUME_KEYS_BEHAVIOUR;
     }
 
 

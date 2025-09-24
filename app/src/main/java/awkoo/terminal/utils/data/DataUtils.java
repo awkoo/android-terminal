@@ -38,42 +38,6 @@ public class DataUtils {
         return text;
     }
 
-    /**
-     * Get the {@code float} from a {@link String}.
-     *
-     * @param value The {@link String} value.
-     * @param def   The default value if failed to read a valid value.
-     * @return Returns the {@code float} value after parsing the {@link String} value, otherwise
-     * returns default if failed to read a valid value, like in case of an exception.
-     */
-    public static float getFloatFromString(String value, float def) {
-        if (value == null) return def;
-
-        try {
-            return Float.parseFloat(value);
-        } catch (Exception e) {
-            return def;
-        }
-    }
-
-    /**
-     * Get the {@code int} from a {@link String}.
-     *
-     * @param value The {@link String} value.
-     * @param def   The default value if failed to read a valid value.
-     * @return Returns the {@code int} value after parsing the {@link String} value, otherwise
-     * returns default if failed to read a valid value, like in case of an exception.
-     */
-    public static int getIntFromString(String value, int def) {
-        if (value == null) return def;
-
-        try {
-            return Integer.parseInt(value);
-        } catch (Exception e) {
-            return def;
-        }
-    }
-
 
     /**
      * If value is not in the range [min, max], set it to either min or max.

@@ -16,6 +16,6 @@ public class Application extends android.app.Application {
         startService(serviceIntent);
 
         // Init app wide SharedProperties loaded from termux.properties
-        TermuxAppSharedProperties.init(context);
+        TermuxAppSharedProperties.init();
     }
 }

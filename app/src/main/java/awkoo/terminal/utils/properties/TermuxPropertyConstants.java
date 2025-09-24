@@ -7,89 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import awkoo.terminal.Constants;
-import awkoo.terminal.utils.theme.NightMode;
 import awkoo.terminal.terminal.TerminalEmulator;
-import awkoo.terminal.view.TerminalView;
 
-/*
- * Version: v0.18.0
- * SPDX-License-Identifier: MIT
- *
- * Changelog
- *
- * - 0.1.0 (2021-03-11)
- *      - Initial Release.
- *
- * - 0.2.0 (2021-03-11)
- *      - Renamed `HOME_PATH` to `TERMUX_HOME_DIR_PATH`.
- *      - Renamed `TERMUX_PROPERTIES_PRIMARY_PATH` to `TERMUX_PROPERTIES_PRIMARY_FILE_PATH`.
- *      - Renamed `TERMUX_PROPERTIES_SECONDARY_FILE_PATH` to `TERMUX_PROPERTIES_SECONDARY_FILE_PATH`.
- *
- * - 0.3.0 (2021-03-16)
- *      - Add `*TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR*`.
- *
- * - 0.4.0 (2021-03-16)
- *      - Removed `MAP_GENERIC_BOOLEAN` and `MAP_GENERIC_INVERTED_BOOLEAN`.
- *
- * - 0.5.0 (2021-03-25)
- *      - Add `KEY_HIDE_SOFT_KEYBOARD_ON_STARTUP`.
- *
- * - 0.6.0 (2021-04-07)
- *      - Updated javadocs.
- *
- * - 0.7.0 (2021-05-09)
- *      - Add `*SOFT_KEYBOARD_TOGGLE_BEHAVIOUR*`.
- *
- * - 0.8.0 (2021-05-10)
- *      - Change the `KEY_USE_BACK_KEY_AS_ESCAPE_KEY` and `KEY_VIRTUAL_VOLUME_KEYS_DISABLED` booleans
- *          to `KEY_BACK_KEY_BEHAVIOUR` and `KEY_VOLUME_KEYS_BEHAVIOUR` String internal values.
- *      - Renamed `SOFT_KEYBOARD_TOGGLE_BEHAVIOUR` to `KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR`.
- *
- * - 0.9.0 (2021-05-14)
- *      - Add `*KEY_TERMINAL_CURSOR_BLINK_RATE*`.
- *
- * - 0.10.0 (2021-05-15)
- *      - Add `MAP_BACK_KEY_BEHAVIOUR`, `MAP_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR`, `MAP_VOLUME_KEYS_BEHAVIOUR`.
- *
- * - 0.11.0 (2021-06-10)
- *      - Add `*KEY_TERMINAL_TRANSCRIPT_ROWS*`.
- *
- * - 0.12.0 (2021-06-10)
- *      - Add `*KEY_TERMINAL_CURSOR_STYLE*`.
- *
- * - 0.13.0 (2021-08-25)
- *      - Add `*KEY_TERMINAL_MARGIN_HORIZONTAL*` and `*KEY_TERMINAL_MARGIN_VERTICAL*`.
- *
- * - 0.14.0 (2021-09-02)
- *      - Add `getTermuxFloatPropertiesFile()`.
- *
- * - 0.15.0 (2021-09-05)
- *      - Add `KEY_EXTRA_KEYS_TEXT_ALL_CAPS`.
- *
- * - 0.16.0 (2021-10-21)
- *      - Add `KEY_NIGHT_MODE`.
- *
- * - 0.17.0 (2022-03-17)
- *      - Add `KEY_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT`.
- *
- * - 0.18.0 (2022-06-13)
- *      - Add `KEY_DISABLE_FILE_SHARE_RECEIVER` and `KEY_DISABLE_FILE_VIEW_RECEIVER`.
- */
 
 public final class TermuxPropertyConstants {
 
     /* boolean */
-
-    /**
-     * Defines the key for whether file share receiver of the app is enabled.
-     */
-    public static final String KEY_DISABLE_FILE_SHARE_RECEIVER = "disable-file-share-receiver"; // Default: "disable-file-share-receiver"
-
-    /**
-     * Defines the key for whether file view receiver of the app is enabled.
-     */
-    public static final String KEY_DISABLE_FILE_VIEW_RECEIVER = "disable-file-view-receiver"; // Default: "disable-file-view-receiver"
-
 
     /**
      * Defines the key for whether hardware keyboard shortcuts are enabled.
@@ -128,13 +51,6 @@ public final class TermuxPropertyConstants {
 
 
     /**
-     * Defines the key for whether to use black UI
-     */
-    @Deprecated
-    public static final String KEY_USE_BLACK_UI = "use-black-ui"; // Default: "use-black-ui"
-
-
-    /**
      * Defines the key for whether to use ctrl space workaround to fix the issue where ctrl+space does not work on some ROMs
      */
     public static final String KEY_USE_CTRL_SPACE_WORKAROUND = "ctrl-space-workaround"; // Default: "ctrl-space-workaround"
@@ -162,8 +78,6 @@ public final class TermuxPropertyConstants {
      * Defines the key for the terminal cursor blink rate
      */
     public static final String KEY_TERMINAL_CURSOR_BLINK_RATE = "terminal-cursor-blink-rate"; // Default: "terminal-cursor-blink-rate"
-    public static final int IVALUE_TERMINAL_CURSOR_BLINK_RATE_MIN = TerminalView.TERMINAL_CURSOR_BLINK_RATE_MIN;
-    public static final int IVALUE_TERMINAL_CURSOR_BLINK_RATE_MAX = TerminalView.TERMINAL_CURSOR_BLINK_RATE_MAX;
     public static final int DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE = 0;
 
 
@@ -172,60 +86,13 @@ public final class TermuxPropertyConstants {
      */
     public static final String KEY_TERMINAL_CURSOR_STYLE = "terminal-cursor-style"; // Default: "terminal-cursor-style"
 
-    public static final String VALUE_TERMINAL_CURSOR_STYLE_BLOCK = "block";
-    public static final String VALUE_TERMINAL_CURSOR_STYLE_UNDERLINE = "underline";
-    public static final String VALUE_TERMINAL_CURSOR_STYLE_BAR = "bar";
-
-    public static final int IVALUE_TERMINAL_CURSOR_STYLE_BLOCK = TerminalEmulator.TERMINAL_CURSOR_STYLE_BLOCK;
-    public static final int IVALUE_TERMINAL_CURSOR_STYLE_UNDERLINE = TerminalEmulator.TERMINAL_CURSOR_STYLE_UNDERLINE;
-    public static final int IVALUE_TERMINAL_CURSOR_STYLE_BAR = TerminalEmulator.TERMINAL_CURSOR_STYLE_BAR;
     public static final int DEFAULT_IVALUE_TERMINAL_CURSOR_STYLE = TerminalEmulator.DEFAULT_TERMINAL_CURSOR_STYLE;
-
-    /**
-     * Defines the bidirectional map for terminal cursor styles and their internal values
-     */
-    public static final ImmutableBiMap<String, Integer> MAP_TERMINAL_CURSOR_STYLE =
-        new ImmutableBiMap.Builder<String, Integer>()
-            .put(VALUE_TERMINAL_CURSOR_STYLE_BLOCK, IVALUE_TERMINAL_CURSOR_STYLE_BLOCK)
-            .put(VALUE_TERMINAL_CURSOR_STYLE_UNDERLINE, IVALUE_TERMINAL_CURSOR_STYLE_UNDERLINE)
-            .put(VALUE_TERMINAL_CURSOR_STYLE_BAR, IVALUE_TERMINAL_CURSOR_STYLE_BAR)
-            .build();
-
-
-    /**
-     * Defines the key for how many days old the access time should be of files that should be
-     * deleted from $TMPDIR on termux exit.
-     * `-1` for none, `0` for all and `> 0` for x days.
-     */
-    public static final String KEY_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT = "delete-tmpdir-files-older-than-x-days-on-exit"; // Default: "delete-tmpdir-files-older-than-x-days-on-exit"
-    public static final int IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT_MIN = -1;
-    public static final int IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT_MAX = 100000;
-    public static final int DEFAULT_IVALUE_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT = 3;
-
-
-    /**
-     * Defines the key for the terminal margin on left and right in dp units
-     */
-    public static final String KEY_TERMINAL_MARGIN_HORIZONTAL = "terminal-margin-horizontal"; // Default: "terminal-margin-horizontal"
-    public static final int IVALUE_TERMINAL_MARGIN_HORIZONTAL_MIN = 0;
-    public static final int IVALUE_TERMINAL_MARGIN_HORIZONTAL_MAX = 100;
-    public static final int DEFAULT_IVALUE_TERMINAL_MARGIN_HORIZONTAL = 3;
-
-    /**
-     * Defines the key for the terminal margin on top and bottom in dp units
-     */
-    public static final String KEY_TERMINAL_MARGIN_VERTICAL = "terminal-margin-vertical"; // Default: "terminal-margin-vertical"
-    public static final int IVALUE_TERMINAL_MARGIN_VERTICAL_MIN = 0;
-    public static final int IVALUE_TERMINAL_MARGIN_VERTICAL_MAX = 100;
-    public static final int DEFAULT_IVALUE_TERMINAL_MARGIN_VERTICAL = 0;
 
 
     /**
      * Defines the key for the terminal transcript rows
      */
     public static final String KEY_TERMINAL_TRANSCRIPT_ROWS = "terminal-transcript-rows"; // Default: "terminal-transcript-rows"
-    public static final int IVALUE_TERMINAL_TRANSCRIPT_ROWS_MIN = TerminalEmulator.TERMINAL_TRANSCRIPT_ROWS_MIN;
-    public static final int IVALUE_TERMINAL_TRANSCRIPT_ROWS_MAX = TerminalEmulator.TERMINAL_TRANSCRIPT_ROWS_MAX;
     public static final int DEFAULT_IVALUE_TERMINAL_TRANSCRIPT_ROWS = TerminalEmulator.DEFAULT_TERMINAL_TRANSCRIPT_ROWS;
 
 
@@ -238,8 +105,6 @@ public final class TermuxPropertyConstants {
      * Defines the key for the terminal toolbar height
      */
     public static final String KEY_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR = "terminal-toolbar-height"; // Default: "terminal-toolbar-height"
-    public static final float IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR_MIN = 0.4f;
-    public static final float IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR_MAX = 3;
     public static final float DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR = 1;
 
 
@@ -296,21 +161,6 @@ public final class TermuxPropertyConstants {
     public static final String IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE = "escape";
     public static final String DEFAULT_IVALUE_BACK_KEY_BEHAVIOUR = IVALUE_BACK_KEY_BEHAVIOUR_BACK;
 
-    /**
-     * Defines the bidirectional map for back key behaviour values and their internal values
-     */
-    public static final ImmutableBiMap<String, String> MAP_BACK_KEY_BEHAVIOUR =
-        new ImmutableBiMap.Builder<String, String>()
-            .put(IVALUE_BACK_KEY_BEHAVIOUR_BACK, IVALUE_BACK_KEY_BEHAVIOUR_BACK)
-            .put(IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE, IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE)
-            .build();
-
-
-    /**
-     * Defines the key for the default working directory
-     */
-    public static final String KEY_DEFAULT_WORKING_DIRECTORY = "default-working-directory"; // Default: "default-working-directory"
-
 
     /**
      * Defines the key for extra keys
@@ -327,27 +177,6 @@ public final class TermuxPropertyConstants {
 
 
     /**
-     * Defines the key for {@link NightMode}.
-     */
-    public static final String KEY_NIGHT_MODE = "night-mode"; // Default: "night-mode"
-
-    public static final String IVALUE_NIGHT_MODE_TRUE = NightMode.TRUE.getName();
-    public static final String IVALUE_NIGHT_MODE_FALSE = NightMode.FALSE.getName();
-    public static final String IVALUE_NIGHT_MODE_SYSTEM = NightMode.SYSTEM.getName();
-    public static final String DEFAULT_IVALUE_NIGHT_MODE = IVALUE_NIGHT_MODE_SYSTEM;
-
-    /**
-     * Defines the bidirectional map for {@link NightMode} values and their internal values
-     */
-    public static final ImmutableBiMap<String, String> MAP_NIGHT_MODE =
-        new ImmutableBiMap.Builder<String, String>()
-            .put(IVALUE_NIGHT_MODE_TRUE, IVALUE_NIGHT_MODE_TRUE)
-            .put(IVALUE_NIGHT_MODE_FALSE, IVALUE_NIGHT_MODE_FALSE)
-            .put(IVALUE_NIGHT_MODE_SYSTEM, IVALUE_NIGHT_MODE_SYSTEM)
-            .build();
-
-
-    /**
      * Defines the key for whether toggle soft keyboard request will show/hide or enable/disable keyboard
      */
     public static final String KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR = "soft-keyboard-toggle-behaviour"; // Default: "soft-keyboard-toggle-behaviour"
@@ -355,15 +184,6 @@ public final class TermuxPropertyConstants {
     public static final String IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_SHOW_HIDE = "show/hide";
     public static final String IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE = "enable/disable";
     public static final String DEFAULT_IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR = IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_SHOW_HIDE;
-
-    /**
-     * Defines the bidirectional map for toggle soft keyboard behaviour values and their internal values
-     */
-    public static final ImmutableBiMap<String, String> MAP_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR =
-        new ImmutableBiMap.Builder<String, String>()
-            .put(IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_SHOW_HIDE, IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_SHOW_HIDE)
-            .put(IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE, IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE)
-            .build();
 
 
     /**
@@ -375,15 +195,6 @@ public final class TermuxPropertyConstants {
     public static final String IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME = "volume";
     public static final String DEFAULT_IVALUE_VOLUME_KEYS_BEHAVIOUR = IVALUE_VOLUME_KEY_BEHAVIOUR_VIRTUAL;
 
-    /**
-     * Defines the bidirectional map for volume keys behaviour values and their internal values
-     */
-    public static final ImmutableBiMap<String, String> MAP_VOLUME_KEYS_BEHAVIOUR =
-        new ImmutableBiMap.Builder<String, String>()
-            .put(IVALUE_VOLUME_KEY_BEHAVIOUR_VIRTUAL, IVALUE_VOLUME_KEY_BEHAVIOUR_VIRTUAL)
-            .put(IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME, IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME)
-            .build();
-
 
     /**
      * Defines the set for keys loaded by termux
@@ -391,8 +202,6 @@ public final class TermuxPropertyConstants {
      */
     public static final Set<String> TERMUX_APP_PROPERTIES_LIST = new HashSet<>(Arrays.asList(
         /* boolean */
-        KEY_DISABLE_FILE_SHARE_RECEIVER,
-        KEY_DISABLE_FILE_VIEW_RECEIVER,
         KEY_DISABLE_HARDWARE_KEYBOARD_SHORTCUTS,
         KEY_DISABLE_TERMINAL_SESSION_CHANGE_TOAST,
         KEY_ENFORCE_CHAR_BASED_INPUT,
@@ -405,11 +214,8 @@ public final class TermuxPropertyConstants {
         Constants.PROP_ALLOW_EXTERNAL_APPS,
 
         /* int */
-        KEY_DELETE_TMPDIR_FILES_OLDER_THAN_X_DAYS_ON_EXIT,
         KEY_TERMINAL_CURSOR_BLINK_RATE,
         KEY_TERMINAL_CURSOR_STYLE,
-        KEY_TERMINAL_MARGIN_HORIZONTAL,
-        KEY_TERMINAL_MARGIN_VERTICAL,
         KEY_TERMINAL_TRANSCRIPT_ROWS,
 
         /* float */
@@ -425,7 +231,6 @@ public final class TermuxPropertyConstants {
         KEY_BACK_KEY_BEHAVIOUR,
         KEY_EXTRA_KEYS,
         KEY_EXTRA_KEYS_STYLE,
-        KEY_NIGHT_MODE,
         KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR,
         KEY_VOLUME_KEYS_BEHAVIOUR
     ));
@@ -437,8 +242,6 @@ public final class TermuxPropertyConstants {
      * default: false
      */
     public static final Set<String> TERMUX_DEFAULT_FALSE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST = new HashSet<>(Arrays.asList(
-        KEY_DISABLE_FILE_SHARE_RECEIVER,
-        KEY_DISABLE_FILE_VIEW_RECEIVER,
         KEY_DISABLE_HARDWARE_KEYBOARD_SHORTCUTS,
         KEY_DISABLE_TERMINAL_SESSION_CHANGE_TOAST,
         KEY_ENFORCE_CHAR_BASED_INPUT,

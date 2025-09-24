@@ -1,9 +1,5 @@
 package awkoo.terminal.utils.properties;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
 import awkoo.terminal.Constants;
 
 public class TermuxAppSharedProperties extends TermuxSharedProperties {
@@ -11,19 +7,21 @@ public class TermuxAppSharedProperties extends TermuxSharedProperties {
     private static TermuxAppSharedProperties properties;
 
 
-    private TermuxAppSharedProperties(@NonNull Context context) {
-        super(context, Constants.TERMUX_APP_NAME, TermuxPropertyConstants.TERMUX_APP_PROPERTIES_LIST,
-            new TermuxSharedProperties.SharedPropertiesParserClient());
+    private TermuxAppSharedProperties() {
+        super(
+            Constants.TERMUX_APP_NAME,
+            TermuxPropertyConstants.TERMUX_APP_PROPERTIES_LIST,
+            new TermuxSharedProperties.SharedPropertiesParserClient()
+        );
     }
 
     /**
      * Initialize the {@link #properties} and load properties from disk.
      *
-     * @param context The {@link Context} for operations.
      */
-    public static void init(@NonNull Context context) {
+    public static void init() {
         if (properties == null)
-            properties = new TermuxAppSharedProperties(context);
+            properties = new TermuxAppSharedProperties();
     }
 
     /**
