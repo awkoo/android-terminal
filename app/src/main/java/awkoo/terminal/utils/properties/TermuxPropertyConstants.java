@@ -56,18 +56,6 @@ public final class TermuxPropertyConstants {
     public static final String KEY_USE_CTRL_SPACE_WORKAROUND = "ctrl-space-workaround"; // Default: "ctrl-space-workaround"
 
 
-    /**
-     * Defines the key for whether to use fullscreen
-     */
-    public static final String KEY_USE_FULLSCREEN = "fullscreen"; // Default: "fullscreen"
-
-
-    /**
-     * Defines the key for whether to use fullscreen workaround
-     */
-    public static final String KEY_USE_FULLSCREEN_WORKAROUND = "use-fullscreen-workaround"; // Default: "use-fullscreen-workaround"
-
-
 
 
 
@@ -209,8 +197,6 @@ public final class TermuxPropertyConstants {
         KEY_HIDE_SOFT_KEYBOARD_ON_STARTUP,
         KEY_TERMINAL_ONCLICK_URL_OPEN,
         KEY_USE_CTRL_SPACE_WORKAROUND,
-        KEY_USE_FULLSCREEN,
-        KEY_USE_FULLSCREEN_WORKAROUND,
         Constants.PROP_ALLOW_EXTERNAL_APPS,
 
         /* int */
@@ -248,8 +234,6 @@ public final class TermuxPropertyConstants {
         KEY_HIDE_SOFT_KEYBOARD_ON_STARTUP,
         KEY_TERMINAL_ONCLICK_URL_OPEN,
         KEY_USE_CTRL_SPACE_WORKAROUND,
-        KEY_USE_FULLSCREEN,
-        KEY_USE_FULLSCREEN_WORKAROUND,
         Constants.PROP_ALLOW_EXTERNAL_APPS
     ));
 
