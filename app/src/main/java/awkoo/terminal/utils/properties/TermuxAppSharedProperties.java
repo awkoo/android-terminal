@@ -17,7 +17,6 @@ public class TermuxAppSharedProperties extends TermuxSharedProperties {
 
     /**
      * Initialize the {@link #properties} and load properties from disk.
-     *
      */
     public static void init() {
         if (properties == null)

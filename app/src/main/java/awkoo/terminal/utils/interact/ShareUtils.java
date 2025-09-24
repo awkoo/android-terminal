@@ -10,8 +10,8 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import awkoo.terminal.R;
-import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.UI;
+import awkoo.terminal.utils.data.DataUtils;
 
 public class ShareUtils {
 

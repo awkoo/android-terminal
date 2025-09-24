@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import awkoo.terminal.R;
-import awkoo.terminal.utils.errors.Errno;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
+import awkoo.terminal.utils.errors.Errno;
 
 /**
  * A class that maintains info for foreground Termux sessions.
@@ -55,7 +55,7 @@ public class TerminalShell {
      * @param context               The {@link Context} for operations. This must be the context for
      *                              the current package and not the context of a `sharedUserId` package,
      *                              since environment setup may be dependent on current package.
-     * @param shellCommand      The {@link ShellCommand} containing the information for execution command.
+     * @param shellCommand          The {@link ShellCommand} containing the information for execution command.
      * @param terminalSessionClient The {@link TerminalSessionClient} interface implementation.
      * @param termuxSessionClient   The {@link TermuxSessionClient} interface implementation.
      * @param additionalEnvironment The additional shell environment variables to export. Existing
@@ -218,12 +218,12 @@ public class TerminalShell {
      * then the {@link TerminalShell.TermuxSessionClient#onSessionExited(TerminalShell)}
      * callback will be called.
      *
-     * @param terminalShell    The {@link TerminalShell}, which should be set if
-     *                         {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
-     *                         successfully started the process.
-     * @param shellCommand The {@link ShellCommand}, which should be set if
-     *                         {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
-     *                         failed to start the process.
+     * @param terminalShell The {@link TerminalShell}, which should be set if
+     *                      {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
+     *                      successfully started the process.
+     * @param shellCommand  The {@link ShellCommand}, which should be set if
+     *                      {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
+     *                      failed to start the process.
      */
     private static void processTermuxSessionResult(final TerminalShell terminalShell, ShellCommand shellCommand) {
         if (terminalShell != null)

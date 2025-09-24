@@ -26,20 +26,20 @@ import androidx.viewpager.widget.ViewPager;
 
 import awkoo.terminal.R;
 import awkoo.terminal.TerminalService;
+import awkoo.terminal.databinding.ActivityMainBinding;
+import awkoo.terminal.extrakeys.ExtraKeysView;
 import awkoo.terminal.terminal.SessionsListViewController;
+import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionActivityClient;
 import awkoo.terminal.terminal.TerminalViewClient;
 import awkoo.terminal.terminal.io.TerminalToolbarViewPager;
 import awkoo.terminal.terminal.io.TermuxTerminalExtraKeys;
-import awkoo.terminal.databinding.ActivityMainBinding;
+import awkoo.terminal.utils.UI;
 import awkoo.terminal.utils.activity.ActivityUtils;
 import awkoo.terminal.utils.data.DataUtils;
-import awkoo.terminal.extrakeys.ExtraKeysView;
 import awkoo.terminal.utils.interact.TextInputDialogUtils;
 import awkoo.terminal.utils.preferences.TermuxAppSharedPreferences;
 import awkoo.terminal.utils.properties.TermuxAppSharedProperties;
-import awkoo.terminal.terminal.TerminalSession;
-import awkoo.terminal.utils.UI;
 import awkoo.terminal.view.TerminalView;
 
 /**

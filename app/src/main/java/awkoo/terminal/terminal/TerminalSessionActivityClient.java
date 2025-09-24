@@ -16,10 +16,10 @@ import java.util.Properties;
 import awkoo.terminal.R;
 import awkoo.terminal.TerminalService;
 import awkoo.terminal.activities.MainActivity;
-import awkoo.terminal.utils.interact.ShareUtils;
-import awkoo.terminal.utils.interact.TextInputDialogUtils;
 import awkoo.terminal.shell.TerminalShell;
 import awkoo.terminal.utils.UI;
+import awkoo.terminal.utils.interact.ShareUtils;
+import awkoo.terminal.utils.interact.TextInputDialogUtils;
 
 /**
  * {@link TerminalSessionClient} 的实现，可能需要 {@link Activity} 来实现其接口方法。

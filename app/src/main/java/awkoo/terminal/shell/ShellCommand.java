@@ -87,12 +87,10 @@ public class ShellCommand {
     public final Mode mode;
 
 
-
     /**
      * The shell name of commands.
      */
     public String shellName;
-
 
 
     /**

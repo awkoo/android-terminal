@@ -10,13 +10,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import org.json.JSONException;
 
 import awkoo.terminal.activities.MainActivity;
-import awkoo.terminal.terminal.TerminalSessionActivityClient;
-import awkoo.terminal.terminal.TerminalViewClient;
 import awkoo.terminal.extrakeys.ExtraKeysConstants;
 import awkoo.terminal.extrakeys.ExtraKeysInfo;
-import awkoo.terminal.utils.properties.TermuxPropertyConstants;
 import awkoo.terminal.extrakeys.TerminalExtraKeys;
+import awkoo.terminal.terminal.TerminalSessionActivityClient;
+import awkoo.terminal.terminal.TerminalViewClient;
 import awkoo.terminal.utils.UI;
+import awkoo.terminal.utils.properties.TermuxPropertyConstants;
 import awkoo.terminal.view.TerminalView;
 
 public class TermuxTerminalExtraKeys extends TerminalExtraKeys {

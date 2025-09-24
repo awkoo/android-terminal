@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableBiMap;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import awkoo.terminal.Constants;
@@ -243,7 +244,7 @@ public final class TermuxPropertyConstants {
      * "false" -> false
      * default: true
      */
-    public static final Set<String> TERMUX_DEFAULT_TRUE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST = new HashSet<>(Arrays.asList(
+    public static final Set<String> TERMUX_DEFAULT_TRUE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST = new HashSet<>(List.of(
         KEY_EXTRA_KEYS_TEXT_ALL_CAPS
     ));
 

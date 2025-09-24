@@ -77,7 +77,7 @@ public abstract class TermuxSharedProperties {
      * A static function that should return the internal termux {@link Object} for a key/value pair
      * read from properties file.
      *
-     * @param key   The key for which the internal object is required.
+     * @param key The key for which the internal object is required.
      * @return Returns the internal termux {@link Object} object.
      */
     public static Object getInternalTermuxPropertyValueFromValue(String key) {

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import awkoo.terminal.utils.logger.Logger;
 import awkoo.terminal.utils.UI;
+import awkoo.terminal.utils.logger.Logger;
 
 public class Error implements Serializable {
 

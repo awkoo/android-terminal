@@ -561,7 +561,7 @@ public final class TerminalEmulator {
         if (!isCursorEnabled())
             return false;
         else
-            return mCursorBlinkingEnabled ? mCursorBlinkState : true;
+            return !mCursorBlinkingEnabled || mCursorBlinkState;
     }
 
     public void setCursorBlinkingEnabled(boolean cursorBlinkingEnabled) {

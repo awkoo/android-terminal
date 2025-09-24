@@ -7,8 +7,8 @@ import android.util.TypedValue;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.Constants;
+import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.preferences.TermuxPreferenceConstants.TERMUX_APP;
 
 public class TermuxAppSharedPreferences {

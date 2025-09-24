@@ -28,7 +28,8 @@ public class TerminalViewClientBase {
         return true;
     }
 
-    public void copyModeChanged(boolean copyMode) {}
+    public void copyModeChanged(boolean copyMode) {
+    }
 
     public boolean onKeyDown(int keyCode, KeyEvent e, TerminalSession session) {
         return false;
@@ -62,6 +63,7 @@ public class TerminalViewClientBase {
         return false;
     }
 
-    public void onEmulatorSet() {}
+    public void onEmulatorSet() {
+    }
 
 }

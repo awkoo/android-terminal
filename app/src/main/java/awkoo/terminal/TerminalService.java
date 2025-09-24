@@ -20,16 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import awkoo.terminal.activities.MainActivity;
-import awkoo.terminal.terminal.TerminalSessionActivityClient;
-import awkoo.terminal.shell.ShellCommand;
 import awkoo.terminal.Constants.TERMUX_APP.TERMUX_SERVICE;
-import awkoo.terminal.utils.properties.TermuxAppSharedProperties;
+import awkoo.terminal.activities.MainActivity;
+import awkoo.terminal.shell.ShellCommand;
 import awkoo.terminal.shell.TerminalShell;
-import awkoo.terminal.terminal.TerminalSessionClientBase;
 import awkoo.terminal.terminal.TerminalEmulator;
 import awkoo.terminal.terminal.TerminalSession;
+import awkoo.terminal.terminal.TerminalSessionActivityClient;
 import awkoo.terminal.terminal.TerminalSessionClient;
+import awkoo.terminal.terminal.TerminalSessionClientBase;
+import awkoo.terminal.utils.properties.TermuxAppSharedProperties;
 
 /**
  * 一个后台服务，持有一系列 {@link TerminalShell}，并在运行时显示一个前台通知以防止被系统终止。
