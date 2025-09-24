@@ -28,18 +28,6 @@ public class TerminalShell {
     private final TermuxSessionClient mTermuxSessionClient;
     private final boolean mSetStdoutOnExit;
 
-    private TerminalShell(
-        @NonNull final TerminalSession terminalSession,
-        @NonNull final ShellCommand shellCommand,
-        final TermuxSessionClient termuxSessionClient,
-        final boolean setStdoutOnExit
-    ) {
-        this.mTerminalSession = terminalSession;
-        this.mShellCommand = shellCommand;
-        this.mTermuxSessionClient = termuxSessionClient;
-        this.mSetStdoutOnExit = setStdoutOnExit;
-    }
-
     /**
      * 使用 {@link Runtime#exec(String[], String[], File)} 启动 {@link ShellCommand} 的执行。
      * <p>
@@ -57,9 +45,8 @@ public class TerminalShell {
      * @param setStdoutOnExit       如果设置为 {@code true}，则 {@link TermuxSessionClient#onSessionExited(TerminalShell)} 回调中可用的 {@link ResultData#stdout}
      *                              将设置为 {@link TerminalSession} 脚本。会话脚本将包含 stdout 和 stderr 的组合，基本上是发送到伪终端 /dev/pts 的任何内容，包括 PS1 前缀。
      *                              仅当需要会话脚本时才将其设置为 {@code true}，因为这需要额外的处理才能获取它。
-     * @return 返回 {@link TerminalShell}。如果无法启动执行命令，则返回 {@code null}。
      */
-    public static TerminalShell execute(
+    public TerminalShell(
         Context context,
         ShellCommand shellCommand,
         TerminalSessionClient terminalSessionClient,
@@ -124,7 +111,10 @@ public class TerminalShell {
             terminalSession.mSessionName = shellCommand.shellName;
         }
 
-        return new TerminalShell(terminalSession, shellCommand, termuxSessionClient, setStdoutOnExit);
+        this.mTerminalSession = terminalSession;
+        this.mShellCommand = shellCommand;
+        this.mTermuxSessionClient = termuxSessionClient;
+        this.mSetStdoutOnExit = setStdoutOnExit;
     }
 
     /**
@@ -186,21 +176,6 @@ public class TerminalShell {
         mTerminalSession.finishIfRunning();
     }
 
-    /**
-     * 处理 {@link TerminalShell} 或 {@link ShellCommand} 的结果。
-     * <p>
-     * {@code terminalShell} 和 {@code shellCommand} 中只能设置一个。
-     * <p>
-     * 如果 {@code terminalShell} 及其 {@link #mTermuxSessionClient} 不为 {@code null}，
-     * 则将调用 {@link TerminalShell.TermuxSessionClient#onSessionExited(TerminalShell)} 回调。
-     *
-     * @param terminalShell {@link TerminalShell}，如果
-     *                      {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
-     *                      成功启动进程，则应设置此参数。
-     * @param shellCommand  {@link ShellCommand}，如果
-     *                      {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
-     *                      未能启动进程，则应设置此参数。
-     */
     private static void processTermuxSessionResult(final TerminalShell terminalShell, ShellCommand shellCommand) {
         if (terminalShell != null)
             shellCommand = terminalShell.mShellCommand;
