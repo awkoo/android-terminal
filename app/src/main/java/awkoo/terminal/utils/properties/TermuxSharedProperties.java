@@ -33,24 +33,18 @@ public abstract class TermuxSharedProperties {
     }
 
 
-    public Object getInternalPropertyValue(String key, boolean cached) {
-        Object value;
-        if (cached) {
-            value = mSharedProperties.getInternalProperty(key);
-            // If the value is not null since key was found or if the value was null since the
-            // object stored for the key was itself null, we detect the later by checking if the key
-            // exists in the map.
-            if (value != null || mSharedProperties.getInternalProperties().containsKey(key)) {
-                return value;
-            } else {
-                // This should not happen normally unless mMap was modified after the
-                // {@link #loadTermuxPropertiesFromDisk()} call
-                // A null value can still be returned by
-                // {@link #getInternalPropertyValueFromValue(Context,String,String)} for some keys
-                return getInternalTermuxPropertyValueFromValue(key);
-            }
+    public Object getInternalPropertyValue(String key) {
+        Object value = mSharedProperties.getInternalProperty(key);
+        // If the value is not null since key was found or if the value was null since the
+        // object stored for the key was itself null, we detect the later by checking if the key
+        // exists in the map.
+        if (value != null || mSharedProperties.getInternalProperties().containsKey(key)) {
+            return value;
         } else {
-            // We get the property value directly from file and return its internal value
+            // This should not happen normally unless mMap was modified after the
+            // {@link #loadTermuxPropertiesFromDisk()} call
+            // A null value can still be returned by
+            // {@link #getInternalPropertyValueFromValue(Context,String,String)} for some keys
             return getInternalTermuxPropertyValueFromValue(key);
         }
     }
@@ -89,142 +83,40 @@ public abstract class TermuxSharedProperties {
           - If the value is not null and does not exist in MAP_*, then internal default value will be used.
           - If the value is not null and does exist in MAP_*, then internal value returned by map will be used.
          */
-        switch (key) {
-            /* int */
-            case TermuxPropertyConstants.KEY_TERMINAL_CURSOR_BLINK_RATE:
-                return getTerminalCursorBlinkRateInternalPropertyValueFromValue();
-            case TermuxPropertyConstants.KEY_TERMINAL_CURSOR_STYLE:
-                return getTerminalCursorStyleInternalPropertyValueFromValue();
-            case TermuxPropertyConstants.KEY_TERMINAL_TRANSCRIPT_ROWS:
-                return getTerminalTranscriptRowsInternalPropertyValueFromValue();
-
-            /* float */
-            case TermuxPropertyConstants.KEY_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR:
-                return getTerminalToolbarHeightScaleFactorInternalPropertyValueFromValue();
+        return switch (key) {
 
             /* Integer (may be null) */
-            case TermuxPropertyConstants.KEY_SHORTCUT_CREATE_SESSION:
-            case TermuxPropertyConstants.KEY_SHORTCUT_NEXT_SESSION:
-            case TermuxPropertyConstants.KEY_SHORTCUT_PREVIOUS_SESSION:
-            case TermuxPropertyConstants.KEY_SHORTCUT_RENAME_SESSION:
-                return null;
+            case TermuxPropertyConstants.KEY_SHORTCUT_CREATE_SESSION,
+                 TermuxPropertyConstants.KEY_SHORTCUT_NEXT_SESSION,
+                 TermuxPropertyConstants.KEY_SHORTCUT_PREVIOUS_SESSION,
+                 TermuxPropertyConstants.KEY_SHORTCUT_RENAME_SESSION -> null;
 
             /* String (may be null) */
-            case TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR:
-                return getBackKeyBehaviourInternalPropertyValueFromValue();
-            case TermuxPropertyConstants.KEY_EXTRA_KEYS:
-                return getExtraKeysInternalPropertyValueFromValue();
-            case TermuxPropertyConstants.KEY_EXTRA_KEYS_STYLE:
-                return getExtraKeysStyleInternalPropertyValueFromValue();
-            case TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR:
-                return getSoftKeyboardToggleBehaviourInternalPropertyValueFromValue();
-            case TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR:
-                return getVolumeKeysBehaviourInternalPropertyValueFromValue();
-
-            default:
-                // default false boolean behaviour
-                if (TermuxPropertyConstants.TERMUX_DEFAULT_FALSE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST.contains(key))
-                    return false;
-                // default true boolean behaviour
-                if (TermuxPropertyConstants.TERMUX_DEFAULT_TRUE_BOOLEAN_BEHAVIOUR_PROPERTIES_LIST.contains(key))
-                    return true;
-                else
-                    return null;
-        }
+            case TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR ->
+                TermuxPropertyConstants.DEFAULT_IVALUE_BACK_KEY_BEHAVIOUR;
+            case TermuxPropertyConstants.KEY_EXTRA_KEYS ->
+                TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS;
+            case TermuxPropertyConstants.KEY_EXTRA_KEYS_STYLE ->
+                TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE;
+            case TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR ->
+                TermuxPropertyConstants.DEFAULT_IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR;
+            case TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR ->
+                TermuxPropertyConstants.DEFAULT_IVALUE_VOLUME_KEYS_BEHAVIOUR;
+            default -> null;
+        };
     }
 
-
-    public static int getTerminalCursorBlinkRateInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE;
-    }
-
-    public static int getTerminalCursorStyleInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_CURSOR_STYLE;
-    }
-
-    public static int getTerminalTranscriptRowsInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TRANSCRIPT_ROWS;
-    }
-
-    public static float getTerminalToolbarHeightScaleFactorInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR;
-    }
-
-    public static String getBackKeyBehaviourInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_BACK_KEY_BEHAVIOUR;
-    }
-
-    public static String getExtraKeysInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS;
-    }
-
-    public static String getExtraKeysStyleInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE;
-    }
-
-    public static String getSoftKeyboardToggleBehaviourInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR;
-    }
-
-    public static String getVolumeKeysBehaviourInternalPropertyValueFromValue() {
-        return TermuxPropertyConstants.DEFAULT_IVALUE_VOLUME_KEYS_BEHAVIOUR;
-    }
-
-
-    public boolean areHardwareKeyboardShortcutsDisabled() {
-        return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_DISABLE_HARDWARE_KEYBOARD_SHORTCUTS, true);
-    }
-
-    public boolean areTerminalSessionChangeToastsDisabled() {
-        return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_DISABLE_TERMINAL_SESSION_CHANGE_TOAST, true);
-    }
-
-    public boolean isEnforcingCharBasedInput() {
-        return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_ENFORCE_CHAR_BASED_INPUT, true);
-    }
-
-    public boolean shouldExtraKeysTextBeAllCaps() {
-        return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_EXTRA_KEYS_TEXT_ALL_CAPS, true);
-    }
-
-    public boolean shouldSoftKeyboardBeHiddenOnStartup() {
-        return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_HIDE_SOFT_KEYBOARD_ON_STARTUP, true);
-    }
-
-    public boolean shouldOpenTerminalTranscriptURLOnClick() {
-        return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_ONCLICK_URL_OPEN, true);
-    }
-
-    public boolean isUsingCtrlSpaceWorkaround() {
-        return (boolean) getInternalPropertyValue(TermuxPropertyConstants.KEY_USE_CTRL_SPACE_WORKAROUND, true);
-    }
-
-    public int getTerminalCursorBlinkRate() {
-        return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_CURSOR_BLINK_RATE, true);
-    }
-
-    public int getTerminalCursorStyle() {
-        return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_CURSOR_STYLE, true);
-    }
-
-    public int getTerminalTranscriptRows() {
-        return (int) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_TRANSCRIPT_ROWS, true);
-    }
-
-    public float getTerminalToolbarHeightScaleFactor() {
-        return (float) getInternalPropertyValue(TermuxPropertyConstants.KEY_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR, true);
-    }
 
     public boolean isBackKeyTheEscapeKey() {
-        return TermuxPropertyConstants.IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR, true));
+        return TermuxPropertyConstants.IVALUE_BACK_KEY_BEHAVIOUR_ESCAPE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR));
     }
 
     public boolean shouldEnableDisableSoftKeyboardOnToggle() {
-        return TermuxPropertyConstants.IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR, true));
+        return TermuxPropertyConstants.IVALUE_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR_ENABLE_DISABLE.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_SOFT_KEYBOARD_TOGGLE_BEHAVIOUR));
     }
 
     public boolean areVirtualVolumeKeysDisabled() {
-        return TermuxPropertyConstants.IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR, true));
+        return TermuxPropertyConstants.IVALUE_VOLUME_KEY_BEHAVIOUR_VOLUME.equals(getInternalPropertyValue(TermuxPropertyConstants.KEY_VOLUME_KEYS_BEHAVIOUR));
     }
 
 

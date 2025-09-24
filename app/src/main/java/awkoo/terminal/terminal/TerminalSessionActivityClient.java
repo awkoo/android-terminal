@@ -13,6 +13,7 @@ import androidx.preference.PreferenceManager;
 
 import java.util.Properties;
 
+import awkoo.terminal.Constants;
 import awkoo.terminal.R;
 import awkoo.terminal.TerminalService;
 import awkoo.terminal.activities.MainActivity;
@@ -168,7 +169,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
     @Override
     public Integer getTerminalCursorStyle() {
-        return mActivity.getProperties().getTerminalCursorStyle();
+        return TerminalEmulator.DEFAULT_TERMINAL_CURSOR_STYLE;
     }
 
 
@@ -192,10 +193,8 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
     void notifyOfSessionChange() {
         if (!mActivity.isVisible()) return;
 
-        if (!mActivity.getProperties().areTerminalSessionChangeToastsDisabled()) {
-            TerminalSession session = mActivity.getCurrentSession();
-            UI.showToast(mActivity, toToastTitle(session), false);
-        }
+        TerminalSession session = mActivity.getCurrentSession();
+        UI.showToast(mActivity, toToastTitle(session), false);
     }
 
     public void switchToSession(boolean forward) {

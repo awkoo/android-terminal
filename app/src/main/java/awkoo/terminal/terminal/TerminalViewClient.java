@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import awkoo.terminal.Constants;
 import awkoo.terminal.R;
 import awkoo.terminal.activities.MainActivity;
 import awkoo.terminal.extrakeys.SpecialButton;
@@ -40,7 +41,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
     final TerminalSessionActivityClient mTerminalSessionActivityClient;
 
     /**
-     * Keeping track of the special keys acting as Ctrl and Fn for the soft keyboard and other hardware keys.
+     * 跟踪作为软键盘和其他硬件键的 Ctrl 和 Fn 的特殊键。
      */
     boolean mVirtualControlKeyDown, mVirtualFnKeyDown;
 
@@ -63,7 +64,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
     }
 
     /**
-     * Should be called when mActivity.onCreate() is called
+     * 应在 mActivity.onCreate() 调用时调用
      */
     public void onCreate() {
         onReloadProperties();
@@ -73,51 +74,48 @@ public class TerminalViewClient extends TerminalViewClientBase {
     }
 
     /**
-     * Should be called when mActivity.onResume() is called
+     * 应在 mActivity.onResume() 调用时调用
      */
     public void onResume() {
-        // Show the soft keyboard if required
+        // 如果需要，显示软键盘
         setSoftKeyboardState(true, mActivity.isActivityRecreated());
 
         mTerminalCursorBlinkerStateAlreadySet = false;
 
         if (mActivity.getTerminalView().mEmulator != null) {
-            // Start terminal cursor blinking if enabled
-            // If emulator is already set, then start blinker now, otherwise wait for onEmulatorSet()
-            // event to start it. This is needed since onEmulatorSet() may not be called after
-            // MainActivity is started after device display timeout with double tap and not power button.
+            // 如果启用，开始终端光标闪烁
+            // 如果模拟器已设置，则立即开始闪烁，否则等待 onEmulatorSet()
+            // 事件启动它。这是必要的，因为在设备显示超时后，通过双击而不是电源按钮启动 MainActivity 后，可能不会调用 onEmulatorSet()。
             setTerminalCursorBlinkerState(true);
             mTerminalCursorBlinkerStateAlreadySet = true;
         }
     }
 
     /**
-     * Should be called when mActivity.onStop() is called
+     * 应在 mActivity.onStop() 调用时调用
      */
     public void onStop() {
-        // Stop terminal cursor blinking if enabled
+        // 如果启用，停止终端光标闪烁
         setTerminalCursorBlinkerState(false);
     }
 
     /**
-     * Should be called when mActivity.reloadProperties() is called
+     * 应在 mActivity.reloadProperties() 调用时调用
      */
     public void onReloadProperties() {
         setSessionShortcuts();
     }
 
     /**
-     * Should be called when {@link TerminalView#mEmulator} is set
+     * 应在 {@link TerminalView#mEmulator} 设置时调用
      */
     @Override
     public void onEmulatorSet() {
         if (!mTerminalCursorBlinkerStateAlreadySet) {
-            // Start terminal cursor blinking if enabled
-            // We need to wait for the first session to be attached that's set in
-            // MainActivity.onServiceConnected() and then the multiple calls to TerminalView.updateSize()
-            // where the final one eventually sets the mEmulator when width/height is not 0. Otherwise
-            // blinker will not start again if MainActivity is started again after exiting it with
-            // double back press. Check TerminalView.setTerminalCursorBlinkerState().
+            // 如果启用，开始终端光标闪烁
+            // 我们需要等待第一个会话附加（在 MainActivity.onServiceConnected() 中设置），然后是多次调用 TerminalView.updateSize()，
+            // 最终在 width/height 不为 0 时设置 mEmulator。否则，如果 MainActivity 在双击返回退出后再次启动，
+            // 闪烁器将不会再次启动。请检查 TerminalView.setTerminalCursorBlinkerState()。
             setTerminalCursorBlinkerState(true);
             mTerminalCursorBlinkerStateAlreadySet = true;
         }
@@ -139,7 +137,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
     public void onSingleTapUp(MotionEvent e) {
         TerminalEmulator term = mActivity.getCurrentSession().getEmulator();
 
-        if (mActivity.getProperties().shouldOpenTerminalTranscriptURLOnClick()) {
+        if (false) {
             int[] columnAndRow = mActivity.getTerminalView().getColumnAndRow(e, true);
             String wordAtTap = term.getScreen().getWordAtLocation(columnAndRow[0], columnAndRow[1]);
             LinkedHashSet<CharSequence> urlSet = UrlUtils.extractUrls(wordAtTap);
@@ -164,12 +162,12 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
     @Override
     public boolean shouldEnforceCharBasedInput() {
-        return mActivity.getProperties().isEnforcingCharBasedInput();
+        return false;
     }
 
     @Override
     public boolean shouldUseCtrlSpaceWorkaround() {
-        return mActivity.getProperties().isUsingCtrlSpaceWorkaround();
+        return false;
     }
 
     @Override
@@ -180,7 +178,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
     @Override
     public void copyModeChanged(boolean copyMode) {
-        // Disable drawer while copying.
+        // 复制时禁用抽屉。
         mActivity.getDrawer().setDrawerLockMode(copyMode ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED : DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
@@ -193,34 +191,33 @@ public class TerminalViewClient extends TerminalViewClientBase {
         if (keyCode == KeyEvent.KEYCODE_ENTER && !currentSession.isRunning()) {
             mTerminalSessionActivityClient.removeFinishedSession(currentSession);
             return true;
-        } else if (!mActivity.getProperties().areHardwareKeyboardShortcutsDisabled() &&
-            e.isCtrlPressed() && e.isAltPressed()) {
-            // Get the unmodified code point:
+        } else if (e.isCtrlPressed() && e.isAltPressed()) {
+            // 获取未修改的代码点：
             int unicodeChar = e.getUnicodeChar(0);
 
-            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || unicodeChar == 'n'/* next */) {
+            if (keyCode == KeyEvent.KEYCODE_DPAD_DOWN || unicodeChar == 'n'/* 下一个 */) {
                 mTerminalSessionActivityClient.switchToSession(true);
-            } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || unicodeChar == 'p' /* previous */) {
+            } else if (keyCode == KeyEvent.KEYCODE_DPAD_UP || unicodeChar == 'p' /* 上一个 */) {
                 mTerminalSessionActivityClient.switchToSession(false);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT) {
                 mActivity.getDrawer().openDrawer(Gravity.LEFT);
             } else if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
                 mActivity.getDrawer().closeDrawers();
-            } else if (unicodeChar == 'k'/* keyboard */) {
+            } else if (unicodeChar == 'k'/* 键盘 */) {
                 onToggleSoftKeyboardRequest();
-            } else if (unicodeChar == 'm'/* menu */) {
+            } else if (unicodeChar == 'm'/* 菜单 */) {
                 mActivity.getTerminalView().showContextMenu();
-            } else if (unicodeChar == 'r'/* rename */) {
+            } else if (unicodeChar == 'r'/* 重命名 */) {
                 mTerminalSessionActivityClient.renameSession(currentSession);
-            } else if (unicodeChar == 'c'/* create */) {
+            } else if (unicodeChar == 'c'/* 创建 */) {
                 mTerminalSessionActivityClient.addNewSession(null);
-            } else if (unicodeChar == 'u' /* urls */) {
+            } else if (unicodeChar == 'u' /* 网址 */) {
                 showUrlSelection();
             } else if (unicodeChar == 'v') {
                 doPaste();
             } else if (unicodeChar == '+' || e.getUnicodeChar(KeyEvent.META_SHIFT_ON) == '+') {
-                // We also check for the shifted char here since shift may be required to produce '+',
-                // see https://github.com/termux/termux-api/issues/2
+                // 我们还在这里检查移位字符，因为可能需要移位才能生成 '+'，
+                // 参见 https://github.com/termux/termux-api/issues/2
                 changeFontSize(true);
             } else if (unicodeChar == '-') {
                 changeFontSize(false);
@@ -238,8 +235,8 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent e) {
-        // If emulator is not set, like if bootstrap installation failed and user dismissed the error
-        // dialog, then just exit the activity, otherwise they will be stuck in a broken state.
+        // 如果模拟器未设置，例如引导安装失败且用户关闭了错误对话框，则退出活动，
+        // 否则他们将陷入损坏状态。
         if (keyCode == KeyEvent.KEYCODE_BACK && mActivity.getTerminalView().mEmulator == null) {
             mActivity.finishActivityIfNotFinishing();
             return true;
@@ -249,14 +246,14 @@ public class TerminalViewClient extends TerminalViewClientBase {
     }
 
     /**
-     * Handle dedicated volume buttons as virtual keys if applicable.
+     * 如果适用，将专用音量按钮作为虚拟键处理。
      */
     private boolean handleVirtualKeys(int keyCode, KeyEvent event, boolean down) {
         InputDevice inputDevice = event.getDevice();
         if (mActivity.getProperties().areVirtualVolumeKeysDisabled()) {
             return false;
         } else if (inputDevice != null && inputDevice.getKeyboardType() == InputDevice.KEYBOARD_TYPE_ALPHABETIC) {
-            // Do not steal dedicated buttons from a full external keyboard.
+            // 不要从完整的外部键盘窃取专用按钮。
             return false;
         } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
             mVirtualControlKeyDown = down;
@@ -304,7 +301,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
             boolean altDown = false;
             int lowerCase = Character.toLowerCase(codePoint);
             switch (lowerCase) {
-                // Arrow keys.
+                // 方向键。
                 case 'w':
                     resultingKeyCode = KeyEvent.KEYCODE_DPAD_UP;
                     break;
@@ -318,7 +315,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
                     resultingKeyCode = KeyEvent.KEYCODE_DPAD_RIGHT;
                     break;
 
-                // Page up and down.
+                // 向上和向下翻页。
                 case 'p':
                     resultingKeyCode = KeyEvent.KEYCODE_PAGE_UP;
                     break;
@@ -326,7 +323,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
                     resultingKeyCode = KeyEvent.KEYCODE_PAGE_DOWN;
                     break;
 
-                // Some special keys:
+                // 一些特殊键：
                 case 't':
                     resultingKeyCode = KeyEvent.KEYCODE_TAB;
                     break;
@@ -337,7 +334,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
                     resultingCodePoint = '~';
                     break;
 
-                // Special characters to input.
+                // 要输入的特殊字符。
                 case 'u':
                     resultingCodePoint = '_';
                     break;
@@ -345,7 +342,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
                     resultingCodePoint = '|';
                     break;
 
-                // Function keys.
+                // 功能键。
                 case '1':
                 case '2':
                 case '3':
@@ -361,32 +358,32 @@ public class TerminalViewClient extends TerminalViewClientBase {
                     resultingKeyCode = KeyEvent.KEYCODE_F10;
                     break;
 
-                // Other special keys.
+                // 其他特殊键。
                 case 'e':
-                    resultingCodePoint = /*Escape*/ 27;
+                    resultingCodePoint = /*转义*/ 27;
                     break;
                 case '.':
                     resultingCodePoint = /*^.*/ 28;
                     break;
 
-                case 'b': // alt+b, jumping backward in readline.
-                case 'f': // alf+f, jumping forward in readline.
-                case 'x': // alt+x, common in emacs.
+                case 'b': // alt+b，在 readline 中向后跳转。
+                case 'f': // alt+f，在 readline 中向前跳转。
+                case 'x': // alt+x，在 emacs 中常见。
                     resultingCodePoint = lowerCase;
                     altDown = true;
                     break;
 
-                // Volume control.
+                // 音量控制。
                 case 'v':
                     AudioManager audio = (AudioManager) mActivity.getSystemService(Context.AUDIO_SERVICE);
                     audio.adjustSuggestedStreamVolume(AudioManager.ADJUST_SAME, AudioManager.USE_DEFAULT_STREAM_TYPE, AudioManager.FLAG_SHOW_UI);
                     break;
 
-                // Writing mode:
+                // 写入模式：
                 case 'q':
                 case 'k':
                     mActivity.toggleTerminalToolbar();
-                    mVirtualFnKeyDown = false; // force disable fn key down to restore keyboard input into terminal view, fixes termux/termux-app#1420
+                    mVirtualFnKeyDown = false; // 强制禁用 Fn 键，以恢复键盘输入到终端视图，修复 termux/termux-app#1420
                     break;
             }
 
@@ -398,7 +395,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
             }
             return true;
         } else if (ctrlDown) {
-            if (codePoint == 106 /* Ctrl+j or \n */ && !session.isRunning()) {
+            if (codePoint == 106 /* Ctrl+j 或 \n */ && !session.isRunning()) {
                 mTerminalSessionActivityClient.removeFinishedSession(session);
                 return true;
             }
@@ -432,19 +429,19 @@ public class TerminalViewClient extends TerminalViewClientBase {
     }
 
     /**
-     * Set the terminal sessions shortcuts.
+     * 设置终端会话快捷方式。
      */
     private void setSessionShortcuts() {
         mSessionShortcuts = new ArrayList<>();
 
-        // The {@link TermuxPropertyConstants#MAP_SESSION_SHORTCUTS} stores the session shortcut key and action pair
+        // {@link TermuxPropertyConstants#MAP_SESSION_SHORTCUTS} 存储会话快捷键和操作对
         for (Map.Entry<String, Integer> entry : TermuxPropertyConstants.MAP_SESSION_SHORTCUTS.entrySet()) {
-            // The mMap stores the code points for the session shortcuts while loading properties
-            Integer codePoint = (Integer) mActivity.getProperties().getInternalPropertyValue(entry.getKey(), true);
-            // If codePoint is null, then session shortcut did not exist in properties or was invalid
-            // as parsed by {@link #getCodePointForSessionShortcuts(String,String)}
-            // If codePoint is not null, then get the action for the MAP_SESSION_SHORTCUTS key and
-            // add the code point to sessionShortcuts
+            // mMap 在加载属性时存储会话快捷方式的代码点
+            Integer codePoint = (Integer) mActivity.getProperties().getInternalPropertyValue(entry.getKey());
+            // 如果 codePoint 为 null，则会话快捷方式在属性中不存在或无效
+            // （如由 {@link #getCodePointForSessionShortcuts(String,String)} 解析）
+            // 如果 codePoint 不为 null，则获取 MAP_SESSION_SHORTCUTS 键的操作并
+            // 将代码点添加到 sessionShortcuts
             if (codePoint != null)
                 mSessionShortcuts.add(new KeyboardShortcut(codePoint, entry.getValue()));
         }
@@ -458,21 +455,18 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
 
     /**
-     * Called when user requests the soft keyboard to be toggled via "KEYBOARD" toggle button in
-     * drawer or extra keys, or with ctrl+alt+k hardware keyboard shortcut.
+     * 当用户通过抽屉或额外按键中的“键盘”切换按钮，或通过 ctrl+alt+k 硬件键盘快捷键请求切换软键盘时调用。
      */
     public void onToggleSoftKeyboardRequest() {
-        // If soft keyboard toggle behaviour is enable/disabled
+        // 如果软键盘切换行为是启用/禁用
         if (mActivity.getProperties().shouldEnableDisableSoftKeyboardOnToggle()) {
-            // If soft keyboard is visible
+            // 如果软键盘可见
             if (!KeyboardUtils.areDisableSoftKeyboardFlagsSet(mActivity)) {
                 mActivity.getPreferences().setSoftKeyboardEnabled(false);
                 KeyboardUtils.disableSoftKeyboard(mActivity, mActivity.getTerminalView());
             } else {
-                // Show with a delay, otherwise pressing keyboard toggle won't show the keyboard after
-                // switching back from another app if keyboard was previously disabled by user.
-                // Also request focus, since it wouldn't have been requested at startup by
-                // setSoftKeyboardState if keyboard was disabled. #2112
+                // 延迟显示，否则如果用户之前禁用了键盘，切换回另一个应用后按键盘切换将不会显示键盘。
+                // 此外，请求焦点，因为如果键盘被禁用，启动时 setSoftKeyboardState 不会请求焦点。#2112
                 mActivity.getPreferences().setSoftKeyboardEnabled(true);
                 KeyboardUtils.clearDisableSoftKeyboardFlags(mActivity);
                 if (mShowSoftKeyboardWithDelayOnce) {
@@ -483,9 +477,9 @@ public class TerminalViewClient extends TerminalViewClientBase {
                     KeyboardUtils.showSoftKeyboard(mActivity, mActivity.getTerminalView());
             }
         }
-        // If soft keyboard toggle behaviour is show/hide
+        // 如果软键盘切换行为是显示/隐藏
         else {
-            // If soft keyboard is disabled by user for Termux
+            // 如果用户为 Termux 禁用了软键盘
             if (!mActivity.getPreferences().isSoftKeyboardEnabled()) {
                 KeyboardUtils.disableSoftKeyboard(mActivity, mActivity.getTerminalView());
             } else {
@@ -498,48 +492,44 @@ public class TerminalViewClient extends TerminalViewClientBase {
     public void setSoftKeyboardState(boolean isStartup, boolean isReloadTermuxProperties) {
         boolean noShowKeyboard = false;
 
-        // Requesting terminal view focus is necessary regardless of if soft keyboard is to be
-        // disabled or hidden at startup, otherwise if hardware keyboard is attached and user
-        // starts typing on hardware keyboard without tapping on the terminal first, then a colour
-        // tint will be added to the terminal as highlight for the focussed view. Test with a light
-        // theme. For android 8.+, the "defaultFocusHighlightEnabled" attribute is also set to false
-        // in TerminalView layout to fix the issue.
+        // 无论软键盘在启动时是要禁用还是隐藏，请求终端视图焦点都是必要的，
+        // 否则，如果连接了硬件键盘，用户在首次点击终端之前开始在硬件键盘上打字，
+        // 则终端将添加颜色色调以突出显示焦点视图。请使用浅色主题进行测试。
+        // 对于 Android 8.+，TerminalView 布局中的 "defaultFocusHighlightEnabled" 属性也设置为 false 以解决此问题。
 
-        // If soft keyboard is disabled by user for Termux (check function docs for Termux behaviour info)
+        // 如果用户为 Termux 禁用了软键盘（请查看函数文档以获取 Termux 行为信息）
         if (KeyboardUtils.shouldSoftKeyboardBeDisabled(mActivity,
             mActivity.getPreferences().isSoftKeyboardEnabled(),
             mActivity.getPreferences().isSoftKeyboardEnabledOnlyIfNoHardware())) {
             KeyboardUtils.disableSoftKeyboard(mActivity, mActivity.getTerminalView());
             mActivity.getTerminalView().requestFocus();
             noShowKeyboard = true;
-            // Delay is only required if onCreate() is called like when Termux app is exited with
-            // double back press, not when Termux app is switched back from another app and keyboard
-            // toggle is pressed to enable keyboard
+            // 仅当像 Termux 应用通过双击返回键退出时调用 onCreate() 时才需要延迟，
+            // 而不是当 Termux 应用从另一个应用切换回来并按下键盘切换以启用键盘时
             if (isStartup && mActivity.isOnResumeAfterOnCreate())
                 mShowSoftKeyboardWithDelayOnce = true;
         } else {
-            // Set flag to automatically push up TerminalView when keyboard is opened instead of showing over it
+            // 设置标志以在键盘打开时自动向上推 TerminalView，而不是在其上方显示
             KeyboardUtils.setSoftInputModeAdjustResize(mActivity);
 
-            // Clear any previous flags to disable soft keyboard in case setting updated
+            // 清除任何以前的禁用软键盘标志，以防设置更新
             KeyboardUtils.clearDisableSoftKeyboardFlags(mActivity);
 
-            // If soft keyboard is to be hidden on startup
-            if (isStartup && mActivity.getProperties().shouldSoftKeyboardBeHiddenOnStartup()) {
-                // Required to keep keyboard hidden when Termux app is switched back from another app
+            // 如果软键盘在启动时要隐藏
+            if (isStartup && false) {
+                // 需要在 Termux 应用从另一个应用切换回来时保持键盘隐藏
                 KeyboardUtils.setSoftKeyboardAlwaysHiddenFlags(mActivity);
 
                 KeyboardUtils.hideSoftKeyboard(mActivity, mActivity.getTerminalView());
                 mActivity.getTerminalView().requestFocus();
                 noShowKeyboard = true;
-                // Required to keep keyboard hidden on app startup
+                // 需要在应用启动时保持键盘隐藏
                 mShowSoftKeyboardIgnoreOnce = true;
             }
         }
 
         mActivity.getTerminalView().setOnFocusChangeListener((view, hasFocus) -> {
-            // Force show soft keyboard if TerminalView or toolbar text input view has
-            // focus and close it if they don't
+            // 如果 TerminalView 或工具栏文本输入视图有焦点，则强制显示软键盘，否则关闭
             boolean textInputViewHasFocus = false;
             final EditText textInputView = mActivity.findViewById(R.id.terminal_toolbar_text_input);
             if (textInputView != null) textInputViewHasFocus = textInputView.hasFocus();
@@ -554,14 +544,12 @@ public class TerminalViewClient extends TerminalViewClientBase {
             KeyboardUtils.setSoftKeyboardVisibility(getShowSoftKeyboardRunnable(), mActivity, mActivity.getTerminalView(), hasFocus || textInputViewHasFocus);
         });
 
-        // Do not force show soft keyboard if termux-reload-settings command was run with hardware keyboard
-        // or soft keyboard is to be hidden or is disabled
+        // 如果使用硬件键盘运行 termux-reload-settings 命令，或者软键盘要隐藏或已禁用，则不要强制显示软键盘
         if (!isReloadTermuxProperties && !noShowKeyboard) {
-            // Request focus for TerminalView
-            // Also show the keyboard, since onFocusChange will not be called if TerminalView already
-            // had focus on startup to show the keyboard, like when opening url with context menu
-            // "Select URL" long press and returning to Termux app with back button. This
-            // will also show keyboard even if it was closed before opening url. #2111
+            // 请求 TerminalView 焦点
+            // 此外，显示键盘，因为如果 TerminalView 在启动时已获得焦点以显示键盘，则不会调用 onFocusChange，
+            // 例如通过上下文菜单“选择 URL”长按打开 URL 并通过返回按钮返回 Termux 应用时。这
+            // 即使在打开 URL 之前键盘已关闭，也会显示键盘。#2111
             //        logMessage(Log.VERBOSE, tag, message);
             mActivity.getTerminalView().requestFocus();
             mActivity.getTerminalView().postDelayed(getShowSoftKeyboardRunnable(), 300);
@@ -578,11 +566,11 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
     public void setTerminalCursorBlinkerState(boolean start) {
         if (start) {
-            // If set/update the cursor blinking rate is successful, then enable cursor blinker
-            if (mActivity.getTerminalView().setTerminalCursorBlinkerRate(mActivity.getProperties().getTerminalCursorBlinkRate()))
+            // 如果设置/更新光标闪烁速率成功，则启用光标闪烁器
+            if (mActivity.getTerminalView().setTerminalCursorBlinkerRate(Constants.DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE))
                 mActivity.getTerminalView().setTerminalCursorBlinkerState(true, true);
         } else {
-            // Disable cursor blinker
+            // 禁用光标闪烁器
             mActivity.getTerminalView().setTerminalCursorBlinkerState(false, true);
         }
     }
@@ -595,7 +583,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
         String transcriptText = ShellUtils.getTerminalSessionTranscriptText(session, false, true);
         if (transcriptText == null) return;
 
-        // See https://github.com/termux/termux-app/issues/1166.
+        // 参见 https://github.com/termux/termux-app/issues/1166。
         transcriptText = DataUtils.getTruncatedCommandOutput(transcriptText, DataUtils.TRANSACTION_SIZE_LIMIT_IN_BYTES, false, true, false).trim();
         ShareUtils.shareText(mActivity, mActivity.getString(R.string.title_share_transcript),
             transcriptText, mActivity.getString(R.string.title_share_transcript_with));
@@ -621,17 +609,17 @@ public class TerminalViewClient extends TerminalViewClientBase {
         }
 
         final CharSequence[] urls = urlSet.toArray(new CharSequence[0]);
-        Collections.reverse(Arrays.asList(urls)); // Latest first.
+        Collections.reverse(Arrays.asList(urls)); // 最新优先。
 
-        // Click to copy url to clipboard:
+        // 点击复制 URL 到剪贴板：
         final AlertDialog dialog = new AlertDialog.Builder(mActivity).setItems(urls, (di, which) -> {
             String url = (String) urls[which];
             ShareUtils.copyTextToClipboard(mActivity, url, mActivity.getString(R.string.msg_select_url_copied_to_clipboard));
         }).setTitle(R.string.title_select_url_dialog).create();
 
-        // Long press to open URL:
+        // 长按打开 URL：
         dialog.setOnShowListener(di -> {
-            ListView lv = dialog.getListView(); // this is a ListView with your "buds" in it
+            ListView lv = dialog.getListView(); // 这是一个包含您的“芽”的 ListView
             lv.setOnItemLongClickListener((parent, view, position, id) -> {
                 dialog.dismiss();
                 String url = (String) urls[position];

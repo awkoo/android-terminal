@@ -5,37 +5,31 @@ import androidx.annotation.NonNull;
 import com.google.common.primitives.Primitives;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 /**
- * An implementation similar to android's {@link android.content.SharedPreferences} interface for
- * reading and writing to and from ".properties" files which also maintains an in-memory cache for
- * the key/value pairs when an instance object is used. Operations are done under
- * synchronization locks and should be thread safe.
+ * 这是一个类似于 Android 的 {@link android.content.SharedPreferences} 接口的实现，用于读写 ".properties" 文件，
+ * 当使用实例对象时，它还维护一个键/值对的内存缓存。操作在同步锁下进行，应该是线程安全的。
  * <p>
- * If {@link SharedProperties} instance object is used, then two types of in-memory cache maps are
- * maintained, one for the literal {@link String} values found in the file for the keys and an
- * additional one that stores (near) primitive {@link Object} values for internal use by the caller.
+ * 如果使用 {@link SharedProperties} 实例对象，则维护两种内存缓存映射：
+ * 一种用于文件中找到的键的字面量 {@link String} 值，
+ * 另一种用于存储供调用者内部使用的（接近）原始 {@link Object} 值。
  * <p>
- * The {@link SharedProperties} also provides static functions that can be used to read properties
- * from files or individual key values or even their internal values. An automatic mapping to a
- * boolean as internal value can also be done. An in-memory cache is not maintained, nor are locks used.
+ * {@link SharedProperties} 还提供了静态函数，可用于从文件或单个键值甚至其内部值中读取属性。
+ * 还可以自动将布尔值映射为内部值。不维护内存缓存，也不使用锁。
  * <p>
- * This currently only has read support, write support can/will be added later if needed. Check android's
- * SharedPreferencesImpl class for reference implementation.
+ * 目前只支持读取，如果需要，以后会添加写入支持。请参考 Android 的 SharedPreferencesImpl 类获取参考实现。
  * <p>
  * https://cs.android.com/android/platform/superproject/+/android-11.0.0_r3:frameworks/base/core/java/android/app/SharedPreferencesImpl.java
  */
 public class SharedProperties {
 
     /**
-     * The {@link HashMap<>} object that maintains an in-memory cache of internal values for the values
-     * loaded from the {@link #mPropertiesFile} file. The key/value pairs are of any keys defined by
-     * {@link #mPropertiesList} that are found in the file against their internal {@link Object} values
-     * returned by the call to
-     * {@link #getInternalPropertyValueFromValue(String, String)} interface.
+     * {@link HashMap<>} 对象，维护从 {@link #mPropertiesFile} 文件加载的值的内部值的内存缓存。
+     * 键/值对是 {@link #mPropertiesList} 定义的任何键，这些键在文件中找到，并对应于通过调用
+     * {@link #getInternalPropertyValueFromValue(String, String)} 接口返回的内部 {@link Object} 值。
      */
     private Map<String, Object> mMap;
 
@@ -45,12 +39,12 @@ public class SharedProperties {
     private final Object mLock = new Object();
 
     /**
-     * Constructor for the SharedProperties class.
+     * SharedProperties 类的构造函数。
      *
-     * @param propertiesList         The {@link Set<String>} object that defined which properties to load.
-     *                               If this is set to {@code null}, then all properties that exist in
-     *                               {@code propertiesFile} will be read by {@link #loadPropertiesFromDisk()}
-     * @param sharedPropertiesParser The implementation of the {@link SharedPropertiesParser} interface.
+     * @param propertiesList         定义要加载哪些属性的 {@link Set<String>} 对象。
+     *                               如果设置为 {@code null}，则 {@code propertiesFile} 中存在的所有属性都将由
+     *                               {@link #loadPropertiesFromDisk()} 读取。
+     * @param sharedPropertiesParser {@link SharedPropertiesParser} 接口的实现。
      */
     public SharedProperties(Set<String> propertiesList, @NonNull SharedPropertiesParser sharedPropertiesParser) {
         mPropertiesList = propertiesList;
@@ -59,33 +53,26 @@ public class SharedProperties {
         mMap = new HashMap<>();
     }
 
+    /**
+     * 将属性加载到内存缓存中。由于属性文件系统已移除，
+     * 此方法现在根据 {@link #mPropertiesList} 和 {@link SharedPropertiesParser} 初始化 {@link #mMap}。
+     */
     public void loadPropertiesFromDisk() {
         synchronized (mLock) {
-            // Get properties from mPropertiesFile
-            Properties properties = new Properties();
-
-            // We still need to load default values into mMap, so we assume no properties defined if
-            // reading from mPropertiesFile failed
-
             HashMap<String, Object> map = new HashMap<>();
-            Properties newProperties = new Properties();
 
-            Set<String> propertiesList = mPropertiesList;
-            if (propertiesList == null)
-                propertiesList = properties.stringPropertyNames();
+            Set<String> propertiesList = (mPropertiesList != null) ? mPropertiesList : new HashSet<>();
 
             Object internalValue;
             for (String key : propertiesList) {
 
-                // Call the {@link SharedPropertiesParser#getInternalPropertyValueFromValue(Context,String,String)}
-                // interface method to get the internal value to store in the {@link #mMap}.
+                // 调用 {@link SharedPropertiesParser#getInternalPropertyValueFromValue(String)}
+                // 接口方法以获取要存储在 {@link #mMap} 中的内部值。
                 internalValue = mSharedPropertiesParser.getInternalPropertyValueFromValue(key);
 
-                // If the internal value was successfully added to map, then also add value to newProperties
-                // We only store values in-memory defined by propertiesList
-                if (putToMap(map, key, internalValue)) { // null internalValue will be put into map
-                    putToProperties(newProperties, key, null); // null value will **not** be into properties
-                }
+                // 如果内部值成功添加到映射中，则也将值添加到 newProperties
+                // 我们只存储 propertiesList 定义的内存值
+                putToMap(map, key, internalValue); // null internalValue 将被放入映射
             }
 
             mMap = map;
@@ -93,10 +80,10 @@ public class SharedProperties {
     }
 
     /**
-     * Get the {@link #mMap} object for the {@link #mPropertiesFile}. A call to
-     * {@link #loadPropertiesFromDisk()} must be made before this.
+     * 获取 {@link #mPropertiesFile} 的 {@link #mMap} 对象。在此之前必须调用
+     * {@link #loadPropertiesFromDisk()}。
      *
-     * @return Returns a copy of {@link #mMap} object.
+     * @return 返回 {@link #mMap} 对象的副本。
      */
     public Map<String, Object> getInternalProperties() {
         synchronized (mLock) {
@@ -106,18 +93,17 @@ public class SharedProperties {
     }
 
     /**
-     * Get the internal {@link Object} value for the key passed from the {@link #mPropertiesFile}.
-     * The value is returned from the {@link #mMap} in-memory cache, so a call to
-     * {@link #loadPropertiesFromDisk()} must be made before this.
+     * 从 {@link #mPropertiesFile} 获取传入键的内部 {@link Object} 值。
+     * 该值从 {@link #mMap} 内存缓存中返回，因此在此之前必须调用
+     * {@link #loadPropertiesFromDisk()}。
      *
-     * @param key The key to read from the {@link #mMap} object.
-     * @return Returns the {@link Object} object. This will be {@code null} if key is not found or
-     * if object was {@code null}. Use {@link HashMap#containsKey(Object)} to detect the later.
-     * situation.
+     * @param key 要从 {@link #mMap} 对象中读取的键。
+     * @return 返回 {@link Object} 对象。如果未找到键或对象为 {@code null}，则返回 {@code null}。
+     * 使用 {@link HashMap#containsKey(Object)} 来检测后一种情况。
      */
     public Object getInternalProperty(String key) {
         synchronized (mLock) {
-            // null keys are not allowed to be stored in mMap
+            // 不允许在 mMap 中存储 null 键
             if (key != null)
                 return getInternalProperties().get(key);
             else
@@ -127,22 +113,20 @@ public class SharedProperties {
 
 
     /**
-     * Put a value in a {@link #mMap}.
-     * The key cannot be {@code null}.
-     * Only {@code null}, primitive or their wrapper classes or String class objects are allowed to be added to
-     * the map, although this limitation may be changed.
+     * 将值放入 {@link #mMap} 中。
+     * 键不能为 {@code null}。
+     * 只允许将 {@code null}、原始类型或其包装类或 String 类对象添加到映射中，尽管此限制可能会更改。
      *
-     * @param map   The {@link Map} object to add value to.
-     * @param key   The key for which to add the value to the map.
-     * @param value The {@link Object} to add to the map.
-     * @return Returns {@code true} if value was successfully added, otherwise {@code false}.
+     * @param map   要添加值的 {@link Map} 对象。
+     * @param key   要为其添加值到映射的键。
+     * @param value 要添加到映射的 {@link Object}。
      */
-    public static boolean putToMap(HashMap<String, Object> map, String key, Object value) {
+    public static void putToMap(HashMap<String, Object> map, String key, Object value) {
 
-        if (map == null) return false;
+        if (map == null) return;
 
-        // null keys are not allowed to be stored in mMap
-        if (key == null) return false;
+        // 不允许在 mMap 中存储 null 键
+        if (key == null) return;
 
         boolean put = false;
         if (value != null) {
@@ -156,35 +140,7 @@ public class SharedProperties {
 
         if (put) {
             map.put(key, value);
-            return true;
-        } else {
-            return false;
         }
-    }
-
-    /**
-     * Put a value in a {@link Map}.
-     * The key cannot be {@code null}.
-     * Passing {@code null} as the value argument is equivalent to removing the key from the
-     * properties.
-     *
-     * @param properties The {@link Properties} object to add value to.
-     * @param key        The key for which to add the value to the properties.
-     * @param value      The {@link String} to add to the properties.
-     */
-    public static void putToProperties(Properties properties, String key, String value) {
-
-        if (properties == null) return;
-
-        // null keys are not allowed to be stored in mMap
-        if (key == null) return;
-
-        if (value != null) {
-            properties.put(key, value);
-        } else {
-            properties.remove(key);
-        }
-
     }
 
     public static Map<String, Object> getMapCopy(Map<String, Object> map) {

@@ -16,23 +16,6 @@ public final class Constants {
     public static final String TERMUX_PACKAGE_NAME = "awkoo.terminal"; // Default: "awkoo.terminal"
 
 
-
-
-    /*
-     * Termux app core directory paths.
-     */
-
-
-
-
-    /*
-     * Termux app and plugin preferences and properties file paths.
-     */
-
-
-
-
-
     /*
      * Termux app and plugins notification variables.
      */
@@ -59,12 +42,6 @@ public final class Constants {
     /*
      * Termux app and plugins miscellaneous variables.
      */
-
-    /**
-     * Termux property defined in termux.properties file as a secondary check to PERMISSION_RUN_COMMAND
-     * to allow 3rd party apps to run various commands in Termux app context
-     */
-    public static final String PROP_ALLOW_EXTERNAL_APPS = "allow-external-apps"; // Default: "allow-external-apps"
 
 
     /**
@@ -99,5 +76,15 @@ public final class Constants {
         }
     }
 
+
+
+    /**
+     * 终端光标闪烁速率。
+     */
+    public static final int DEFAULT_IVALUE_TERMINAL_CURSOR_BLINK_RATE = 0;
+    /**
+     * 终端工具栏高度
+     */
+    public static final float DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR = 1;
 
 }

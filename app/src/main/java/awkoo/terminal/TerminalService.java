@@ -314,7 +314,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
 
         shellCommand.shellName = sessionName;
 
-        shellCommand.terminalTranscriptRows = mProperties.getTerminalTranscriptRows();
+        shellCommand.terminalTranscriptRows = TerminalEmulator.DEFAULT_TERMINAL_TRANSCRIPT_ROWS;
 
         TerminalShell newTerminalShell = TerminalShell.execute(
             this,

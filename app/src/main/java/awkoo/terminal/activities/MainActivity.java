@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import awkoo.terminal.Constants;
 import awkoo.terminal.R;
 import awkoo.terminal.TerminalService;
 import awkoo.terminal.databinding.ActivityMainBinding;
@@ -416,7 +417,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
                 mTermuxTerminalExtraKeys.getExtraKeysInfo() == null ?
                     0 :
                     mTermuxTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
-            ) * mProperties.getTerminalToolbarHeightScaleFactor());
+            ) * Constants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR);
         terminalToolbarViewPager.setLayoutParams(layoutParams);
     }
 
