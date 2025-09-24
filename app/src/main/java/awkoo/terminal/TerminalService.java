@@ -14,6 +14,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.PowerManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -286,7 +287,6 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * @param sessionName      会话的自定义名称。
      * @return 如果成功则返回创建的 {@link TerminalShell}，否则返回 null。
      */
-    @Nullable
     public TerminalShell createSession(
         String executablePath,
         String[] arguments,
@@ -316,7 +316,6 @@ public final class TerminalService extends Service implements TerminalShell.Term
             null,
             false
         );
-        if (newTerminalShell == null) return null;
 
         mTerminalShells.add(newTerminalShell);
 

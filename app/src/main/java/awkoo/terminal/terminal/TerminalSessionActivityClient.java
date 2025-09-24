@@ -269,7 +269,6 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             sessionName,
             preferences.getBoolean("session_with_root", false) // 判断是否以root权限启动会话
         );
-        if (newTerminalShell == null) return;
 
         TerminalSession newTerminalSession = newTerminalShell.getTerminalSession();
         setCurrentSession(newTerminalSession);

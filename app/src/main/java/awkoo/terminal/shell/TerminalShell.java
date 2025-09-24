@@ -19,9 +19,7 @@ import awkoo.terminal.terminal.TerminalSessionClient;
 import awkoo.terminal.utils.errors.Errno;
 
 /**
- * A class that maintains info for foreground Termux sessions.
- * It also provides a way to link each {@link TerminalSession} with the {@link ShellCommand}
- * that started it.
+ * 一个维护前台 Termux 会话信息的类。它还提供了一种将每个 {@link TerminalSession} 与启动它的 {@link ShellCommand} 相关联的方法。
  */
 public class TerminalShell {
 
@@ -43,31 +41,23 @@ public class TerminalShell {
     }
 
     /**
-     * Start execution of an {@link ShellCommand} with {@link Runtime#exec(String[], String[], File)}.
+     * 使用 {@link Runtime#exec(String[], String[], File)} 启动 {@link ShellCommand} 的执行。
      * <p>
-     * The {@link ShellCommand#executable}, must be set, {@link ShellCommand#commandLabel},
-     * {@link ShellCommand#arguments} and {@link ShellCommand#workingDirectory} may optionally
-     * be set.
+     * 必须设置 {@link ShellCommand#executable}，可以可选设置 {@link ShellCommand#commandLabel}、
+     * {@link ShellCommand#arguments} 和 {@link ShellCommand#workingDirectory}。
      * <p>
-     * If {@link ShellCommand#executable} is {@code null}, then a default shell is automatically
-     * chosen.
+     * 如果 {@link ShellCommand#executable} 为 {@code null}，则会自动选择默认 shell。
      *
-     * @param context               The {@link Context} for operations. This must be the context for
-     *                              the current package and not the context of a `sharedUserId` package,
-     *                              since environment setup may be dependent on current package.
-     * @param shellCommand          The {@link ShellCommand} containing the information for execution command.
-     * @param terminalSessionClient The {@link TerminalSessionClient} interface implementation.
-     * @param termuxSessionClient   The {@link TermuxSessionClient} interface implementation.
-     * @param additionalEnvironment The additional shell environment variables to export. Existing
-     *                              variables will be overridden.
-     * @param setStdoutOnExit       If set to {@code true}, then the {@link ResultData#stdout}
-     *                              available in the {@link TermuxSessionClient#onSessionExited(TerminalShell)}
-     *                              callback will be set to the {@link TerminalSession} transcript. The session
-     *                              transcript will contain both stdout and stderr combined, basically
-     *                              anything sent to the the pseudo terminal /dev/pts, including PS1 prefixes.
-     *                              Set this to {@code true} only if the session transcript is required,
-     *                              since this requires extra processing to get it.
-     * @return Returns the {@link TerminalShell}. This will be {@code null} if failed to start the execution command.
+     * @param context               用于操作的 {@link Context}。这必须是当前包的上下文，而不是 `sharedUserId` 包的上下文，
+     *                              因为环境设置可能依赖于当前包。
+     * @param shellCommand          包含执行命令信息的 {@link ShellCommand}。
+     * @param terminalSessionClient {@link TerminalSessionClient} 接口实现。
+     * @param termuxSessionClient   {@link TermuxSessionClient} 接口实现。
+     * @param additionalEnvironment 要导出的附加 shell 环境变量。现有变量将被覆盖。
+     * @param setStdoutOnExit       如果设置为 {@code true}，则 {@link TermuxSessionClient#onSessionExited(TerminalShell)} 回调中可用的 {@link ResultData#stdout}
+     *                              将设置为 {@link TerminalSession} 脚本。会话脚本将包含 stdout 和 stderr 的组合，基本上是发送到伪终端 /dev/pts 的任何内容，包括 PS1 前缀。
+     *                              仅当需要会话脚本时才将其设置为 {@code true}，因为这需要额外的处理才能获取它。
+     * @return 返回 {@link TerminalShell}。如果无法启动执行命令，则返回 {@code null}。
      */
     public static TerminalShell execute(
         Context context,
@@ -85,7 +75,7 @@ public class TerminalShell {
             shellCommand.commandLabel = shellCommand.executable;
 
 
-        // Setup command environment
+        // 设置命令环境
         ShellEnvironment environment = new ShellEnvironment();
         environment.put("HOME", context.getFilesDir().getAbsolutePath());
         if (additionalEnvironment != null)
@@ -98,9 +88,9 @@ public class TerminalShell {
         String[] environmentArray = environmentList.toArray(new String[0]);
 
 
-        // Setup command args
+        // 设置命令参数
         List<String> result = new ArrayList<>();
-        // root
+        // root权限
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (shellCommand.mode == ShellCommand.Mode.ROOT) {
             result.add(preferences.getString("su_path", "/system/bin/su"));
@@ -117,17 +107,7 @@ public class TerminalShell {
             System.arraycopy(commandArgs, 1, arguments, 1, commandArgs.length - 1);
         shellCommand.arguments = arguments;
 
-        if (!shellCommand.setState(ShellCommand.State.EXECUTING)) {
-            shellCommand.setStateFailed(
-                Errno.ERRNO_FAILED.getCode(),
-                context.getString(
-                    R.string.error_failed_to_execute_termux_session_command,
-                    shellCommand.getCommandIdAndLabelLogString()
-                )
-            );
-            TerminalShell.processTermuxSessionResult(null, shellCommand);
-            return null;
-        }
+        shellCommand.setState(ShellCommand.State.EXECUTING);
 
         TerminalSession terminalSession = new TerminalSession(
             context,
@@ -148,20 +128,18 @@ public class TerminalShell {
     }
 
     /**
-     * Signal that this {@link TerminalShell} has finished.  This should be called when
-     * {@link TerminalSessionClient#onSessionFinished(TerminalSession)} callback is received by the caller.
+     * 发出此 {@link TerminalShell} 已完成的信号。当调用方收到 {@link TerminalSessionClient#onSessionFinished(TerminalSession)} 回调时，应调用此方法。
      * <p>
-     * If the processes has finished, then sets {@link ResultData#stdout}, {@link ResultData#stderr}
-     * and {@link ResultData#exitCode} for the {@link #mShellCommand} of the {@code termuxTask}
-     * and then calls {@link #processTermuxSessionResult(TerminalShell, ShellCommand)} to process the result}.
+     * 如果进程已完成，则为 {@code termuxTask} 的 {@link #mShellCommand} 设置 {@link ResultData#stdout}、{@link ResultData#stderr}
+     * 和 {@link ResultData#exitCode}，然后调用 {@link #processTermuxSessionResult(TerminalShell, ShellCommand)} 处理结果。
      */
     public void finish() {
-        // If process is still running, then ignore the call
+        // 如果进程仍在运行，则忽略此调用
         if (mTerminalSession.isRunning()) return;
 
         int exitCode = mTerminalSession.getExitStatus();
 
-        // If the execution command has already failed, like SIGKILL was sent, then don't continue
+        // 如果执行命令已经失败，例如发送了 SIGKILL，则不要继续
         if (mShellCommand.isStateFailed()) return;
 
         mShellCommand.resultData.exitCode = exitCode;
@@ -182,22 +160,21 @@ public class TerminalShell {
     }
 
     /**
-     * Kill this {@link TerminalShell} by sending a {@link OsConstants#SIGILL} to its {@link #mTerminalSession}
-     * if its still executing.
+     * 如果此 {@link TerminalShell} 仍在执行，则通过向其 {@link #mTerminalSession} 发送 {@link OsConstants#SIGILL} 来终止它。
      *
-     * @param context       The {@link Context} for operations.
-     * @param processResult If set to {@code true}, then the {@link #processTermuxSessionResult(TerminalShell, ShellCommand)}
-     *                      will be called to process the failure.
+     * @param context       用于操作的 {@link Context}。
+     * @param processResult 如果设置为 {@code true}，则将调用 {@link #processTermuxSessionResult(TerminalShell, ShellCommand)}
+     *                      来处理失败。
      */
     public void killIfExecuting(@NonNull final Context context, boolean processResult) {
-        // If execution command has already finished executing, then no need to process results or send SIGKILL
+        // 如果执行命令已经完成，则无需处理结果或发送 SIGKILL
         if (mShellCommand.hasExecuted()) return;
 
         if (mShellCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), context.getString(R.string.error_sending_sigkill_to_process))) {
             if (processResult) {
                 mShellCommand.resultData.exitCode = 137; // SIGKILL
 
-                // Get whatever output has been set till now in case its needed
+                // 获取迄今为止已设置的任何输出，以防需要
                 if (this.mSetStdoutOnExit)
                     mShellCommand.resultData.stdout.append(ShellUtils.getTerminalSessionTranscriptText(mTerminalSession, true, false));
 
@@ -205,25 +182,24 @@ public class TerminalShell {
             }
         }
 
-        // Send SIGKILL to process
+        // 发送 SIGKILL 到进程
         mTerminalSession.finishIfRunning();
     }
 
     /**
-     * Process the results of {@link TerminalShell} or {@link ShellCommand}.
+     * 处理 {@link TerminalShell} 或 {@link ShellCommand} 的结果。
      * <p>
-     * Only one of {@code terminalShell} and {@code shellCommand} must be set.
+     * {@code terminalShell} 和 {@code shellCommand} 中只能设置一个。
      * <p>
-     * If the {@code terminalShell} and its {@link #mTermuxSessionClient} are not {@code null},
-     * then the {@link TerminalShell.TermuxSessionClient#onSessionExited(TerminalShell)}
-     * callback will be called.
+     * 如果 {@code terminalShell} 及其 {@link #mTermuxSessionClient} 不为 {@code null}，
+     * 则将调用 {@link TerminalShell.TermuxSessionClient#onSessionExited(TerminalShell)} 回调。
      *
-     * @param terminalShell The {@link TerminalShell}, which should be set if
+     * @param terminalShell {@link TerminalShell}，如果
      *                      {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
-     *                      successfully started the process.
-     * @param shellCommand  The {@link ShellCommand}, which should be set if
+     *                      成功启动进程，则应设置此参数。
+     * @param shellCommand  {@link ShellCommand}，如果
      *                      {@link #execute(Context, ShellCommand, TerminalSessionClient, TermuxSessionClient, HashMap, Boolean)}
-     *                      failed to start the process.
+     *                      未能启动进程，则应设置此参数。
      */
     private static void processTermuxSessionResult(final TerminalShell terminalShell, ShellCommand shellCommand) {
         if (terminalShell != null)
@@ -236,8 +212,8 @@ public class TerminalShell {
         if (terminalShell != null && terminalShell.mTermuxSessionClient != null) {
             terminalShell.mTermuxSessionClient.onSessionExited(terminalShell);
         } else {
-            // If a callback is not set and execution command didn't fail, then we set success state now
-            // Otherwise, the callback host can set it himself when its done with the terminalShell
+            // 如果未设置回调且执行命令未失败，则我们现在设置成功状态
+            // 否则，回调宿主可以在完成 TerminalShell 后自行设置
             if (!shellCommand.isStateFailed())
                 shellCommand.setState(ShellCommand.State.SUCCESS);
         }
@@ -255,9 +231,9 @@ public class TerminalShell {
     public interface TermuxSessionClient {
 
         /**
-         * Callback function for when {@link TerminalShell} exits.
+         * 当 {@link TerminalShell} 退出时的回调函数。
          *
-         * @param terminalShell The {@link TerminalShell} that exited.
+         * @param terminalShell 退出的 {@link TerminalShell}。
          */
         void onSessionExited(TerminalShell terminalShell);
 
