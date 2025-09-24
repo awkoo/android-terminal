@@ -3,7 +3,6 @@ package awkoo.terminal.utils.properties;
 public abstract class TermuxSharedProperties {
 
 
-
     /**
      * A static function that should return the internal termux {@link Object} for a key/value pair
      * read from properties file.
@@ -22,11 +21,11 @@ public abstract class TermuxSharedProperties {
          */
         return switch (key) {
 
-            /* Integer (may be null) */
-            case TermuxPropertyConstants.KEY_SHORTCUT_CREATE_SESSION,
-                 TermuxPropertyConstants.KEY_SHORTCUT_NEXT_SESSION,
-                 TermuxPropertyConstants.KEY_SHORTCUT_PREVIOUS_SESSION,
-                 TermuxPropertyConstants.KEY_SHORTCUT_RENAME_SESSION -> null;
+//            /* Integer (may be null) */
+//            case TermuxPropertyConstants.KEY_SHORTCUT_CREATE_SESSION,
+//                 TermuxPropertyConstants.KEY_SHORTCUT_NEXT_SESSION,
+//                 TermuxPropertyConstants.KEY_SHORTCUT_PREVIOUS_SESSION,
+//                 TermuxPropertyConstants.KEY_SHORTCUT_RENAME_SESSION -> null;
 
             /* String (may be null) */
             case TermuxPropertyConstants.KEY_BACK_KEY_BEHAVIOUR ->

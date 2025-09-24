@@ -12,8 +12,6 @@ import androidx.annotation.NonNull;
 
 public class KeyboardUtils {
 
-    private static final String LOG_TAG = "KeyboardUtils";
-
     public static void setSoftKeyboardVisibility(@NonNull final Runnable showSoftKeyboardRunnable, final Activity activity, final View view, final boolean visible) {
         if (visible) {
             // A Runnable with a delay is used, otherwise soft keyboard may not automatically open

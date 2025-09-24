@@ -53,7 +53,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
     private boolean mTerminalCursorBlinkerStateAlreadySet;
 
-    private List<KeyboardShortcut> mSessionShortcuts;
+//    private List<KeyboardShortcut> mSessionShortcuts;
 
     public TerminalViewClient(MainActivity activity, TerminalSessionActivityClient terminalSessionActivityClient) {
         this.mActivity = activity;
@@ -104,7 +104,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
      * 应在 mActivity.reloadProperties() 调用时调用
      */
     public void onReloadProperties() {
-        setSessionShortcuts();
+//        setSessionShortcuts();
     }
 
     /**
@@ -401,52 +401,52 @@ public class TerminalViewClient extends TerminalViewClientBase {
                 return true;
             }
 
-            List<KeyboardShortcut> shortcuts = mSessionShortcuts;
-            if (shortcuts != null && !shortcuts.isEmpty()) {
-                int codePointLowerCase = Character.toLowerCase(codePoint);
-                for (int i = shortcuts.size() - 1; i >= 0; i--) {
-                    KeyboardShortcut shortcut = shortcuts.get(i);
-                    if (codePointLowerCase == shortcut.codePoint()) {
-                        switch (shortcut.shortcutAction()) {
-                            case TermuxPropertyConstants.ACTION_SHORTCUT_CREATE_SESSION:
-                                mTerminalSessionActivityClient.addNewSession(null);
-                                return true;
-                            case TermuxPropertyConstants.ACTION_SHORTCUT_NEXT_SESSION:
-                                mTerminalSessionActivityClient.switchToSession(true);
-                                return true;
-                            case TermuxPropertyConstants.ACTION_SHORTCUT_PREVIOUS_SESSION:
-                                mTerminalSessionActivityClient.switchToSession(false);
-                                return true;
-                            case TermuxPropertyConstants.ACTION_SHORTCUT_RENAME_SESSION:
-                                mTerminalSessionActivityClient.renameSession(mActivity.getCurrentSession());
-                                return true;
-                        }
-                    }
-                }
-            }
+//            List<KeyboardShortcut> shortcuts = mSessionShortcuts;
+//            if (shortcuts != null && !shortcuts.isEmpty()) {
+//                int codePointLowerCase = Character.toLowerCase(codePoint);
+//                for (int i = shortcuts.size() - 1; i >= 0; i--) {
+//                    KeyboardShortcut shortcut = shortcuts.get(i);
+//                    if (codePointLowerCase == shortcut.codePoint()) {
+//                        switch (shortcut.shortcutAction()) {
+//                            case TermuxPropertyConstants.ACTION_SHORTCUT_CREATE_SESSION:
+//                                mTerminalSessionActivityClient.addNewSession(null);
+//                                return true;
+//                            case TermuxPropertyConstants.ACTION_SHORTCUT_NEXT_SESSION:
+//                                mTerminalSessionActivityClient.switchToSession(true);
+//                                return true;
+//                            case TermuxPropertyConstants.ACTION_SHORTCUT_PREVIOUS_SESSION:
+//                                mTerminalSessionActivityClient.switchToSession(false);
+//                                return true;
+//                            case TermuxPropertyConstants.ACTION_SHORTCUT_RENAME_SESSION:
+//                                mTerminalSessionActivityClient.renameSession(mActivity.getCurrentSession());
+//                                return true;
+//                        }
+//                    }
+//                }
+//            }
         }
 
         return false;
     }
 
-    /**
-     * 设置终端会话快捷方式。
-     */
-    private void setSessionShortcuts() {
-        mSessionShortcuts = new ArrayList<>();
-
-        // {@link TermuxPropertyConstants#MAP_SESSION_SHORTCUTS} 存储会话快捷键和操作对
-        for (Map.Entry<String, Integer> entry : TermuxPropertyConstants.MAP_SESSION_SHORTCUTS.entrySet()) {
-            // mMap 在加载属性时存储会话快捷方式的代码点
-            Integer codePoint = (Integer) TermuxSharedProperties.getInternalTermuxPropertyValueFromValue(entry.getKey());
-            // 如果 codePoint 为 null，则会话快捷方式在属性中不存在或无效
-            // （如由 {@link #getCodePointForSessionShortcuts(String,String)} 解析）
-            // 如果 codePoint 不为 null，则获取 MAP_SESSION_SHORTCUTS 键的操作并
-            // 将代码点添加到 sessionShortcuts
-            if (codePoint != null)
-                mSessionShortcuts.add(new KeyboardShortcut(codePoint, entry.getValue()));
-        }
-    }
+//    /**
+//     * 设置终端会话快捷方式。
+//     */
+//    private void setSessionShortcuts() {
+//        mSessionShortcuts = new ArrayList<>();
+//
+//        // {@link TermuxPropertyConstants#MAP_SESSION_SHORTCUTS} 存储会话快捷键和操作对
+//        for (Map.Entry<String, Integer> entry : TermuxPropertyConstants.MAP_SESSION_SHORTCUTS.entrySet()) {
+//            // mMap 在加载属性时存储会话快捷方式的代码点
+//            Integer codePoint = (Integer) TermuxSharedProperties.getInternalTermuxPropertyValueFromValue(entry.getKey());
+//            // 如果 codePoint 为 null，则会话快捷方式在属性中不存在或无效
+//            // （如由 {@link #getCodePointForSessionShortcuts(String,String)} 解析）
+//            // 如果 codePoint 不为 null，则获取 MAP_SESSION_SHORTCUTS 键的操作并
+//            // 将代码点添加到 sessionShortcuts
+//            if (codePoint != null)
+//                mSessionShortcuts.add(new KeyboardShortcut(codePoint, entry.getValue()));
+//        }
+//    }
 
 
     public void changeFontSize(boolean increase) {
