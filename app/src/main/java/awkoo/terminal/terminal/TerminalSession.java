@@ -8,6 +8,7 @@ import android.os.ParcelFileDescriptor;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -158,6 +159,7 @@ public final class TerminalSession extends TerminalOutput {
             mClient
         );
 
+        Log.e(mShellPath, String.join(" ", mArgs));
         int[] processId = new int[1];
         mTerminalFileDescriptor = JNI.createSubprocess(
             mShellPath,

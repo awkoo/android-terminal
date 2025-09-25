@@ -38,7 +38,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
      */
     public void onCreate() {
         // 设置终端字体和颜色
-//        checkForFontAndColors();
+        checkForFontAndColors();
     }
 
     /**

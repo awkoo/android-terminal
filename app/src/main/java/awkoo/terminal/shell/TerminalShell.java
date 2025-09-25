@@ -3,6 +3,7 @@ package awkoo.terminal.shell;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.system.OsConstants;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
@@ -72,24 +73,25 @@ public class TerminalShell {
             mShellCommand.environment.putAll(additionalEnvironment);
 
 
-        // 设置命令参数
-        List<String> result = new ArrayList<>();
         // root权限
         if (mShellCommand.mode == ShellCommand.Mode.ROOT) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            result.add(preferences.getString("su_path", "/system/bin/su"));
-            result.add("-s");
+            // 设置命令参数
+            // 由于使用数组方式过于复杂且繁琐，且问题较多，所以使用拼接字符串方式
+            // su -c "sh ..."
+            mShellCommand.arguments = new String[]{
+                "-c",
+                "\"" + mShellCommand.executable + " " + (mShellCommand.arguments != null ? String.join(" ", mShellCommand.arguments) : "") + "\""
+            };
+            mShellCommand.executable = preferences.getString("su_path", "/system/bin/su");
+            Log.e("运行中", mShellCommand.executable + " " + String.join(" ", mShellCommand.arguments));
         }
-        result.add(mShellCommand.executable);
-        if (mShellCommand.arguments != null)
-            Collections.addAll(result, mShellCommand.arguments);
-        String[] commandArgs = result.toArray(new String[0]);
-        mShellCommand.executable = commandArgs[0];
-        String[] arguments = new String[commandArgs.length];
+
+        // 第一个元素必须为可执行文件
+        String[] arguments = new String[(mShellCommand.arguments != null ? mShellCommand.arguments.length : 0) + 1];
         arguments[0] = mShellCommand.executable;
-        if (commandArgs.length > 1)
-            System.arraycopy(commandArgs, 1, arguments, 1, commandArgs.length - 1);
-        mShellCommand.arguments = arguments;
+        if (mShellCommand.arguments != null && mShellCommand.arguments.length > 0)
+            System.arraycopy(mShellCommand.arguments, 0, arguments, 1, mShellCommand.arguments.length);
 
         mShellCommand.setState(ShellCommand.State.EXECUTING);
 
@@ -97,9 +99,9 @@ public class TerminalShell {
             context,
             mShellCommand.executable,
             mShellCommand.workingDirectory,
-            mShellCommand.arguments,
+            arguments,
             mShellCommand.environment.toArray(),
-            mShellCommand.stdin,
+            mShellCommand.stdin, // Nullable
             mShellCommand.terminalTranscriptRows,
             terminalSessionClient
         );

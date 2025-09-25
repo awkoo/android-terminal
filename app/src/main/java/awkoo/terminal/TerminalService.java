@@ -16,6 +16,7 @@ import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;

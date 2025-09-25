@@ -132,20 +132,20 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
         jint cell_width,
         jint cell_height
 ) {
-    jsize size = args ? (*env)->GetArrayLength(env, args) : 0;
+    jsize size = args ? (*env)->GetArrayLength(env, args) : 0;  // 获取数组长度
     char **argv = NULL;
     if (size > 0) {
-        argv = (char **) malloc((size + 1) * sizeof(char *));
+        argv = (char **) malloc((size + 1) * sizeof(char *)); // 分配内存
         if (!argv) return throw_runtime_exception(env, "Couldn't allocate argv array");
         for (int i = 0; i < size; ++i) {
-            jstring arg_java_string = (jstring) (*env)->GetObjectArrayElement(env, args, i);
-            char const *arg_utf8 = (*env)->GetStringUTFChars(env, arg_java_string, NULL);
+            jstring arg_java_string = (jstring) (*env)->GetObjectArrayElement(env, args, i); // 获取数组内容
+            char const *arg_utf8 = (*env)->GetStringUTFChars(env, arg_java_string, NULL); // 转为C语言字符串
             if (!arg_utf8)
                 return throw_runtime_exception(env, "GetStringUTFChars() failed for argv");
-            argv[i] = strdup(arg_utf8);
-            (*env)->ReleaseStringUTFChars(env, arg_java_string, arg_utf8);
+            argv[i] = strdup(arg_utf8); // 复制字符串并赋值
+            (*env)->ReleaseStringUTFChars(env, arg_java_string, arg_utf8); // 释放内存
         }
-        argv[size] = NULL;
+        argv[size] = NULL; // 将最后的元素设置为NULL
     }
 
     size = envVars ? (*env)->GetArrayLength(env, envVars) : 0;
