@@ -84,7 +84,6 @@ public class TerminalShell {
                 "\"" + mShellCommand.executable + (mShellCommand.arguments != null ? " " + String.join(" ", mShellCommand.arguments) : "") + "\""
             };
             mShellCommand.executable = preferences.getString("su_path", "/system/bin/su");
-            Log.e("运行中", mShellCommand.executable + " " + String.join(" ", mShellCommand.arguments));
         }
 
         // 第一个元素必须为可执行文件
