@@ -81,7 +81,7 @@ public class TerminalShell {
             // su -c "sh ..."
             mShellCommand.arguments = new String[]{
                 "-c",
-                "\"" + mShellCommand.executable + " " + (mShellCommand.arguments != null ? String.join(" ", mShellCommand.arguments) : "") + "\""
+                "\"" + mShellCommand.executable + (mShellCommand.arguments != null ? " " + String.join(" ", mShellCommand.arguments) : "") + "\""
             };
             mShellCommand.executable = preferences.getString("su_path", "/system/bin/su");
             Log.e("运行中", mShellCommand.executable + " " + String.join(" ", mShellCommand.arguments));
