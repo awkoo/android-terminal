@@ -159,7 +159,6 @@ public final class TerminalSession extends TerminalOutput {
             mClient
         );
 
-        Log.e(mShellPath, String.join(" ", mArgs));
         int[] processId = new int[1];
         mTerminalFileDescriptor = JNI.createSubprocess(
             mShellPath,

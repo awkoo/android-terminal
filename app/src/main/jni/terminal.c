@@ -10,10 +10,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define TERMUX_UNUSED(x) x __attribute__((__unused__))
-#ifdef __APPLE__
-# define LACKS_PTSNAME_R
-#endif
+#define UNUSED(x) x __attribute__((__unused__))
 
 static int throw_runtime_exception(JNIEnv *env, char const *message) {
     jclass exClass = (*env)->FindClass(env, "java/lang/RuntimeException");
@@ -36,17 +33,11 @@ static int create_subprocess(
     int ptm = open("/dev/ptmx", O_RDWR | O_CLOEXEC);
     if (ptm < 0) return throw_runtime_exception(env, "Cannot open /dev/ptmx");
 
-#ifdef LACKS_PTSNAME_R
-    char* devname;
-#else
     char devname[64];
-#endif
-    if (grantpt(ptm) || unlockpt(ptm) ||
-        #ifdef LACKS_PTSNAME_R
-        (devname = ptsname(ptm)) == NULL
-        #else
-        ptsname_r(ptm, devname, sizeof(devname))
-#endif
+    if (
+            grantpt(ptm) ||
+            unlockpt(ptm) ||
+            ptsname_r(ptm, devname, sizeof(devname))
             ) {
         return throw_runtime_exception(env, "Cannot grantpt()/unlockpt()/ptsname_r() on /dev/ptmx");
     }
@@ -121,7 +112,7 @@ static int create_subprocess(
 
 JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
         JNIEnv *env,
-        jclass TERMUX_UNUSED(clazz),
+        jclass UNUSED(clazz),
         jstring cmd,
         jstring cwd,
         jobjectArray args,
@@ -205,8 +196,8 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
 }
 
 JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setPtyWindowSize(
-        JNIEnv *TERMUX_UNUSED(env),
-        jclass TERMUX_UNUSED(clazz),
+        JNIEnv *UNUSED(env),
+        jclass UNUSED(clazz),
         jint fd,
         jint rows,
         jint cols,
@@ -224,8 +215,8 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setPtyWindowSize(
 
 // 禁用回显，解决多余的命令显示
 JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setStdinEcho(
-        JNIEnv *TERMUX_UNUSED(env),
-        jclass TERMUX_UNUSED(clazz),
+        JNIEnv *UNUSED(env),
+        jclass UNUSED(clazz),
         jint fd,
         jboolean enabled
 ) {
@@ -240,8 +231,8 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setStdinEcho(
 }
 
 JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_waitFor(
-        JNIEnv *TERMUX_UNUSED(env),
-        jclass TERMUX_UNUSED(clazz),
+        JNIEnv *UNUSED(env),
+        jclass UNUSED(clazz),
         jint pid
 ) {
     int status;
@@ -257,8 +248,8 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_waitFor(
 }
 
 JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_close(
-        JNIEnv *TERMUX_UNUSED(env),
-        jclass TERMUX_UNUSED(clazz),
+        JNIEnv *UNUSED(env),
+        jclass UNUSED(clazz),
         jint fileDescriptor
 ) {
     close(fileDescriptor);

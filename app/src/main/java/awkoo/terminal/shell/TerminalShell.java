@@ -77,12 +77,12 @@ public class TerminalShell {
         if (mShellCommand.mode == ShellCommand.Mode.ROOT) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             // 设置命令参数
-            // 由于使用数组方式过于复杂且繁琐，且问题较多，所以使用拼接字符串方式
-            // su -c "sh ..."
-            mShellCommand.arguments = new String[]{
-                "-c",
-                "\"" + mShellCommand.executable + (mShellCommand.arguments != null ? " " + String.join(" ", mShellCommand.arguments) : "") + "\""
-            };
+            String[] args = new String[(mShellCommand.arguments != null ? mShellCommand.arguments.length : 0) + 2];
+            args[0] = "-c";
+            args[1] = mShellCommand.executable;
+            if (mShellCommand.arguments != null && mShellCommand.arguments.length > 0)
+                System.arraycopy(mShellCommand.arguments, 0, args, 2, mShellCommand.arguments.length);
+            mShellCommand.arguments = args;
             mShellCommand.executable = preferences.getString("su_path", "/system/bin/su");
         }
 
