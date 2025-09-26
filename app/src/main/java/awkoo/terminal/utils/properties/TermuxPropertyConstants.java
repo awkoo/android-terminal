@@ -1,7 +1,5 @@
 package awkoo.terminal.utils.properties;
 
-import com.google.common.collect.ImmutableBiMap;
-
 
 public final class TermuxPropertyConstants {
 //    /**
