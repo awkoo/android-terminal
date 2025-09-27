@@ -1,4 +1,4 @@
-package awkoo.terminal.terminal.io;
+package awkoo.terminal.terminal;
 
 import android.annotation.SuppressLint;
 import android.view.Gravity;
@@ -12,15 +12,12 @@ import org.json.JSONException;
 import awkoo.terminal.activities.MainActivity;
 import awkoo.terminal.extrakeys.ExtraKeysConstants;
 import awkoo.terminal.extrakeys.ExtraKeysInfo;
-import awkoo.terminal.extrakeys.TerminalExtraKeys;
-import awkoo.terminal.terminal.TerminalSessionActivityClient;
-import awkoo.terminal.terminal.TerminalViewClient;
 import awkoo.terminal.utils.UI;
 import awkoo.terminal.utils.properties.TermuxPropertyConstants;
 import awkoo.terminal.utils.properties.TermuxSharedProperties;
 import awkoo.terminal.view.TerminalView;
 
-public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
+public class TerminalExtraKeys extends awkoo.terminal.extrakeys.TerminalExtraKeys {
 
     private ExtraKeysInfo mExtraKeysInfo;
 
@@ -28,9 +25,9 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
     final TerminalViewClient mTerminalViewClient;
     final TerminalSessionActivityClient mTerminalSessionActivityClient;
 
-    public TermuxTerminalExtraKeys(MainActivity activity, @NonNull TerminalView terminalView,
-                                   TerminalViewClient terminalViewClient,
-                                   TerminalSessionActivityClient terminalSessionActivityClient) {
+    public TerminalExtraKeys(MainActivity activity, @NonNull TerminalView terminalView,
+                             TerminalViewClient terminalViewClient,
+                             TerminalSessionActivityClient terminalSessionActivityClient) {
         super(terminalView);
 
         mActivity = activity;

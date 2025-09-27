@@ -1,4 +1,4 @@
-package awkoo.terminal.terminal.io;
+package awkoo.terminal.terminal;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import androidx.viewpager.widget.ViewPager;
 import awkoo.terminal.R;
 import awkoo.terminal.activities.MainActivity;
 import awkoo.terminal.extrakeys.ExtraKeysView;
-import awkoo.terminal.terminal.TerminalSession;
 
 public class TerminalToolbarViewPager {
 

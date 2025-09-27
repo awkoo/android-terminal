@@ -42,15 +42,16 @@ public class ShellCommand {
 
     public enum Mode {
         ROOT,
-        APP,
-        ADB
+        APP
     }
 
     /**
      * The optional unique id for the {@link ShellCommand}. This should equal -1 if execution
      * command is not going to be managed by a shell manager.
      */
-    public final Integer id;
+    public final int id;
+
+    public int exitCode = -1;
 
     /**
      * The current state of the {@link ShellCommand}.
@@ -100,13 +101,6 @@ public class ShellCommand {
 
 
     /**
-     * Defines the {@link ResultData} for the {@link ShellCommand} containing information
-     * of the result.
-     */
-    public final ResultData resultData = new ResultData();
-
-
-    /**
      * Defines if processing results already called for this {@link ShellCommand}.
      */
     public boolean processingResultsAlreadyCalled;
@@ -143,8 +137,7 @@ public class ShellCommand {
     }
 
 
-    public synchronized boolean setStateFailed(int code, String message) {
-        this.resultData.setStateFailed(code, message);
+    public synchronized boolean setStateFailed() {
         return setState(State.FAILED);
     }
 
@@ -158,10 +151,7 @@ public class ShellCommand {
     }
 
     public synchronized boolean isStateFailed() {
-        if (currentState != State.FAILED)
-            return false;
-
-        return resultData.isStateFailed();
+        return currentState == State.FAILED;
     }
 
 

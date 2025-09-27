@@ -10,10 +10,8 @@ import androidx.preference.PreferenceManager;
 import java.io.File;
 import java.util.HashMap;
 
-import awkoo.terminal.R;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionClient;
-import awkoo.terminal.utils.errors.Errno;
 
 /**
  * 一个维护前台 Termux 会话信息的类。它还提供了一种将每个 {@link TerminalSession} 与启动它的 {@link ShellCommand} 相关联的方法。
@@ -23,7 +21,6 @@ public class TerminalShell {
     private final TerminalSession mTerminalSession;
     private final ShellCommand mShellCommand;
     private final TermuxSessionClient mTermuxSessionClient;
-    private final boolean mSetStdoutOnExit;
 
     /**
      * 使用 {@link Runtime#exec(String[], String[], File)} 启动 {@link ShellCommand} 的执行。
@@ -39,21 +36,16 @@ public class TerminalShell {
      * @param terminalSessionClient {@link TerminalSessionClient} 接口实现。
      * @param termuxSessionClient   {@link TermuxSessionClient} 接口实现。
      * @param additionalEnvironment 要导出的附加 shell 环境变量。现有变量将被覆盖。
-     * @param setStdoutOnExit       如果设置为 {@code true}，则 {@link TermuxSessionClient#onSessionExited(TerminalShell)} 回调中可用的 {@link ResultData#stdout}
-     *                              将设置为 {@link TerminalSession} 脚本。会话脚本将包含 stdout 和 stderr 的组合，基本上是发送到伪终端 /dev/pts 的任何内容，包括 PS1 前缀。
-     *                              仅当需要会话脚本时才将其设置为 {@code true}，因为这需要额外的处理才能获取它。
      */
     public TerminalShell(
         Context context,
         ShellCommand shellCommand,
         TerminalSessionClient terminalSessionClient,
         TermuxSessionClient termuxSessionClient,
-        HashMap<String, String> additionalEnvironment,
-        Boolean setStdoutOnExit
+        HashMap<String, String> additionalEnvironment
     ) {
         this.mShellCommand = shellCommand;
         this.mTermuxSessionClient = termuxSessionClient;
-        this.mSetStdoutOnExit = setStdoutOnExit;
 
         if (mShellCommand.executable == null || mShellCommand.executable.isEmpty())
             mShellCommand.executable = ShellEnvironment.defaultShell;
@@ -109,7 +101,7 @@ public class TerminalShell {
     /**
      * 发出此 {@link TerminalShell} 已完成的信号。当调用方收到 {@link TerminalSessionClient#onSessionFinished(TerminalSession)} 回调时，应调用此方法。
      * <p>
-     * 如果进程已完成，则为 {@link #mShellCommand} 设置 {@link ResultData#stdout} 和 {@link ResultData#exitCode}，
+     * 如果进程已完成，则为 {@link #mShellCommand} 设置 {@link ShellCommand#exitCode}，
      * 然后调用 {@link #processTermuxSessionResult(TerminalShell, ShellCommand)} 处理结果。
      */
     public void finish() {
@@ -121,43 +113,28 @@ public class TerminalShell {
         // 如果执行命令已经失败，例如发送了 SIGKILL，则不要继续
         if (mShellCommand.isStateFailed()) return;
 
-        mShellCommand.resultData.exitCode = exitCode;
-
-        if (this.mSetStdoutOnExit)
-            mShellCommand.resultData.stdout.append(
-                ShellUtils.getTerminalSessionTranscriptText(
-                    mTerminalSession,
-                    true,
-                    false
-                )
-            );
+        mShellCommand.exitCode = exitCode;
 
         if (!mShellCommand.setState(ShellCommand.State.EXECUTED))
             return;
 
-        TerminalShell.processTermuxSessionResult(this, null);
+        processTermuxSessionResult(this, null);
     }
 
     /**
      * 如果此 {@link TerminalShell} 仍在执行，则通过向其 {@link #mTerminalSession} 发送 {@link OsConstants#SIGILL} 来终止它。
      *
-     * @param context       用于操作的 {@link Context}。
      * @param processResult 如果设置为 {@code true}，则将调用 {@link #processTermuxSessionResult(TerminalShell, ShellCommand)}
      *                      来处理失败。
      */
-    public void killIfExecuting(@NonNull final Context context, boolean processResult) {
+    public void killIfExecuting(boolean processResult) {
         // 如果执行命令已经完成，则无需处理结果或发送 SIGKILL
         if (mShellCommand.hasExecuted()) return;
 
-        if (mShellCommand.setStateFailed(Errno.ERRNO_FAILED.code(), context.getString(R.string.error_sending_sigkill_to_process))) {
+        if (mShellCommand.setStateFailed()) {
             if (processResult) {
-                mShellCommand.resultData.exitCode = 137; // SIGKILL
-
-                // 获取迄今为止已设置的任何输出，以防需要
-                if (this.mSetStdoutOnExit)
-                    mShellCommand.resultData.stdout.append(ShellUtils.getTerminalSessionTranscriptText(mTerminalSession, true, false));
-
-                TerminalShell.processTermuxSessionResult(this, null);
+                mShellCommand.exitCode = 137; // SIGKILL
+                processTermuxSessionResult(this, null);
             }
         }
 

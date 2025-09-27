@@ -223,7 +223,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
 
         for (int i = 0; i < terminalShells.size(); i++) {
             processResult = mWantsToStop;
-            terminalShells.get(i).killIfExecuting(this, processResult);
+            terminalShells.get(i).killIfExecuting(processResult);
             if (!processResult)
                 mTerminalShells.remove(terminalShells.get(i));
         }
@@ -312,8 +312,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
             shellCommand,
             getTermuxTerminalSessionClient(),
             this,
-            null,
-            false
+            null
         );
 
         mTerminalShells.add(newTerminalShell);

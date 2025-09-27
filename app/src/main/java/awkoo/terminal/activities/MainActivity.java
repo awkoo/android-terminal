@@ -30,11 +30,11 @@ import awkoo.terminal.TerminalService;
 import awkoo.terminal.databinding.ActivityMainBinding;
 import awkoo.terminal.extrakeys.ExtraKeysView;
 import awkoo.terminal.terminal.SessionsListViewController;
+import awkoo.terminal.terminal.TerminalExtraKeys;
 import awkoo.terminal.terminal.TerminalSession;
 import awkoo.terminal.terminal.TerminalSessionActivityClient;
 import awkoo.terminal.terminal.TerminalViewClient;
-import awkoo.terminal.terminal.io.TerminalToolbarViewPager;
-import awkoo.terminal.terminal.io.TermuxTerminalExtraKeys;
+import awkoo.terminal.terminal.TerminalToolbarViewPager;
 import awkoo.terminal.utils.UI;
 import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.interact.TextInputDialogUtils;
@@ -84,7 +84,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     /**
      * {@link #mExtraKeysView} 的客户端。
      */
-    TermuxTerminalExtraKeys mTermuxTerminalExtraKeys;
+    TerminalExtraKeys mTerminalExtraKeys;
 
     /**
      * Termux 会话列表的控制器。
@@ -136,8 +136,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         if (savedInstanceState != null)
             mIsActivityRecreated = savedInstanceState.getBoolean(ARG_ACTIVITY_RECREATED, false);
-
-        reloadProperties();
 
         super.onCreate(savedInstanceState);
         setContentView(binding.getRoot());
@@ -319,14 +317,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     }
 
     /**
-     * 重新加载属性。
-     */
-    private void reloadProperties() {
-        if (mTerminalViewClient != null)
-            mTerminalViewClient.onReloadProperties();
-    }
-
-    /**
      * 设置 Termux 终端视图和客户端。
      */
     private void setTermuxTerminalViewAndClients() {
@@ -364,7 +354,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      * @param savedInstanceState 如果 Activity 被重新创建，则包含先前保存的状态。
      */
     private void setTerminalToolbarView(Bundle savedInstanceState) {
-        mTermuxTerminalExtraKeys = new TermuxTerminalExtraKeys(
+        mTerminalExtraKeys = new TerminalExtraKeys(
             this,
             binding.terminalView,
             mTerminalViewClient,
@@ -401,9 +391,9 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         ViewGroup.LayoutParams layoutParams = terminalToolbarViewPager.getLayoutParams();
         layoutParams.height = Math.round(mTerminalToolbarDefaultHeight *
             (
-                mTermuxTerminalExtraKeys.getExtraKeysInfo() == null ?
+                mTerminalExtraKeys.getExtraKeysInfo() == null ?
                     0 :
-                    mTermuxTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
+                    mTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
             ) * Constants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR);
         terminalToolbarViewPager.setLayoutParams(layoutParams);
     }
@@ -517,7 +507,8 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         if (!DataUtils.isNullOrEmpty(binding.terminalView.getStoredSelectedText()))
             menu.add(Menu.NONE, CONTEXT_MENU_SHARE_SELECTED_TEXT, Menu.NONE, R.string.action_share_selected_text);
         menu.add(Menu.NONE, CONTEXT_MENU_RESET_TERMINAL_ID, Menu.NONE, R.string.action_reset_terminal);
-        menu.add(Menu.NONE, CONTEXT_MENU_KILL_PROCESS_ID, Menu.NONE, getString(R.string.action_kill_process, getCurrentSession().getPid())).setEnabled(currentSession.isRunning());
+        menu.add(Menu.NONE, CONTEXT_MENU_KILL_PROCESS_ID, Menu.NONE, getString(R.string.action_kill_process, getCurrentSession().getPid()))
+            .setEnabled(currentSession.isRunning());
         menu.add(Menu.NONE, CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON, Menu.NONE, R.string.action_toggle_keep_screen_on)
             .setCheckable(true).setChecked(mPreferences.shouldKeepScreenOn());
         menu.add(Menu.NONE, CONTEXT_MENU_SETTINGS_ID, Menu.NONE, R.string.action_open_settings);
@@ -651,8 +642,8 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      *
      * @return Termux 终端额外按键。
      */
-    public TermuxTerminalExtraKeys getTermuxTerminalExtraKeys() {
-        return mTermuxTerminalExtraKeys;
+    public TerminalExtraKeys getTermuxTerminalExtraKeys() {
+        return mTerminalExtraKeys;
     }
 
     /**

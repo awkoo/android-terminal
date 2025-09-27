@@ -48,8 +48,6 @@ public class TerminalViewClient extends TerminalViewClientBase {
 
     private boolean mTerminalCursorBlinkerStateAlreadySet;
 
-//    private List<KeyboardShortcut> mSessionShortcuts;
-
     public TerminalViewClient(MainActivity activity, TerminalSessionActivityClient terminalSessionActivityClient) {
         this.mActivity = activity;
         this.mTerminalSessionActivityClient = terminalSessionActivityClient;
@@ -63,8 +61,6 @@ public class TerminalViewClient extends TerminalViewClientBase {
      * 应在 mActivity.onCreate() 调用时调用
      */
     public void onCreate() {
-        onReloadProperties();
-
         mActivity.getTerminalView().setTextSize(mActivity.getPreferences().getFontSize());
         mActivity.getTerminalView().setKeepScreenOn(mActivity.getPreferences().shouldKeepScreenOn());
     }
@@ -93,13 +89,6 @@ public class TerminalViewClient extends TerminalViewClientBase {
     public void onStop() {
         // 如果启用，停止终端光标闪烁
         setTerminalCursorBlinkerState(false);
-    }
-
-    /**
-     * 应在 mActivity.reloadProperties() 调用时调用
-     */
-    public void onReloadProperties() {
-//        setSessionShortcuts();
     }
 
     /**
@@ -154,16 +143,6 @@ public class TerminalViewClient extends TerminalViewClientBase {
     @Override
     public boolean shouldBackButtonBeMappedToEscape() {
         return TermuxSharedProperties.isBackKeyTheEscapeKey();
-    }
-
-    @Override
-    public boolean shouldEnforceCharBasedInput() {
-        return false;
-    }
-
-    @Override
-    public boolean shouldUseCtrlSpaceWorkaround() {
-        return false;
     }
 
     @Override
@@ -395,53 +374,10 @@ public class TerminalViewClient extends TerminalViewClientBase {
                 mTerminalSessionActivityClient.removeFinishedSession(session);
                 return true;
             }
-
-//            List<KeyboardShortcut> shortcuts = mSessionShortcuts;
-//            if (shortcuts != null && !shortcuts.isEmpty()) {
-//                int codePointLowerCase = Character.toLowerCase(codePoint);
-//                for (int i = shortcuts.size() - 1; i >= 0; i--) {
-//                    KeyboardShortcut shortcut = shortcuts.get(i);
-//                    if (codePointLowerCase == shortcut.codePoint()) {
-//                        switch (shortcut.shortcutAction()) {
-//                            case TermuxPropertyConstants.ACTION_SHORTCUT_CREATE_SESSION:
-//                                mTerminalSessionActivityClient.addNewSession(null);
-//                                return true;
-//                            case TermuxPropertyConstants.ACTION_SHORTCUT_NEXT_SESSION:
-//                                mTerminalSessionActivityClient.switchToSession(true);
-//                                return true;
-//                            case TermuxPropertyConstants.ACTION_SHORTCUT_PREVIOUS_SESSION:
-//                                mTerminalSessionActivityClient.switchToSession(false);
-//                                return true;
-//                            case TermuxPropertyConstants.ACTION_SHORTCUT_RENAME_SESSION:
-//                                mTerminalSessionActivityClient.renameSession(mActivity.getCurrentSession());
-//                                return true;
-//                        }
-//                    }
-//                }
-//            }
         }
 
         return false;
     }
-
-//    /**
-//     * 设置终端会话快捷方式。
-//     */
-//    private void setSessionShortcuts() {
-//        mSessionShortcuts = new ArrayList<>();
-//
-//        // {@link TermuxPropertyConstants#MAP_SESSION_SHORTCUTS} 存储会话快捷键和操作对
-//        for (Map.Entry<String, Integer> entry : TermuxPropertyConstants.MAP_SESSION_SHORTCUTS.entrySet()) {
-//            // mMap 在加载属性时存储会话快捷方式的代码点
-//            Integer codePoint = (Integer) TermuxSharedProperties.getInternalTermuxPropertyValueFromValue(entry.getKey());
-//            // 如果 codePoint 为 null，则会话快捷方式在属性中不存在或无效
-//            // （如由 {@link #getCodePointForSessionShortcuts(String,String)} 解析）
-//            // 如果 codePoint 不为 null，则获取 MAP_SESSION_SHORTCUTS 键的操作并
-//            // 将代码点添加到 sessionShortcuts
-//            if (codePoint != null)
-//                mSessionShortcuts.add(new KeyboardShortcut(codePoint, entry.getValue()));
-//        }
-//    }
 
 
     public void changeFontSize(boolean increase) {
@@ -608,10 +544,14 @@ public class TerminalViewClient extends TerminalViewClientBase {
         Collections.reverse(Arrays.asList(urls)); // 最新优先。
 
         // 点击复制 URL 到剪贴板：
-        final AlertDialog dialog = new AlertDialog.Builder(mActivity).setItems(urls, (di, which) -> {
-            String url = (String) urls[which];
-            ShareUtils.copyTextToClipboard(mActivity, url, mActivity.getString(R.string.msg_select_url_copied_to_clipboard));
-        }).setTitle(R.string.title_select_url_dialog).create();
+        final AlertDialog dialog = new AlertDialog.Builder(mActivity)
+            .setItems(urls, (di, which) -> {
+                String url = (String) urls[which];
+                ShareUtils.copyTextToClipboard(
+                    mActivity, url, mActivity.getString(R.string.msg_select_url_copied_to_clipboard)
+                );
+            })
+            .setTitle(R.string.title_select_url_dialog).create();
 
         // 长按打开 URL：
         dialog.setOnShowListener(di -> {

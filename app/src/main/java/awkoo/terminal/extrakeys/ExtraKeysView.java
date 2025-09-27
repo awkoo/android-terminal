@@ -66,7 +66,7 @@ import awkoo.terminal.utils.theme.ThemeUtils;
  * and calls {@link ExtraKeysView#reload(ExtraKeysInfo).
  * The {@link ExtraKeysInfo} is created by TermuxAppSharedProperties.setExtraKeys().
  * Then its got and the view height is adjusted in MainActivity.setTerminalToolbarHeight().
- * The client used is TermuxTerminalExtraKeys, which extends
+ * The client used is TerminalExtraKeys, which extends
  * {@link TerminalExtraKeys } to handle Termux app specific logic and
  * leave the rest to the super class.
  */
