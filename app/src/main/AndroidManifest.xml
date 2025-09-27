@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
-        android:name=".Application"
+        android:name=".app.Application"
         android:banner="@drawable/banner"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
@@ -28,7 +28,7 @@
         android:theme="@style/Theme.TermuxApp.DayNight.NoActionBar">
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".app.MainActivity"
             android:exported="true"
             android:configChanges="orientation|screenSize|smallestScreenSize|density|screenLayout|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
@@ -50,7 +50,7 @@
         <activity-alias
             android:name=".HomeActivity"
             android:exported="true"
-            android:targetActivity=".activities.MainActivity">
+            android:targetActivity=".app.MainActivity">
 
             <!-- Launch activity automatically on boot on Android Things devices -->
             <intent-filter>
@@ -62,13 +62,13 @@
         </activity-alias>
 
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".app.SettingsActivity"
             android:exported="true"
             android:label="@string/title_activity_termux_settings" />
 
 
         <service
-            android:name=".TerminalService"
+            android:name=".app.TerminalService"
             android:exported="false" />
 
 

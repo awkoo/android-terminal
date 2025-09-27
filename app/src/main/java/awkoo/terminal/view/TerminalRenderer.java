@@ -5,11 +5,11 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 
-import awkoo.terminal.terminal.TerminalBuffer;
-import awkoo.terminal.terminal.TerminalEmulator;
-import awkoo.terminal.terminal.TerminalRow;
-import awkoo.terminal.terminal.TextStyle;
-import awkoo.terminal.terminal.WcWidth;
+import awkoo.terminal.core.TerminalBuffer;
+import awkoo.terminal.core.TerminalEmulator;
+import awkoo.terminal.core.TerminalRow;
+import awkoo.terminal.core.TextStyle;
+import awkoo.terminal.core.WcWidth;
 
 /**
  * Renderer of a {@link TerminalEmulator} into a {@link Canvas}.

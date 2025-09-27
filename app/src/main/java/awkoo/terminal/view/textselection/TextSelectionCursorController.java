@@ -13,8 +13,8 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import awkoo.terminal.R;
-import awkoo.terminal.terminal.TerminalBuffer;
-import awkoo.terminal.terminal.WcWidth;
+import awkoo.terminal.core.TerminalBuffer;
+import awkoo.terminal.core.WcWidth;
 import awkoo.terminal.view.TerminalView;
 
 public class TextSelectionCursorController implements CursorController {

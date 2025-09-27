@@ -1,8 +1,8 @@
 package awkoo.terminal.utils;
 
-import awkoo.terminal.terminal.TerminalBuffer;
-import awkoo.terminal.terminal.TerminalEmulator;
-import awkoo.terminal.terminal.TerminalSession;
+import awkoo.terminal.core.TerminalBuffer;
+import awkoo.terminal.core.TerminalEmulator;
+import awkoo.terminal.core.TerminalSession;
 
 public class ShellUtils {
 

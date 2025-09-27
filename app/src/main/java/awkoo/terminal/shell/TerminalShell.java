@@ -9,8 +9,8 @@ import androidx.preference.PreferenceManager;
 import java.io.File;
 import java.util.HashMap;
 
-import awkoo.terminal.terminal.TerminalSession;
-import awkoo.terminal.terminal.TerminalSessionClient;
+import awkoo.terminal.core.TerminalSession;
+import awkoo.terminal.core.TerminalSessionClient;
 
 /**
  * 一个维护前台 Termux 会话信息的类。它还提供了一种将每个 {@link TerminalSession} 与启动它的 {@link ShellCommand} 相关联的方法。

@@ -110,7 +110,7 @@ static int create_subprocess(
     }
 }
 
-JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
+JNIEXPORT jint JNICALL Java_awkoo_terminal_core_JNI_createSubprocess(
         JNIEnv *env,
         jclass UNUSED(clazz),
         jstring cmd,
@@ -195,7 +195,7 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_createSubprocess(
     return ptm;
 }
 
-JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setPtyWindowSize(
+JNIEXPORT void JNICALL Java_awkoo_terminal_core_JNI_setPtyWindowSize(
         JNIEnv *UNUSED(env),
         jclass UNUSED(clazz),
         jint fd,
@@ -214,7 +214,7 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setPtyWindowSize(
 }
 
 // 禁用回显，解决多余的命令显示
-JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setStdinEcho(
+JNIEXPORT void JNICALL Java_awkoo_terminal_core_JNI_setStdinEcho(
         JNIEnv *UNUSED(env),
         jclass UNUSED(clazz),
         jint fd,
@@ -230,7 +230,7 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_setStdinEcho(
     tcsetattr(fd, TCSANOW, &tios);
 }
 
-JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_waitFor(
+JNIEXPORT jint JNICALL Java_awkoo_terminal_core_JNI_waitFor(
         JNIEnv *UNUSED(env),
         jclass UNUSED(clazz),
         jint pid
@@ -247,7 +247,7 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_terminal_JNI_waitFor(
     }
 }
 
-JNIEXPORT void JNICALL Java_awkoo_terminal_terminal_JNI_close(
+JNIEXPORT void JNICALL Java_awkoo_terminal_core_JNI_close(
         JNIEnv *UNUSED(env),
         jclass UNUSED(clazz),
         jint fileDescriptor

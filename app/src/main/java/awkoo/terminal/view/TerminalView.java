@@ -35,11 +35,11 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-import awkoo.terminal.terminal.KeyHandler;
-import awkoo.terminal.terminal.TerminalEmulator;
-import awkoo.terminal.terminal.TerminalSession;
-import awkoo.terminal.terminal.TerminalSessionClient;
-import awkoo.terminal.terminal.TerminalViewClientBase;
+import awkoo.terminal.core.KeyHandler;
+import awkoo.terminal.core.TerminalEmulator;
+import awkoo.terminal.core.TerminalSession;
+import awkoo.terminal.core.TerminalSessionClient;
+import awkoo.terminal.core.TerminalViewClientBase;
 import awkoo.terminal.view.textselection.TextSelectionCursorController;
 
 /**
