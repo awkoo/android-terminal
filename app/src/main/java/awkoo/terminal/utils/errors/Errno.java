@@ -13,8 +13,6 @@ import androidx.annotation.NonNull;
  */
 public record Errno(String type, int code, String message) {
 
-//    private static final HashMap<String, Errno> map = new HashMap<>();
-
     public static final String TYPE = "Error";
 
 
@@ -25,7 +23,6 @@ public record Errno(String type, int code, String message) {
         this.type = type;
         this.code = code;
         this.message = message;
-//        map.put(type + ":" + code, this);
     }
 
     @Override

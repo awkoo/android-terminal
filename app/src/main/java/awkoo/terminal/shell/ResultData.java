@@ -22,11 +22,8 @@ public class ResultData implements Serializable {
      */
     public List<Error> errorsList = new ArrayList<>();
 
-    public synchronized void setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
-        Error error = new Error();
-        errorsList.add(error);
-
-        error.setStateFailed(type, code, message, throwablesList);
+    public synchronized void setStateFailed(int code, String message) {
+        errorsList.add(new Error().setStateFailed(code, message));
     }
 
     public boolean isStateFailed() {

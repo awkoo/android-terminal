@@ -1,7 +1,5 @@
 package awkoo.terminal.shell;
 
-import java.util.List;
-
 public class ShellCommand {
 
     /*
@@ -146,11 +144,7 @@ public class ShellCommand {
 
 
     public synchronized boolean setStateFailed(int code, String message) {
-        return setStateFailed(null, code, message, null);
-    }
-
-    public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
-        this.resultData.setStateFailed(type, code, message, throwablesList);
+        this.resultData.setStateFailed(code, message);
         return setState(State.FAILED);
     }
 
