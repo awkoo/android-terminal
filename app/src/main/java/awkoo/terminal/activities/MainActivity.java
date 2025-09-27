@@ -36,8 +36,8 @@ import awkoo.terminal.terminal.TerminalSessionActivityClient;
 import awkoo.terminal.terminal.TerminalViewClient;
 import awkoo.terminal.terminal.TerminalToolbarViewPager;
 import awkoo.terminal.utils.UI;
-import awkoo.terminal.utils.data.DataUtils;
-import awkoo.terminal.utils.interact.TextInputDialogUtils;
+import awkoo.terminal.utils.DataUtils;
+import awkoo.terminal.utils.TextInputDialogUtils;
 import awkoo.terminal.utils.preferences.TermuxAppSharedPreferences;
 import awkoo.terminal.view.TerminalView;
 

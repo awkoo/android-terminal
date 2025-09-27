@@ -1,4 +1,4 @@
-package awkoo.terminal.utils.interact;
+package awkoo.terminal.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;

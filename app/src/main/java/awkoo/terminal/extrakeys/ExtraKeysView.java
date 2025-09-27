@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import awkoo.terminal.R;
-import awkoo.terminal.utils.theme.ThemeUtils;
+import awkoo.terminal.utils.ThemeUtils;
 
 /**
  * A {@link View} showing extra keys (such as Escape, Ctrl, Alt) not normally available on an Android soft

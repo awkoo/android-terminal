@@ -22,11 +22,11 @@ import awkoo.terminal.Constants;
 import awkoo.terminal.R;
 import awkoo.terminal.activities.MainActivity;
 import awkoo.terminal.extrakeys.SpecialButton;
-import awkoo.terminal.shell.ShellUtils;
+import awkoo.terminal.utils.ShellUtils;
 import awkoo.terminal.utils.KeyboardUtils;
-import awkoo.terminal.utils.data.DataUtils;
-import awkoo.terminal.utils.data.UrlUtils;
-import awkoo.terminal.utils.interact.ShareUtils;
+import awkoo.terminal.utils.DataUtils;
+import awkoo.terminal.utils.UrlUtils;
+import awkoo.terminal.utils.ShareUtils;
 import awkoo.terminal.view.TerminalView;
 
 public class TerminalViewClient extends TerminalViewClientBase {

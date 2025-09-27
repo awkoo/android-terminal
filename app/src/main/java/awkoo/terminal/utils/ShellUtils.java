@@ -1,4 +1,4 @@
-package awkoo.terminal.shell;
+package awkoo.terminal.utils;
 
 import awkoo.terminal.terminal.TerminalBuffer;
 import awkoo.terminal.terminal.TerminalEmulator;

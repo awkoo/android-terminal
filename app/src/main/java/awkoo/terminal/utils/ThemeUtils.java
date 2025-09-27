@@ -1,4 +1,4 @@
-package awkoo.terminal.utils.theme;
+package awkoo.terminal.utils;
 
 import android.app.Activity;
 import android.content.Context;

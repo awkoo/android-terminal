@@ -1,4 +1,4 @@
-package awkoo.terminal.utils.interact;
+package awkoo.terminal.utils;
 
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
@@ -10,8 +10,6 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import awkoo.terminal.R;
-import awkoo.terminal.utils.UI;
-import awkoo.terminal.utils.data.DataUtils;
 
 public class ShareUtils {
 

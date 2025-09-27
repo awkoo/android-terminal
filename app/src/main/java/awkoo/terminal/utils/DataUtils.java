@@ -1,4 +1,4 @@
-package awkoo.terminal.utils.data;
+package awkoo.terminal.utils;
 
 public class DataUtils {
 
