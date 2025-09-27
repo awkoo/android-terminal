@@ -25,8 +25,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewTreeObserver;
 import android.view.accessibility.AccessibilityManager;
-import android.view.autofill.AutofillManager;
-import android.view.autofill.AutofillValue;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
@@ -99,33 +97,6 @@ public final class TerminalView extends View {
      * 如果非零，这是收到的最后一个 Unicode 码点（如果它是一个组合字符）。
      */
     int mCombiningAccent;
-
-    /**
-     * {@link View#getAutofillType()} 返回的当前自动填充类型，由 {@link #getAutofillType()} 返回。
-     * <p>
-     * 默认为 {@link #AUTOFILL_TYPE_NONE}，以便在 Activity 启动/View 创建时不会自动显示自动填充 UI，如键盘上方的工具栏。
-     * 此值应在调用 {@link AutofillManager#requestAutofill(View)} 之前更新为所需值，例如 {@link #AUTOFILL_TYPE_TEXT}，以便显示自动填充 UI。
-     * 设置的更新值将在 {@link #autofill(AutofillValue)} 中通过调用 {@link #resetAutoFill()} 自动恢复为 {@link #AUTOFILL_TYPE_NONE}，以便不再显示自动填充 UI。
-     */
-    private int mAutoFillType = AUTOFILL_TYPE_NONE;
-
-    /**
-     * {@link View#getImportantForAutofill()} 返回的当前自动填充类型，由 {@link #getImportantForAutofill()} 返回。
-     * <p>
-     * 默认为 {@link #IMPORTANT_FOR_AUTOFILL_NO}，以便视图不被视为对自动填充很重要。
-     * 此值应在调用 {@link AutofillManager#requestAutofill(View)} 之前更新为所需值，例如 {@link #IMPORTANT_FOR_AUTOFILL_YES}，
-     * 以便 Android 和应用程序将视图视为对自动填充很重要以处理请求。
-     * 设置的更新值将在 {@link #autofill(AutofillValue)} 中通过调用 {@link #resetAutoFill()} 自动恢复为 {@link #IMPORTANT_FOR_AUTOFILL_NO}。
-     */
-    private int mAutoFillImportance = IMPORTANT_FOR_AUTOFILL_NO;
-
-    /**
-     * {@link View#getAutofillHints()} ()} 返回的当前自动填充提示，由 {@link #getAutofillHints()} ()} 返回。
-     * <p>
-     * 默认为空 `string[]`。此值应更新为所需值。
-     * 设置的更新值将在 {@link #autofill(AutofillValue)} 中通过调用 {@link #resetAutoFill()} 自动恢复为空 `string[]`。
-     */
-    private String[] mAutoFillHints = new String[0];
 
     private final boolean mAccessibilityEnabled;
 
@@ -631,7 +602,6 @@ public final class TerminalView extends View {
     @Override
     public boolean onKeyPreIme(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            cancelRequestAutoFill();
             if (isSelectingText()) {
                 stopTextSelectionMode();
                 return true;
@@ -1018,109 +988,6 @@ public final class TerminalView extends View {
 
     public void setTopRow(int mTopRow) {
         this.mTopRow = mTopRow;
-    }
-
-
-    /**
-     * 定义自动填充 API 所需的函数。
-     */
-    @Override
-    public void autofill(AutofillValue value) {
-        if (value.isText()) {
-            mTermSession.write(value.getTextValue().toString());
-        }
-
-        resetAutoFill();
-    }
-
-    @Override
-    public int getAutofillType() {
-        return mAutoFillType;
-    }
-
-    @Override
-    public String[] getAutofillHints() {
-        return mAutoFillHints;
-    }
-
-    @Override
-    public AutofillValue getAutofillValue() {
-        return AutofillValue.forText("");
-    }
-
-    @Override
-    public int getImportantForAutofill() {
-        return mAutoFillImportance;
-    }
-
-    private synchronized void resetAutoFill() {
-        // 恢复为无类型，以便不再显示自动填充 UI。
-        mAutoFillType = AUTOFILL_TYPE_NONE;
-        mAutoFillImportance = IMPORTANT_FOR_AUTOFILL_NO;
-        mAutoFillHints = new String[0];
-    }
-
-    public AutofillManager getAutoFillManagerService() {
-
-        try {
-            Context context = getContext();
-            if (context == null) return null;
-            return context.getSystemService(AutofillManager.class);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public boolean isAutoFillEnabled() {
-
-        try {
-            AutofillManager autofillManager = getAutoFillManagerService();
-            return autofillManager != null && autofillManager.isEnabled();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public synchronized void requestAutoFillUsername() {
-        requestAutoFill(
-            new String[]{View.AUTOFILL_HINT_USERNAME});
-    }
-
-    public synchronized void requestAutoFillPassword() {
-        requestAutoFill(
-            new String[]{View.AUTOFILL_HINT_PASSWORD});
-    }
-
-    public synchronized void requestAutoFill(String[] autoFillHints) {
-        if (autoFillHints == null || autoFillHints.length < 1) return;
-
-        try {
-            AutofillManager autofillManager = getAutoFillManagerService();
-            if (autofillManager != null && autofillManager.isEnabled()) {
-                // 更新将由 `getAutofillType()` 返回的类型，以便显示自动填充 UI。
-                mAutoFillType = AUTOFILL_TYPE_TEXT;
-                // 更新将由 `getImportantForAutofill()` 返回的重要性，以便
-                // 自动填充将视图视为重要。
-                mAutoFillImportance = IMPORTANT_FOR_AUTOFILL_YES;
-                // 更新将由 `getAutofillHints()` 返回的提示，用于显示自动填充 UI。
-                mAutoFillHints = autoFillHints;
-                autofillManager.requestAutofill(this);
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    public synchronized void cancelRequestAutoFill() {
-        if (mAutoFillType == AUTOFILL_TYPE_NONE) return;
-
-        try {
-            AutofillManager autofillManager = getAutoFillManagerService();
-            if (autofillManager != null && autofillManager.isEnabled()) {
-                resetAutoFill();
-                autofillManager.cancel();
-            }
-        } catch (Exception ignored) {
-        }
     }
 
 

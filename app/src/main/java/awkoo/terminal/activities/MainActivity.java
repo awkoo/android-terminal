@@ -116,12 +116,10 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     private static final int CONTEXT_MENU_SELECT_URL_ID = 0;
     private static final int CONTEXT_MENU_SHARE_TRANSCRIPT_ID = 1;
     private static final int CONTEXT_MENU_SHARE_SELECTED_TEXT = 2;
-    private static final int CONTEXT_MENU_AUTOFILL_USERNAME = 3;
-    private static final int CONTEXT_MENU_AUTOFILL_PASSWORD = 4;
-    private static final int CONTEXT_MENU_RESET_TERMINAL_ID = 5;
-    private static final int CONTEXT_MENU_KILL_PROCESS_ID = 6;
-    private static final int CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON = 7;
-    private static final int CONTEXT_MENU_SETTINGS_ID = 8;
+    private static final int CONTEXT_MENU_RESET_TERMINAL_ID = 3;
+    private static final int CONTEXT_MENU_KILL_PROCESS_ID = 4;
+    private static final int CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON = 5;
+    private static final int CONTEXT_MENU_SETTINGS_ID = 6;
 
     private static final String ARG_TERMINAL_TOOLBAR_TEXT_INPUT = "terminal_toolbar_text_input";
     private static final String ARG_ACTIVITY_RECREATED = "activity_recreated";
@@ -514,16 +512,10 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         TerminalSession currentSession = getCurrentSession();
         if (currentSession == null) return;
 
-        boolean autoFillEnabled = binding.terminalView.isAutoFillEnabled();
-
         menu.add(Menu.NONE, CONTEXT_MENU_SELECT_URL_ID, Menu.NONE, R.string.action_select_url);
         menu.add(Menu.NONE, CONTEXT_MENU_SHARE_TRANSCRIPT_ID, Menu.NONE, R.string.action_share_transcript);
         if (!DataUtils.isNullOrEmpty(binding.terminalView.getStoredSelectedText()))
             menu.add(Menu.NONE, CONTEXT_MENU_SHARE_SELECTED_TEXT, Menu.NONE, R.string.action_share_selected_text);
-        if (autoFillEnabled)
-            menu.add(Menu.NONE, CONTEXT_MENU_AUTOFILL_USERNAME, Menu.NONE, R.string.action_autofill_username);
-        if (autoFillEnabled)
-            menu.add(Menu.NONE, CONTEXT_MENU_AUTOFILL_PASSWORD, Menu.NONE, R.string.action_autofill_password);
         menu.add(Menu.NONE, CONTEXT_MENU_RESET_TERMINAL_ID, Menu.NONE, R.string.action_reset_terminal);
         menu.add(Menu.NONE, CONTEXT_MENU_KILL_PROCESS_ID, Menu.NONE, getString(R.string.action_kill_process, getCurrentSession().getPid())).setEnabled(currentSession.isRunning());
         menu.add(Menu.NONE, CONTEXT_MENU_TOGGLE_KEEP_SCREEN_ON, Menu.NONE, R.string.action_toggle_keep_screen_on)
@@ -564,14 +556,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             }
             case CONTEXT_MENU_SHARE_SELECTED_TEXT -> {
                 mTerminalViewClient.shareSelectedText();
-                yield true;
-            }
-            case CONTEXT_MENU_AUTOFILL_USERNAME -> {
-                binding.terminalView.requestAutoFillUsername();
-                yield true;
-            }
-            case CONTEXT_MENU_AUTOFILL_PASSWORD -> {
-                binding.terminalView.requestAutoFillPassword();
                 yield true;
             }
             case CONTEXT_MENU_RESET_TERMINAL_ID -> {
