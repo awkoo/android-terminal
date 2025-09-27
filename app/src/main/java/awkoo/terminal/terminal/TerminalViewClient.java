@@ -27,7 +27,6 @@ import awkoo.terminal.utils.KeyboardUtils;
 import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.data.UrlUtils;
 import awkoo.terminal.utils.interact.ShareUtils;
-import awkoo.terminal.utils.properties.TermuxSharedProperties;
 import awkoo.terminal.view.TerminalView;
 
 public class TerminalViewClient extends TerminalViewClientBase {
@@ -141,11 +140,6 @@ public class TerminalViewClient extends TerminalViewClientBase {
     }
 
     @Override
-    public boolean shouldBackButtonBeMappedToEscape() {
-        return TermuxSharedProperties.isBackKeyTheEscapeKey();
-    }
-
-    @Override
     public boolean isTerminalViewSelected() {
         return mActivity.getTerminalToolbarViewPager() == null || mActivity.isTerminalViewSelected() || mActivity.getTerminalView().hasFocus();
     }
@@ -225,7 +219,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
      */
     private boolean handleVirtualKeys(int keyCode, KeyEvent event, boolean down) {
         InputDevice inputDevice = event.getDevice();
-        if (TermuxSharedProperties.areVirtualVolumeKeysDisabled()) {
+        if (false) {
             return false;
         } else if (inputDevice != null && inputDevice.getKeyboardType() == InputDevice.KEYBOARD_TYPE_ALPHABETIC) {
             // 不要从完整的外部键盘窃取专用按钮。
@@ -391,7 +385,7 @@ public class TerminalViewClient extends TerminalViewClientBase {
      */
     public void onToggleSoftKeyboardRequest() {
         // 如果软键盘切换行为是启用/禁用
-        if (TermuxSharedProperties.shouldEnableDisableSoftKeyboardOnToggle()) {
+        if (false) {
             // 如果软键盘可见
             if (!KeyboardUtils.areDisableSoftKeyboardFlagsSet(mActivity)) {
                 mActivity.getPreferences().setSoftKeyboardEnabled(false);

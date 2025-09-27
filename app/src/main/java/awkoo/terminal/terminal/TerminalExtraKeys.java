@@ -9,12 +9,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import org.json.JSONException;
 
+import awkoo.terminal.Constants;
 import awkoo.terminal.activities.MainActivity;
 import awkoo.terminal.extrakeys.ExtraKeysConstants;
 import awkoo.terminal.extrakeys.ExtraKeysInfo;
 import awkoo.terminal.utils.UI;
-import awkoo.terminal.utils.properties.TermuxPropertyConstants;
-import awkoo.terminal.utils.properties.TermuxSharedProperties;
 import awkoo.terminal.view.TerminalView;
 
 public class TerminalExtraKeys extends awkoo.terminal.extrakeys.TerminalExtraKeys {
@@ -48,27 +47,13 @@ public class TerminalExtraKeys extends awkoo.terminal.extrakeys.TerminalExtraKey
             // The mMap stores the extra key and style string values while loading properties
             // Check {@link #getExtraKeysInternalPropertyValueFromValue(String)} and
             // {@link #getExtraKeysStyleInternalPropertyValueFromValue(String)}
-            String extrakeys = (String) TermuxSharedProperties.getInternalTermuxPropertyValueFromValue(TermuxPropertyConstants.KEY_EXTRA_KEYS);
-            String extraKeysStyle = (String) TermuxSharedProperties.getInternalTermuxPropertyValueFromValue(TermuxPropertyConstants.KEY_EXTRA_KEYS_STYLE);
-
-            ExtraKeysConstants.ExtraKeyDisplayMap extraKeyDisplayMap = ExtraKeysInfo.getCharDisplayMapForStyle(extraKeysStyle);
-            if (ExtraKeysConstants.EXTRA_KEY_DISPLAY_MAPS.DEFAULT_CHAR_DISPLAY.equals(extraKeyDisplayMap) && !TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE.equals(extraKeysStyle)) {
-                //        logMessage(Log.ERROR, tag, message);
-                extraKeysStyle = TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE;
-            }
+            String extrakeys = Constants.DEFAULT_IVALUE_EXTRA_KEYS;
+            String extraKeysStyle = Constants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE;
 
             mExtraKeysInfo = new ExtraKeysInfo(extrakeys, extraKeysStyle, ExtraKeysConstants.CONTROL_CHARS_ALIASES);
         } catch (JSONException e) {
-            UI.showToast(mActivity, "Could not load and set the \"" + TermuxPropertyConstants.KEY_EXTRA_KEYS + "\" property from the properties file: " + e, true);
-            //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
-
-            try {
-                mExtraKeysInfo = new ExtraKeysInfo(TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS, TermuxPropertyConstants.DEFAULT_IVALUE_EXTRA_KEYS_STYLE, ExtraKeysConstants.CONTROL_CHARS_ALIASES);
-            } catch (JSONException e2) {
-                UI.showToast(mActivity, "Can't create default extra keys", true);
-                //        Logger.logErrorExtended(tag, getMessageAndStackTraceString(message, throwable));
-                mExtraKeysInfo = null;
-            }
+            UI.showToast(mActivity, "Can't create default extra keys", true);
+            mExtraKeysInfo = null;
         }
     }
 

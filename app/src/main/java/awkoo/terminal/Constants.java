@@ -87,4 +87,9 @@ public final class Constants {
      */
     public static final float DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR = 1;
 
+    //public static final String DEFAULT_IVALUE_EXTRA_KEYS = "[[ESC, TAB, CTRL, ALT, {key: '-', popup: '|'}, DOWN, UP]]"; // Single row
+    public static final String DEFAULT_IVALUE_EXTRA_KEYS = "[['ESC',{key: 'DRAWER', popup: 'PASTE'},'SCROLL','HOME','UP','END','PGUP'], ['TAB','CTRL','ALT','LEFT','DOWN','RIGHT','PGDN']]"; // 双行
+
+    public static final String DEFAULT_IVALUE_EXTRA_KEYS_STYLE = "default";
+
 }
