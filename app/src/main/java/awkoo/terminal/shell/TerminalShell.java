@@ -40,7 +40,7 @@ public class TerminalShell {
     public TerminalShell(
         @NonNull Context context,
         @NonNull ShellCommand shellCommand,
-        TerminalSessionClient terminalSessionClient,
+        @NonNull TerminalSessionClient terminalSessionClient,
         @Nullable ExitCallback exitCallback,
         @Nullable HashMap<String, String> additionalEnvironment
     ) {
@@ -88,7 +88,7 @@ public class TerminalShell {
             mShellCommand.workingDirectory,
             arguments,
             mShellCommand.environment.toArray(),
-            mShellCommand.stdin, // Nullable
+            mShellCommand.stdin,
             mShellCommand.terminalTranscriptRows,
             terminalSessionClient
         );

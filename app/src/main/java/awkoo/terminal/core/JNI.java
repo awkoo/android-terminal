@@ -31,7 +31,9 @@ final class JNI {
             @NonNull String cwd,
             @Nullable String[] args,
             @Nullable String[] envVars,
-            @NonNull int[] processId, int rows, int columns, int cellWidth, int cellHeight);
+            @NonNull int[] processId,
+            int rows, int columns, int cellWidth, int cellHeight
+    );
 
     /**
      * Set the window size for a given pty, which allows connected programs to learn how large their screen is.

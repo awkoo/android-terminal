@@ -10,6 +10,7 @@ import android.system.Os;
 import android.system.OsConstants;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -86,7 +87,7 @@ public final class TerminalSession extends TerminalOutput {
     private final String mCwd;
     private final String[] mArgs;
     private final String[] mEnv;
-    private final Integer mTranscriptRows;
+    private final int mTranscriptRows;
     private final Context context;
     private final String stdin;
 
@@ -95,11 +96,11 @@ public final class TerminalSession extends TerminalOutput {
         @NonNull Context context,
         @NonNull String executable,
         @NonNull String cwd,
-        @NonNull String[] args,
-        String[] env,
-        String stdin,
-        Integer transcriptRows,
-        TerminalSessionClient client
+        @Nullable String[] args,
+        @Nullable String[] env,
+        @Nullable String stdin,
+        int transcriptRows,
+        @NonNull TerminalSessionClient client
     ) {
         this.context = context;
         this.mExecutable = executable;
