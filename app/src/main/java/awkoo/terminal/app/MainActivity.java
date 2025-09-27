@@ -248,7 +248,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         if (mTerminalService != null) {
             // 不要让服务和会话客户端持有对 Activity 的引用
-            mTerminalService.unsetTermuxTerminalSessionClient();
+            mTerminalService.unsetTerminalSessionClient();
             mTerminalService = null;
         }
 
@@ -302,7 +302,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         }
 
         // 更新 {@link TerminalSession} 和 {@link TerminalEmulator} 的客户端
-        mTerminalService.setTermuxTerminalSessionClient(mTerminalSessionActivityClient);
+        mTerminalService.setTerminalSessionClient(mTerminalSessionActivityClient);
     }
 
     /**

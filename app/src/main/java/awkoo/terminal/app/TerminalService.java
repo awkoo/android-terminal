@@ -163,7 +163,7 @@ public final class TerminalService extends Service {
         // 由于我们不能保证 MainActivity.onDestroy() 总能执行完毕，
         // 我们也在这里取消设置客户端，以防万一，这样服务和会话就不会持有对已销毁Activity的引用。
         if (mTerminalSessionActivityClient != null)
-            unsetTermuxTerminalSessionClient();
+            unsetTerminalSessionClient();
         return false;
     }
 
@@ -311,7 +311,7 @@ public final class TerminalService extends Service {
         TerminalShell newTerminalShell = new TerminalShell(
             this,
             shellCommand,
-            getTermuxTerminalSessionClient(),
+            getTerminalSessionClient(),
             this::onShellExited,
             null
         );
@@ -361,13 +361,13 @@ public final class TerminalService extends Service {
     /**
      * 如果 {@link MainActivity} 尚未绑定到 {@link TerminalService} 或已被销毁，
      * 那么需要Activity的接口功能对终端会话应不可用，因此我们只返回 {@link #mNullTerminalSessionClient}。
-     * 一旦收到 {@link MainActivity} 的绑定回调，它应调用 {@link #setTermuxTerminalSessionClient} 来设置
+     * 一旦收到 {@link MainActivity} 的绑定回调，它应调用 {@link #setTerminalSessionClient} 来设置
      * {@link TerminalService#mTerminalSessionActivityClient}，以便后续的终端会话能直接传递
      * 完整实现了 {@link TerminalSessionClient} 接口的 {@link TerminalSessionActivityClient} 对象。
      *
      * @return 如果 {@link MainActivity} 已绑定，则返回 {@link TerminalSessionActivityClient}，否则返回 {@link TerminalSessionClientBase}。
      */
-    public synchronized TerminalSessionClientBase getTermuxTerminalSessionClient() {
+    public synchronized TerminalSessionClientBase getTerminalSessionClient() {
         return Objects.requireNonNullElse(
             mTerminalSessionActivityClient,
             mNullTerminalSessionClient
@@ -382,7 +382,7 @@ public final class TerminalService extends Service {
      *
      * @param terminalSessionActivityClient 完整实现 {@link TerminalSessionClient} 接口的 {@link TerminalSessionActivityClient} 对象。
      */
-    public synchronized void setTermuxTerminalSessionClient(
+    public synchronized void setTerminalSessionClient(
         TerminalSessionActivityClient terminalSessionActivityClient
     ) {
         mTerminalSessionActivityClient = terminalSessionActivityClient;
@@ -398,7 +398,7 @@ public final class TerminalService extends Service {
      * 以确保 {@link TerminalService}、{@link TerminalSession} 和 {@link TerminalEmulator}
      * 的客户端不持有对Activity的引用。
      */
-    public synchronized void unsetTermuxTerminalSessionClient() {
+    public synchronized void unsetTerminalSessionClient() {
         for (int i = 0; i < mTerminalShells.size(); i++)
             mTerminalShells.get(i)
                 .getTerminalSession()
