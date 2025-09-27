@@ -163,6 +163,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         try {
             // 尝试绑定到服务，如果成功，将调用 {@link #onServiceConnected(ComponentName, IBinder)} 回调
             Intent serviceIntent = new Intent(this, TerminalService.class);
+            startService(serviceIntent);
             if (!bindService(serviceIntent, this, 0))
                 throw new RuntimeException("bindService() failed");
         } catch (Exception e) {
