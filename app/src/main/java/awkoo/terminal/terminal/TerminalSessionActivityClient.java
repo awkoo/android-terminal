@@ -108,7 +108,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         if (mActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LEANBACK)) {
             // 在 Android TV 设备上，我们需要使用旧的行为，因为我们可能
             // 无法拥有多个启动器图标。
-            if (service.getTermuxSessionsSize() > 1) {
+            if (service.getShellList().size() > 1) {
                 removeFinishedSession(finishedSession);
             }
         } else {
@@ -201,14 +201,14 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
         TerminalSession currentTerminalSession = mActivity.getCurrentSession();
         int index = service.getIndexOfSession(currentTerminalSession);
-        int size = service.getTermuxSessionsSize();
+        int size = service.getShellList().size();
         if (forward) {
             if (++index >= size) index = 0;
         } else {
             if (--index < 0) index = size - 1;
         }
 
-        TerminalShell terminalShell = service.getTermuxSession(index);
+        TerminalShell terminalShell = service.getSession(index);
         if (terminalShell != null)
             setCurrentSession(terminalShell.getTerminalSession());
     }
@@ -217,7 +217,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        TerminalShell terminalShell = service.getTermuxSession(index);
+        TerminalShell terminalShell = service.getSession(index);
         if (terminalShell != null)
             setCurrentSession(terminalShell.getTerminalSession());
     }
@@ -247,7 +247,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         sessionToRename.mSessionName = text;
         TerminalService service = mActivity.getTermuxService();
         if (service != null) {
-            TerminalShell terminalShell = service.getTermuxSessionForTerminalSession(sessionToRename);
+            TerminalShell terminalShell = service.getShellFromSession(sessionToRename);
             if (terminalShell != null)
                 terminalShell.getExecutionCommand().shellName = text;
         }
@@ -296,7 +296,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             TerminalService service = mActivity.getTermuxService();
             if (service == null) return null;
 
-            TerminalShell terminalShell = service.getLastTermuxSession();
+            TerminalShell terminalShell = service.getLastSession();
             if (terminalShell != null)
                 return terminalShell.getTerminalSession();
             else
@@ -315,7 +315,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return null;
 
-        return service.getTerminalSessionForHandle(sessionHandle);
+        return service.getSessionFromHandle(sessionHandle);
     }
 
     public void removeFinishedSession(TerminalSession finishedSession) {
@@ -325,7 +325,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
 
         int index = service.removeSession(finishedSession);
 
-        int size = service.getTermuxSessionsSize();
+        int size = service.getShellList().size();
         if (size == 0) {
             // 没有会话可显示，因此结束活动。
             mActivity.finishActivityIfNotFinishing();
@@ -333,7 +333,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             if (index >= size) {
                 index = size - 1;
             }
-            TerminalShell terminalShell = service.getTermuxSession(index);
+            TerminalShell terminalShell = service.getSession(index);
             if (terminalShell != null)
                 setCurrentSession(terminalShell.getTerminalSession());
         }

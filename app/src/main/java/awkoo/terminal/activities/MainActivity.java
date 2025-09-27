@@ -285,7 +285,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
 
         setIntent(null);
 
-        if (mTerminalService.isTermuxSessionsEmpty()) {
+        if (mTerminalService.getShellList().isEmpty()) {
             if (mIsVisible) {
                 try {
                     mTerminalSessionActivityClient.addNewSession(null);
@@ -342,7 +342,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
     private void setTermuxSessionsListView() {
         ListView termuxSessionsListView = binding.terminalSessionsList;
         mTermuxSessionListViewController = new SessionsListViewController(
-            this, mTerminalService.getTermuxSessions()
+            this, mTerminalService.getShellList()
         );
         termuxSessionsListView.setAdapter(mTermuxSessionListViewController);
         termuxSessionsListView.setOnItemClickListener(mTermuxSessionListViewController);

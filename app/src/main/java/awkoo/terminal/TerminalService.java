@@ -279,7 +279,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * 创建一个新的 {@link TerminalShell}。
      * 当前由 {@link TerminalSessionActivityClient#addNewSession(String)} 调用以添加新会话。
      *
-     * @param executablePath   可执行文件的路径，如果为null则使用默认shell。
+     * @param executable   可执行文件的路径，如果为null则使用默认shell。
      * @param arguments        传递给可执行文件的参数。
      * @param stdin            发送到stdin的初始文本。
      * @param workingDirectory 会话的工作目录。
@@ -287,7 +287,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * @return 如果成功则返回创建的 {@link TerminalShell}，否则返回 null。
      */
     public TerminalShell createSession(
-        String executablePath,
+        String executable,
         String[] arguments,
         String stdin,
         String workingDirectory,
@@ -296,7 +296,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
     ) {
         ShellCommand shellCommand = new ShellCommand(
             SHELL_ID++,
-            executablePath,
+            executable,
             arguments,
             stdin,
             workingDirectory,
@@ -424,7 +424,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
             PendingIntent.FLAG_IMMUTABLE
         );
 
-        int sessionCount = getTermuxSessionsSize();
+        int sessionCount = getShellList().size();
         String notificationText;
         final boolean wakeLockHeld = mWakeLock != null;
         if (wakeLockHeld) notificationText = getString(
@@ -512,29 +512,11 @@ public final class TerminalService extends Service implements TerminalShell.Term
     }
 
     /**
-     * 检查当前是否有活动的终端会话。
-     *
-     * @return 如果会话列表为空则返回 {@code true}，否则返回 {@code false}。
-     */
-    public synchronized boolean isTermuxSessionsEmpty() {
-        return mTerminalShells.isEmpty();
-    }
-
-    /**
-     * 获取当前活动终端会话的数量。
-     *
-     * @return 返回会话列表的大小。
-     */
-    public synchronized int getTermuxSessionsSize() {
-        return mTerminalShells.size();
-    }
-
-    /**
      * 获取可变的终端会话列表。
      *
      * @return 返回 {@link #mTerminalShells} 的引用。
      */
-    public synchronized List<TerminalShell> getTermuxSessions() {
+    public synchronized List<TerminalShell> getShellList() {
         return mTerminalShells;
     }
 
@@ -545,7 +527,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * @return 返回指定索引处的 {@link TerminalShell}，如果索引无效则返回 {@code null}。
      */
     @Nullable
-    public synchronized TerminalShell getTermuxSession(int index) {
+    public synchronized TerminalShell getSession(int index) {
         if (index >= 0 && index < mTerminalShells.size())
             return mTerminalShells.get(index);
         else return null;
@@ -558,7 +540,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * @return 返回匹配的 {@link TerminalShell}，如果未找到则返回 {@code null}。
      */
     @Nullable
-    public synchronized TerminalShell getTermuxSessionForTerminalSession(TerminalSession terminalSession) {
+    public synchronized TerminalShell getShellFromSession(TerminalSession terminalSession) {
         if (terminalSession == null) return null;
 
         for (int i = 0; i < mTerminalShells.size(); i++) {
@@ -574,7 +556,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      *
      * @return 返回列表中的最后一个 {@link TerminalShell}，如果列表为空则返回 {@code null}。
      */
-    public synchronized TerminalShell getLastTermuxSession() {
+    public synchronized TerminalShell getLastSession() {
         return mTerminalShells.isEmpty() ? null : mTerminalShells.get(mTerminalShells.size() - 1);
     }
 
@@ -600,7 +582,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
      * @param sessionHandle 要查找的会话句柄字符串。
      * @return 返回匹配的 {@link TerminalSession}，如果未找到则返回 {@code null}。
      */
-    public synchronized TerminalSession getTerminalSessionForHandle(String sessionHandle) {
+    public synchronized TerminalSession getSessionFromHandle(String sessionHandle) {
         TerminalSession terminalSession;
         for (int i = 0, len = mTerminalShells.size(); i < len; i++) {
             terminalSession = mTerminalShells.get(i).getTerminalSession();
