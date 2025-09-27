@@ -312,7 +312,7 @@ public final class TerminalService extends Service {
             this,
             shellCommand,
             getTermuxTerminalSessionClient(),
-            this::onSessionExited,
+            this::onShellExited,
             null
         );
 
@@ -347,14 +347,12 @@ public final class TerminalService extends Service {
      *
      * @param terminalShell 已退出的会话。
      */
-    public void onSessionExited(final TerminalShell terminalShell) {
-        if (terminalShell != null) {
-            mTerminalShells.remove(terminalShell);
+    public void onShellExited(final TerminalShell terminalShell) {
+        mTerminalShells.remove(terminalShell);
 
-            // 如果Activity在前台，通知TermuxSessionsListViewController会话列表已更新
-            if (mTerminalSessionActivityClient != null)
-                mTerminalSessionActivityClient.termuxSessionListNotifyUpdated();
-        }
+        // 如果Activity在前台，通知TermuxSessionsListViewController会话列表已更新
+        if (mTerminalSessionActivityClient != null)
+            mTerminalSessionActivityClient.termuxSessionListNotifyUpdated();
 
         updateNotification();
     }

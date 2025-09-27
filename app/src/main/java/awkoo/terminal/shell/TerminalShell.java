@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.system.OsConstants;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import java.io.File;
@@ -36,11 +38,11 @@ public class TerminalShell {
      * @param additionalEnvironment 要导出的附加 shell 环境变量。现有变量将被覆盖。
      */
     public TerminalShell(
-        Context context,
-        ShellCommand shellCommand,
+        @NonNull Context context,
+        @NonNull ShellCommand shellCommand,
         TerminalSessionClient terminalSessionClient,
-        ExitCallback exitCallback,
-        HashMap<String, String> additionalEnvironment
+        @Nullable ExitCallback exitCallback,
+        @Nullable HashMap<String, String> additionalEnvironment
     ) {
         this.mShellCommand = shellCommand;
         this.mExitCallback = exitCallback;

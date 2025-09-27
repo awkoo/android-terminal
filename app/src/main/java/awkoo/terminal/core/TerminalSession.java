@@ -82,7 +82,7 @@ public final class TerminalSession extends TerminalOutput {
 
     final Handler mMainThreadHandler = new MainThreadHandler(this);
 
-    private final String mShellPath;
+    private final String mExecutable;
     private final String mCwd;
     private final String[] mArgs;
     private final String[] mEnv;
@@ -92,17 +92,17 @@ public final class TerminalSession extends TerminalOutput {
 
 
     public TerminalSession(
-        Context context,
-        String shellPath,
-        String cwd,
-        String[] args,
+        @NonNull Context context,
+        @NonNull String executable,
+        @NonNull String cwd,
+        @NonNull String[] args,
         String[] env,
         String stdin,
         Integer transcriptRows,
         TerminalSessionClient client
     ) {
         this.context = context;
-        this.mShellPath = shellPath;
+        this.mExecutable = executable;
         this.mCwd = cwd;
         this.mArgs = args;
         this.mEnv = env;
@@ -160,7 +160,7 @@ public final class TerminalSession extends TerminalOutput {
 
         int[] processId = new int[1];
         mTerminalFileDescriptor = JNI.createSubprocess(
-            mShellPath,
+                mExecutable,
             mCwd,
             mArgs,
             mEnv,
