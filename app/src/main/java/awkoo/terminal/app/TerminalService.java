@@ -41,7 +41,7 @@ import awkoo.terminal.core.TerminalSessionClientBase;
  * <p/>
  * 服务还可以选择性地持有一个唤醒锁（wake lock）和一个Wi-Fi锁，并在通知中显示其状态 - 参见 {@link #buildNotification()}。
  */
-public final class TerminalService extends Service implements TerminalShell.TermuxSessionClient {
+public final class TerminalService extends Service {
 
     /**
      * 此服务仅在同一进程内部进行绑定，从不使用IPC（进程间通信）。
@@ -312,7 +312,7 @@ public final class TerminalService extends Service implements TerminalShell.Term
             this,
             shellCommand,
             getTermuxTerminalSessionClient(),
-            this,
+            this::onSessionExited,
             null
         );
 
@@ -347,7 +347,6 @@ public final class TerminalService extends Service implements TerminalShell.Term
      *
      * @param terminalShell 已退出的会话。
      */
-    @Override
     public void onSessionExited(final TerminalShell terminalShell) {
         if (terminalShell != null) {
             mTerminalShells.remove(terminalShell);
