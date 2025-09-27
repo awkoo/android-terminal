@@ -36,7 +36,6 @@ import awkoo.terminal.terminal.TerminalViewClient;
 import awkoo.terminal.terminal.io.TerminalToolbarViewPager;
 import awkoo.terminal.terminal.io.TermuxTerminalExtraKeys;
 import awkoo.terminal.utils.UI;
-import awkoo.terminal.utils.activity.ActivityUtils;
 import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.interact.TextInputDialogUtils;
 import awkoo.terminal.utils.preferences.TermuxAppSharedPreferences;
@@ -449,9 +448,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     private void setSettingsButtonView() {
         binding.settingsButton.setOnClickListener(
-            v -> ActivityUtils.startActivity(
-                this, new Intent(this, SettingsActivity.class)
-            )
+            v -> startActivity(new Intent(this, SettingsActivity.class))
         );
     }
 
@@ -590,9 +587,7 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
                 yield true;
             }
             case CONTEXT_MENU_SETTINGS_ID -> {
-                ActivityUtils.startActivity(
-                    this, new Intent(this, SettingsActivity.class)
-                );
+                startActivity(new Intent(this, SettingsActivity.class));
                 yield true;
             }
             default -> super.onContextItemSelected(item);

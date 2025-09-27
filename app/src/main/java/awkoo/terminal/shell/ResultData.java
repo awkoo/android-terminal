@@ -13,10 +13,6 @@ public class ResultData implements Serializable {
      */
     public final StringBuilder stdout = new StringBuilder();
     /**
-     * The stderr of command.
-     */
-    public final StringBuilder stderr = new StringBuilder();
-    /**
      * The exit code of command.
      */
     public Integer exitCode;
@@ -27,9 +23,6 @@ public class ResultData implements Serializable {
     public List<Error> errorsList = new ArrayList<>();
 
     public synchronized void setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
-        if (errorsList == null)
-            errorsList = new ArrayList<>();
-
         Error error = new Error();
         errorsList.add(error);
 

@@ -3,16 +3,12 @@ package awkoo.terminal.shell;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.system.OsConstants;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 
 import awkoo.terminal.R;
 import awkoo.terminal.terminal.TerminalSession;
@@ -113,8 +109,8 @@ public class TerminalShell {
     /**
      * 发出此 {@link TerminalShell} 已完成的信号。当调用方收到 {@link TerminalSessionClient#onSessionFinished(TerminalSession)} 回调时，应调用此方法。
      * <p>
-     * 如果进程已完成，则为 {@code termuxTask} 的 {@link #mShellCommand} 设置 {@link ResultData#stdout}、{@link ResultData#stderr}
-     * 和 {@link ResultData#exitCode}，然后调用 {@link #processTermuxSessionResult(TerminalShell, ShellCommand)} 处理结果。
+     * 如果进程已完成，则为 {@link #mShellCommand} 设置 {@link ResultData#stdout} 和 {@link ResultData#exitCode}，
+     * 然后调用 {@link #processTermuxSessionResult(TerminalShell, ShellCommand)} 处理结果。
      */
     public void finish() {
         // 如果进程仍在运行，则忽略此调用
@@ -153,7 +149,7 @@ public class TerminalShell {
         // 如果执行命令已经完成，则无需处理结果或发送 SIGKILL
         if (mShellCommand.hasExecuted()) return;
 
-        if (mShellCommand.setStateFailed(Errno.ERRNO_FAILED.getCode(), context.getString(R.string.error_sending_sigkill_to_process))) {
+        if (mShellCommand.setStateFailed(Errno.ERRNO_FAILED.code(), context.getString(R.string.error_sending_sigkill_to_process))) {
             if (processResult) {
                 mShellCommand.resultData.exitCode = 137; // SIGKILL
 

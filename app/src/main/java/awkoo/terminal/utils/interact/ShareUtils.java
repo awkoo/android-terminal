@@ -15,8 +15,6 @@ import awkoo.terminal.utils.data.DataUtils;
 
 public class ShareUtils {
 
-    private static final String LOG_TAG = "ShareUtils";
-
     /**
      * Open the system app chooser that allows the user to select which app to send the intent.
      *

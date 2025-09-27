@@ -1,24 +1,9 @@
 package awkoo.terminal.utils.preferences;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.SharedPreferences;
 
 public class SharedPreferenceUtils {
-
-    /**
-     * Get {@link SharedPreferences} instance of the preferences file 'name' with the operating mode
-     * {@link Context#MODE_PRIVATE}. This file will be created in the app package's default
-     * shared preferences directory.
-     *
-     * @param context The {@link Context} to get the {@link SharedPreferences} instance.
-     * @param name    The preferences file basename without extension.
-     * @return The single {@link SharedPreferences} instance that can be used to retrieve and
-     * modify the preference values.
-     */
-    public static SharedPreferences getPrivateSharedPreferences(Context context, String name) {
-        return context.getSharedPreferences(name, Context.MODE_PRIVATE);
-    }
 
 
     /**

@@ -13,12 +13,9 @@ import android.widget.ListView;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import awkoo.terminal.Constants;
@@ -26,12 +23,10 @@ import awkoo.terminal.R;
 import awkoo.terminal.activities.MainActivity;
 import awkoo.terminal.extrakeys.SpecialButton;
 import awkoo.terminal.shell.ShellUtils;
-import awkoo.terminal.terminal.io.KeyboardShortcut;
 import awkoo.terminal.utils.KeyboardUtils;
 import awkoo.terminal.utils.data.DataUtils;
 import awkoo.terminal.utils.data.UrlUtils;
 import awkoo.terminal.utils.interact.ShareUtils;
-import awkoo.terminal.utils.properties.TermuxPropertyConstants;
 import awkoo.terminal.utils.properties.TermuxSharedProperties;
 import awkoo.terminal.view.TerminalView;
 

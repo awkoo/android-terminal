@@ -1,7 +1,6 @@
 package awkoo.terminal.terminal;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * The interface for communication between {@link TerminalSession} and its client. It is used to
@@ -16,9 +15,9 @@ public interface TerminalSessionClient {
 
     void onSessionFinished(@NonNull TerminalSession finishedSession);
 
-    void onCopyTextToClipboard(@NonNull TerminalSession session, String text);
+    void onCopyTextToClipboard(String text);
 
-    void onPasteTextFromClipboard(@Nullable TerminalSession session);
+    void onPasteTextFromClipboard();
 
     void onColorsChanged(@NonNull TerminalSession session);
 

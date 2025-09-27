@@ -8,12 +8,10 @@ import android.text.TextUtils;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
 import java.util.Properties;
 
-import awkoo.terminal.Constants;
 import awkoo.terminal.R;
 import awkoo.terminal.TerminalService;
 import awkoo.terminal.activities.MainActivity;
@@ -123,14 +121,14 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
     }
 
     @Override
-    public void onCopyTextToClipboard(@NonNull TerminalSession session, String text) {
+    public void onCopyTextToClipboard(String text) {
         if (!mActivity.isVisible()) return;
 
         ShareUtils.copyTextToClipboard(mActivity, text);
     }
 
     @Override
-    public void onPasteTextFromClipboard(@Nullable TerminalSession session) {
+    public void onPasteTextFromClipboard() {
         if (!mActivity.isVisible()) return;
 
         String text = ShareUtils.getTextStringFromClipboardIfSet(mActivity, true);

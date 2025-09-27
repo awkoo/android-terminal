@@ -96,7 +96,7 @@ public class TermuxTerminalExtraKeys extends TerminalExtraKeys {
             }
             case "PASTE" -> {
                 if (mTerminalSessionActivityClient != null)
-                    mTerminalSessionActivityClient.onPasteTextFromClipboard(null);
+                    mTerminalSessionActivityClient.onPasteTextFromClipboard();
             }
             case "SCROLL" -> {
                 TerminalView terminalView = mTerminalViewClient.getActivity().getTerminalView();

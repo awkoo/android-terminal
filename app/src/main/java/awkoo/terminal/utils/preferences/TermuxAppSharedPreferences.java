@@ -13,9 +13,6 @@ import awkoo.terminal.utils.preferences.TermuxPreferenceConstants.TERMUX_APP;
 
 public class TermuxAppSharedPreferences {
 
-    /**
-     * The {@link SharedPreferences} that ideally should be created with {@link SharedPreferenceUtils#getPrivateSharedPreferences(Context, String)}.
-     */
     private final SharedPreferences mSharedPreferences;
     private int MIN_FONTSIZE;
     private int MAX_FONTSIZE;

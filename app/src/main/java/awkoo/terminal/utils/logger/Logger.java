@@ -11,18 +11,6 @@ import java.util.Objects;
 public class Logger {
 
 
-    public static String getMessageAndStackTraceString(String message, Throwable throwable) {
-        if (message == null && throwable == null)
-            return null;
-        else if (message != null && throwable != null)
-            return message + ":\n" + getStackTraceString(throwable);
-        else if (throwable == null)
-            return message;
-        else
-            return getStackTraceString(throwable);
-    }
-
-
     public static String getStackTraceString(Throwable throwable) {
         if (throwable == null) return null;
 

@@ -1,7 +1,6 @@
 package awkoo.terminal.terminal;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class TerminalSessionClientBase implements TerminalSessionClient {
 
@@ -19,11 +18,11 @@ public class TerminalSessionClientBase implements TerminalSessionClient {
     }
 
     @Override
-    public void onCopyTextToClipboard(@NonNull TerminalSession session, String text) {
+    public void onCopyTextToClipboard(String text) {
     }
 
     @Override
-    public void onPasteTextFromClipboard(@Nullable TerminalSession session) {
+    public void onPasteTextFromClipboard() {
     }
 
     @Override

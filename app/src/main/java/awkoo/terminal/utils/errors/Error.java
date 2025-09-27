@@ -1,7 +1,5 @@
 package awkoo.terminal.utils.errors;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
@@ -9,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import awkoo.terminal.utils.UI;
 import awkoo.terminal.utils.logger.Logger;
 
 public class Error implements Serializable {
@@ -78,10 +75,10 @@ public class Error implements Serializable {
         else
             this.type = Errno.TYPE;
 
-        if (code != null && code > Errno.ERRNO_SUCCESS.getCode())
+        if (code != null && code > Errno.ERRNO_SUCCESS.code())
             this.code = code;
         else
-            this.code = Errno.ERRNO_SUCCESS.getCode();
+            this.code = Errno.ERRNO_SUCCESS.code();
 
         this.message = message;
 
@@ -89,10 +86,6 @@ public class Error implements Serializable {
             this.throwablesList = throwablesList;
     }
 
-
-    public String getType() {
-        return type;
-    }
 
     public Integer getCode() {
         return code;
@@ -103,25 +96,23 @@ public class Error implements Serializable {
     }
 
 
-    public synchronized boolean setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
+    public synchronized void setStateFailed(String type, int code, String message, List<Throwable> throwablesList) {
         this.message = message;
         this.throwablesList = throwablesList;
 
         if (type != null && !type.isEmpty())
             this.type = type;
 
-        if (code > Errno.ERRNO_SUCCESS.getCode()) {
+        if (code > Errno.ERRNO_SUCCESS.code()) {
             this.code = code;
-            return true;
         } else {
             //        logMessage(Log.WARN, tag, message);
-            this.code = Errno.ERRNO_FAILED.getCode();
-            return false;
+            this.code = Errno.ERRNO_FAILED.code();
         }
     }
 
     public boolean isStateFailed() {
-        return code > Errno.ERRNO_SUCCESS.getCode();
+        return code > Errno.ERRNO_SUCCESS.code();
     }
 
 
@@ -129,11 +120,6 @@ public class Error implements Serializable {
     @Override
     public String toString() {
         return getErrorLogString(this);
-    }
-
-
-    public void showToast(Context context) {
-        UI.showToast(context, getMinimalErrorLogString(), true);
     }
 
 
@@ -157,11 +143,6 @@ public class Error implements Serializable {
             logString.append("\n").append(geStackTracesLogString());
 
         return logString.toString();
-    }
-
-    public String getMinimalErrorLogString() {
-        return getCodeString() +
-            getTypeAndMessageLogString();
     }
 
 

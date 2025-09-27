@@ -8,7 +8,6 @@ import android.os.ParcelFileDescriptor;
 import android.system.ErrnoException;
 import android.system.Os;
 import android.system.OsConstants;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -345,12 +344,12 @@ public final class TerminalSession extends TerminalOutput {
 
     @Override
     public void onCopyTextToClipboard(String text) {
-        mClient.onCopyTextToClipboard(this, text);
+        mClient.onCopyTextToClipboard(text);
     }
 
     @Override
     public void onPasteTextFromClipboard() {
-        mClient.onPasteTextFromClipboard(this);
+        mClient.onPasteTextFromClipboard();
     }
 
     @Override
