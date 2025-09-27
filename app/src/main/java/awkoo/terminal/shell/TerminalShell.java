@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.system.OsConstants;
 
-import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 import java.io.File;
