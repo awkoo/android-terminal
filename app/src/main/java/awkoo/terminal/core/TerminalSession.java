@@ -161,7 +161,7 @@ public final class TerminalSession extends TerminalOutput {
 
         int[] processId = new int[1];
         mTerminalFileDescriptor = JNI.createSubprocess(
-                mExecutable,
+            mExecutable,
             mCwd,
             mArgs,
             mEnv,
