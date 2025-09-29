@@ -12,7 +12,6 @@
 
     <!-- Terminal Sidebar and Shortcuts -->
     <string name="action_new_session">New session</string>
-    <string name="action_new_session_failsafe">Failsafe</string>
 
     <string name="title_rename_session">Set session name</string>
     <string name="action_rename_session_confirm">Set</string>
@@ -38,9 +37,6 @@
     <string name="action_share_selected_text">Share selected text</string>
     <string name="title_share_selected_text">Terminal Text</string>
     <string name="title_share_selected_text_with">Send selected text to:</string>
-
-    <string name="action_autofill_username">Autofill username</string>
-    <string name="action_autofill_password">Autofill password</string>
 
     <string name="action_reset_terminal">Reset</string>
     <string name="msg_terminal_reset">Terminal reset</string>
@@ -153,8 +149,6 @@
 
 
     <!-- Shell -->
-    <string name="error_sending_sigkill_to_process">Sending SIGKILL to process on user request or because android is killing the execution service</string>
-    <string name="error_failed_to_execute_termux_session_command">Failed to execute \"%1$s\" termux session command</string>
     <string name="title_shell">Shell</string>
     <string name="title_init_session_with_root">Init session with root user</string>
     <string name="su_path">The path to the executable su</string>
