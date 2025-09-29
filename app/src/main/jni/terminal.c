@@ -60,6 +60,7 @@ static int create_subprocess(
     tcgetattr(ptm, &tios); // 获取伪终端主设备的当前属性
     tios.c_iflag |= IUTF8; // 启用输入流中的 UTF-8 编码
     tios.c_iflag &= ~(IXON | IXOFF); // 禁用 XON/XOFF 软件流控制（Ctrl+S / Ctrl+Q）
+    tios.c_lflag &= ~ECHO; // 禁用回显
     tcsetattr(ptm, TCSANOW, &tios); // 设置伪终端主设备的新属性，立即生效
 
     /** 设置初始窗口大小。*/
@@ -84,7 +85,7 @@ static int create_subprocess(
         // 清除 Android Java 进程可能已阻塞的信号：
         sigset_t signals_to_unblock; // 定义一个信号集
         sigfillset(&signals_to_unblock); // 将所有信号添加到信号集中
-        sigprocmask(SIG_UNBLOCK, &signals_to_unblock, 0); // 解除所有信号的阻塞
+        sigprocmask(SIG_UNBLOCK, &signals_to_unblock, nullptr); // 解除所有信号的阻塞
 
         close(ptm); // 关闭伪终端主设备的文件描述符（子进程不需要）
         setsid(); // 创建一个新会话，子进程成为会话组长，并脱离控制终端
@@ -153,7 +154,7 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_core_JNI_createSubprocess(
 ) {
     // 获取命令行参数数组的长度，如果 args 为空则长度为 0
     jsize size = args ? (*env)->GetArrayLength(env, args) : 0;
-    char **argv = NULL; // 声明一个字符指针数组，用于存储 C 风格的命令行参数
+    char **argv = nullptr; // 声明一个字符指针数组，用于存储 C 风格的命令行参数
     if (size > 0) {
         // 为 argv 数组分配内存，大小为 (size + 1) * sizeof(char*)，额外一个用于存储 NULL 终结符
         argv = (char **) malloc((size + 1) * sizeof(char *));
@@ -163,19 +164,19 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_core_JNI_createSubprocess(
             // 从 Java 数组中获取单个命令行参数的 Java 字符串
             jstring arg_java_string = (jstring) (*env)->GetObjectArrayElement(env, args, i);
             // 将 Java 字符串转换为 C 风格的 UTF-8 字符串
-            char const *arg_utf8 = (*env)->GetStringUTFChars(env, arg_java_string, NULL);
+            char const *arg_utf8 = (*env)->GetStringUTFChars(env, arg_java_string, nullptr);
             // 如果转换失败，抛出运行时异常
             if (!arg_utf8)
                 return throw_runtime_exception(env, "GetStringUTFChars() failed for argv");
             argv[i] = strdup(arg_utf8); // 复制 C 字符串并存储到 argv 数组中
             (*env)->ReleaseStringUTFChars(env, arg_java_string, arg_utf8); // 释放 GetStringUTFChars 锁定的内存
         }
-        argv[size] = NULL; // 将 argv 数组的最后一个元素设置为 NULL，作为结束标记
+        argv[size] = nullptr; // 将 argv 数组的最后一个元素设置为 NULL，作为结束标记
     }
 
     // 获取环境变量数组的长度，如果 envVars 为空则长度为 0
     size = envVars ? (*env)->GetArrayLength(env, envVars) : 0;
-    char **envp = NULL; // 声明一个字符指针数组，用于存储 C 风格的环境变量
+    char **envp = nullptr; // 声明一个字符指针数组，用于存储 C 风格的环境变量
     if (size > 0) {
         // 为 envp 数组分配内存
         envp = (char **) malloc((size + 1) * sizeof(char *));
@@ -185,21 +186,21 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_core_JNI_createSubprocess(
             // 从 Java 数组中获取单个环境变量的 Java 字符串
             jstring env_java_string = (jstring) (*env)->GetObjectArrayElement(env, envVars, i);
             // 将 Java 字符串转换为 C 风格的 UTF-8 字符串
-            char const *env_utf8 = (*env)->GetStringUTFChars(env, env_java_string, 0);
+            char const *env_utf8 = (*env)->GetStringUTFChars(env, env_java_string, nullptr);
             // 如果转换失败，抛出运行时异常
             if (!env_utf8)
                 return throw_runtime_exception(env, "GetStringUTFChars() failed for env");
             envp[i] = strdup(env_utf8); // 复制 C 字符串并存储到 envp 数组中
             (*env)->ReleaseStringUTFChars(env, env_java_string, env_utf8); // 释放 GetStringUTFChars 锁定的内存
         }
-        envp[size] = NULL; // 将 envp 数组的最后一个元素设置为 NULL
+        envp[size] = nullptr; // 将 envp 数组的最后一个元素设置为 NULL
     }
 
     int procId = 0; // 初始化进程 ID
     // 将 Java 字符串 cwd 转换为 C 风格的 UTF-8 字符串
-    char const *cmd_cwd = (*env)->GetStringUTFChars(env, cwd, NULL);
+    char const *cmd_cwd = (*env)->GetStringUTFChars(env, cwd, nullptr);
     // 将 Java 字符串 cmd 转换为 C 风格的 UTF-8 字符串
-    char const *cmd_utf8 = (*env)->GetStringUTFChars(env, cmd, NULL);
+    char const *cmd_utf8 = (*env)->GetStringUTFChars(env, cmd, nullptr);
     // 调用 create_subprocess 函数创建子进程
     int ptm = create_subprocess(
             env,
@@ -227,7 +228,7 @@ JNIEXPORT jint JNICALL Java_awkoo_terminal_core_JNI_createSubprocess(
     }
 
     // 获取 Java int 数组 processIdArray 的临界区指针
-    int *pProcId = (int *) (*env)->GetPrimitiveArrayCritical(env, processIdArray, NULL);
+    int *pProcId = (int *) (*env)->GetPrimitiveArrayCritical(env, processIdArray, nullptr);
     // 如果获取失败，抛出运行时异常
     if (!pProcId)
         return throw_runtime_exception(
@@ -259,24 +260,6 @@ JNIEXPORT void JNICALL Java_awkoo_terminal_core_JNI_setPtyWindowSize(
             .ws_ypixel = (unsigned short) (rows * cell_height)     // 设置垂直像素数
     };
     ioctl(fd, TIOCSWINSZ, &sz); // 使用 ioctl 设置指定文件描述符的窗口大小
-}
-
-// 禁用回显，解决多余的命令显示
-// JNI 导出函数：设置标准输入的 echo 模式
-JNIEXPORT void JNICALL Java_awkoo_terminal_core_JNI_setStdinEcho(
-        JNIEnv *UNUSED(env),        // JNI 环境指针（在此函数中未使用）
-        jclass UNUSED(clazz),       // Java 类对象（在此函数中未使用）
-        jint fd,                    // 伪终端的文件描述符
-        jboolean enabled            // 是否启用 echo 模式（true 为启用，false 为禁用）
-) {
-    struct termios tios; // 定义一个 termios 结构体，用于存储终端属性
-    tcgetattr(fd, &tios); // 获取指定文件描述符的当前终端属性
-    if (enabled) { // 如果启用 echo 模式
-        tios.c_lflag |= ECHO; // 设置 ECHO 标志，使输入字符在终端上回显
-    } else { // 如果禁用 echo 模式
-        tios.c_lflag &= ~ECHO; // 清除 ECHO 标志，禁用输入字符的回显
-    }
-    tcsetattr(fd, TCSANOW, &tios); // 设置新的终端属性，立即生效
 }
 
 // JNI 导出函数：等待子进程结束

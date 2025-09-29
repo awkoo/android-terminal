@@ -41,11 +41,6 @@ final class JNI {
     public static native void setPtyWindowSize(int fd, int rows, int cols, int cellWidth, int cellHeight);
 
     /**
-     * Enable or disable echoing of stdin characters.
-     */
-    public static native void setStdinEcho(int fd, boolean enabled);
-
-    /**
      * Causes the calling thread to wait for the process associated with the receiver to finish executing.
      *
      * @return if >= 0, the exit status of the process. If < 0, the signal causing the process to stop negated.
