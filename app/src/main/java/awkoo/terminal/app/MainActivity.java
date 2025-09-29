@@ -109,8 +109,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     private boolean mIsInvalidState;
 
-    private float mTerminalToolbarDefaultHeight;
-
 
     private static final int CONTEXT_MENU_SELECT_URL_ID = 0;
     private static final int CONTEXT_MENU_SHARE_TRANSCRIPT_ID = 1;
@@ -366,9 +364,14 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
             terminalToolbarViewPager.setVisibility(View.VISIBLE);
 
         ViewGroup.LayoutParams layoutParams = terminalToolbarViewPager.getLayoutParams();
-        mTerminalToolbarDefaultHeight = layoutParams.height;
 
-        setTerminalToolbarHeight();
+        layoutParams.height = Math.round(layoutParams.height *
+                (
+                        mTerminalExtraKeys.getExtraKeysInfo() == null ?
+                                0 :
+                                mTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
+                ) * Constants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR);
+        terminalToolbarViewPager.setLayoutParams(layoutParams);
 
         String savedTextInput = null;
         if (savedInstanceState != null)
@@ -380,22 +383,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
         terminalToolbarViewPager.addOnPageChangeListener(
             new TerminalToolbarViewPager.OnPageChangeListener(this)
         );
-    }
-
-    /**
-     * 设置终端工具栏高度。
-     */
-    private void setTerminalToolbarHeight() {
-        final ViewPager terminalToolbarViewPager = binding.terminalToolbarViewPager;
-
-        ViewGroup.LayoutParams layoutParams = terminalToolbarViewPager.getLayoutParams();
-        layoutParams.height = Math.round(mTerminalToolbarDefaultHeight *
-            (
-                mTerminalExtraKeys.getExtraKeysInfo() == null ?
-                    0 :
-                    mTerminalExtraKeys.getExtraKeysInfo().getMatrix().length
-            ) * Constants.DEFAULT_IVALUE_TERMINAL_TOOLBAR_HEIGHT_SCALE_FACTOR);
-        terminalToolbarViewPager.setLayoutParams(layoutParams);
     }
 
     /**
@@ -671,15 +658,6 @@ public final class MainActivity extends AppCompatActivity implements ServiceConn
      */
     public ViewPager getTerminalToolbarViewPager() {
         return binding.terminalToolbarViewPager;
-    }
-
-    /**
-     * 获取终端工具栏的默认高度。
-     *
-     * @return 终端工具栏的默认高度。
-     */
-    public float getTerminalToolbarDefaultHeight() {
-        return mTerminalToolbarDefaultHeight;
     }
 
     /**

@@ -2,12 +2,9 @@
 <resources>
     <string name="application_name">Terminal</string>
     <string name="action_new_session">新会话</string>
-    <string name="action_new_session_failsafe">Failsafe</string>
     <string name="action_open_settings">设置</string>
     <string name="notification_action_exit">退出</string>
     <string name="notification_action_wake_lock">请求唤醒锁</string>
-    <string name="action_autofill_username">自动填充用户名</string>
-    <string name="action_autofill_password">自动填充密码</string>
     <string name="title_select_url_none_found">当前绘画未找到链接</string>
     <string name="msg_select_url_copied_to_clipboard">URL已复制至剪切板</string>
     <string name="title_share_with">分享</string>
@@ -27,8 +24,6 @@
     <string name="action_toggle_soft_keyboard">键盘</string>
     <string name="msg_enabling_terminal_toolbar">正在开启工具栏</string>
     <string name="msg_disabling_terminal_toolbar">正在关闭工具栏</string>
-    <string name="error_sending_sigkill_to_process">因用户请求或 Android 终止执行服务而向进程发送 SIGKILL</string>
-    <string name="error_failed_to_execute_termux_session_command">运行\"%1$s\"终端命令失败</string>
     <string name="notification_action_wake_unlock">解除唤醒锁</string>
     <string name="error_termux_service_start_failed_general">启动服务失败，查看logcat获取错误信息</string>
     <string name="error_termux_service_start_failed_bg">由于Android bg限制，当应用程序处于后台时无法启动服务</string>

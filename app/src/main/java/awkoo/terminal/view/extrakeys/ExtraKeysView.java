@@ -57,7 +57,7 @@ import awkoo.terminal.utils.ThemeUtils;
  * in {@link ExtraKeysView#ExtraKeysView(Context, AttributeSet)} by calling the respective functions.
  * If you extend {@link ExtraKeysView}, you can also set them in the constructor, but do call super().
  * <p>
- * After this you will have to make a call to {@link ExtraKeysView#reload(ExtraKeysInfo, float) and pass
+ * After this you will have to make a call to {@link ExtraKeysView#reload(ExtraKeysInfo) and pass
  * it the {@link ExtraKeysInfo} to load and display the extra keys. Read its class javadocs for more
  * info on how to create it.
  * <p>
@@ -375,11 +375,9 @@ public final class ExtraKeysView extends GridLayout {
      * Reload this instance of {@link ExtraKeysView} with the info passed in {@code extraKeysInfo}.
      *
      * @param extraKeysInfo The {@link ExtraKeysInfo} that defines the necessary info for the extra keys.
-     * @param heightPx      The height in pixels of the parent surrounding the {@link ExtraKeysView}. It must
-     *                      be a single child.
      */
     @SuppressLint("ClickableViewAccessibility")
-    public void reload(ExtraKeysInfo extraKeysInfo, float heightPx) {
+    public void reload(ExtraKeysInfo extraKeysInfo) {
         if (extraKeysInfo == null)
             return;
 
