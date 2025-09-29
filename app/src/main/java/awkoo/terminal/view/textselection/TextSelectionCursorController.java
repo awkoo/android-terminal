@@ -382,18 +382,4 @@ public class TextSelectionCursorController implements CursorController {
         return mActionMode;
     }
 
-    /**
-     * @return true if this controller is currently used to move the start selection.
-     */
-    public boolean isSelectionStartDragged() {
-        return mStartHandle.isDragging();
-    }
-
-    /**
-     * @return true if this controller is currently used to move the end selection.
-     */
-    public boolean isSelectionEndDragged() {
-        return mEndHandle.isDragging();
-    }
-
 }
