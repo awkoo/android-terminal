@@ -20,17 +20,17 @@ import java.util.List;
 
 import awkoo.terminal.R;
 import awkoo.terminal.app.MainActivity;
-import awkoo.terminal.shell.TerminalShell;
+import awkoo.terminal.shell.Shell;
 import awkoo.terminal.core.TerminalSession;
 
-public class SessionsListViewController extends ArrayAdapter<TerminalShell> implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class SessionsListViewController extends ArrayAdapter<Shell> implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     final MainActivity mActivity;
 
     final StyleSpan boldSpan = new StyleSpan(Typeface.BOLD);
     final StyleSpan italicSpan = new StyleSpan(Typeface.ITALIC);
 
-    public SessionsListViewController(MainActivity activity, List<TerminalShell> sessionList) {
+    public SessionsListViewController(MainActivity activity, List<Shell> sessionList) {
         super(activity.getApplicationContext(), R.layout.item_terminal_sessions_list, sessionList);
         this.mActivity = activity;
     }
@@ -46,13 +46,13 @@ public class SessionsListViewController extends ArrayAdapter<TerminalShell> impl
 
         TextView sessionTitleView = sessionRowView.findViewById(R.id.session_title);
 
-        TerminalShell terminalShell = getItem(position);
+        Shell shell = getItem(position);
         final TerminalSession sessionAtRow;
-        if (terminalShell == null) {
+        if (shell == null) {
             sessionTitleView.setText("null shell");
             return sessionRowView;
         } else {
-            sessionAtRow = terminalShell.getTerminalSession();
+            sessionAtRow = shell.getTerminalSession();
         }
 
         String name = sessionAtRow.mSessionName;
@@ -83,14 +83,14 @@ public class SessionsListViewController extends ArrayAdapter<TerminalShell> impl
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        TerminalShell clickedSession = getItem(position);
+        Shell clickedSession = getItem(position);
         mActivity.getTermuxTerminalSessionClient().setCurrentSession(clickedSession.getTerminalSession());
         mActivity.getDrawer().closeDrawers();
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        final TerminalShell selectedSession = getItem(position);
+        final Shell selectedSession = getItem(position);
         mActivity.getTermuxTerminalSessionClient().renameSession(selectedSession.getTerminalSession());
         return true;
     }

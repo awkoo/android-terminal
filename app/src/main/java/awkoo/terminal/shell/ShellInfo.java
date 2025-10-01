@@ -1,6 +1,6 @@
 package awkoo.terminal.shell;
 
-public class ShellCommand {
+public class ShellInfo {
 
     /*
     The {@link State#SUCCESS} and {@link State#FAILED} is defined based on
@@ -11,7 +11,7 @@ public class ShellCommand {
     */
 
     /**
-     * The {@link Enum} that defines {@link ShellCommand} state.
+     * The {@link Enum} that defines {@link ShellInfo} state.
      */
     public enum State {
 
@@ -46,7 +46,7 @@ public class ShellCommand {
     }
 
     /**
-     * The optional unique id for the {@link ShellCommand}. This should equal -1 if execution
+     * The optional unique id for the {@link ShellInfo}. This should equal -1 if execution
      * command is not going to be managed by a shell manager.
      */
     public final int id;
@@ -54,31 +54,31 @@ public class ShellCommand {
     public int exitCode = -1;
 
     /**
-     * The current state of the {@link ShellCommand}.
+     * The current state of the {@link ShellInfo}.
      */
     private State currentState = State.PRE_EXECUTION;
 
 
     /**
-     * The executable for the {@link ShellCommand}.
+     * The executable for the {@link ShellInfo}.
      */
     public String executable;
     /**
-     * The executable arguments array for the {@link ShellCommand}.
+     * The executable arguments array for the {@link ShellInfo}.
      */
     public String[] arguments;
     /**
-     * The stdin string for the {@link ShellCommand}.
+     * The stdin string for the {@link ShellInfo}.
      */
     public final String stdin;
     /**
-     * The current working directory for the {@link ShellCommand}.
+     * The current working directory for the {@link ShellInfo}.
      */
     public String workingDirectory;
 
 
     /**
-     * The terminal transcript rows for the {@link ShellCommand}.
+     * The terminal transcript rows for the {@link ShellInfo}.
      */
     public Integer terminalTranscriptRows;
 
@@ -93,7 +93,7 @@ public class ShellCommand {
 
 
     /**
-     * The command label for the {@link ShellCommand}.
+     * The command label for the {@link ShellInfo}.
      */
     public String commandLabel;
 
@@ -101,11 +101,11 @@ public class ShellCommand {
 
 
     /**
-     * Defines if processing results already called for this {@link ShellCommand}.
+     * Defines if processing results already called for this {@link ShellInfo}.
      */
     public boolean processingResultsAlreadyCalled;
 
-    public ShellCommand(
+    public ShellInfo(
         Integer id,
         String executable,
         String[] arguments,

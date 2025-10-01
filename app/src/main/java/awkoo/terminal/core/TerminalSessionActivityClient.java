@@ -15,7 +15,7 @@ import java.util.Properties;
 import awkoo.terminal.R;
 import awkoo.terminal.app.TerminalService;
 import awkoo.terminal.app.MainActivity;
-import awkoo.terminal.shell.TerminalShell;
+import awkoo.terminal.shell.Shell;
 import awkoo.terminal.utils.UI;
 import awkoo.terminal.utils.ShareUtils;
 import awkoo.terminal.utils.TextInputDialogUtils;
@@ -208,18 +208,18 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             if (--index < 0) index = size - 1;
         }
 
-        TerminalShell terminalShell = service.getSession(index);
-        if (terminalShell != null)
-            setCurrentSession(terminalShell.getTerminalSession());
+        Shell shell = service.getSession(index);
+        if (shell != null)
+            setCurrentSession(shell.getTerminalSession());
     }
 
     public void switchToSession(int index) {
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        TerminalShell terminalShell = service.getSession(index);
-        if (terminalShell != null)
-            setCurrentSession(terminalShell.getTerminalSession());
+        Shell shell = service.getSession(index);
+        if (shell != null)
+            setCurrentSession(shell.getTerminalSession());
     }
 
     public void renameSession(final TerminalSession sessionToRename) {
@@ -247,9 +247,9 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         sessionToRename.mSessionName = text;
         TerminalService service = mActivity.getTermuxService();
         if (service != null) {
-            TerminalShell terminalShell = service.getShellFromSession(sessionToRename);
-            if (terminalShell != null)
-                terminalShell.getExecutionCommand().shellName = text;
+            Shell shell = service.getShellFromSession(sessionToRename);
+            if (shell != null)
+                shell.getExecutionCommand().shellName = text;
         }
     }
 
@@ -259,7 +259,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         TerminalService service = mActivity.getTermuxService();
         if (service == null) return;
 
-        TerminalShell newTerminalShell = service.createSession(
+        Shell newShell = service.createSession(
             null,
             null,
             preferences.getString("shell_startup_commands", ""), // 获取shell启动命令
@@ -268,7 +268,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             preferences.getBoolean("session_with_root", false) // 判断是否以root权限启动会话
         );
 
-        TerminalSession newTerminalSession = newTerminalShell.getTerminalSession();
+        TerminalSession newTerminalSession = newShell.getTerminalSession();
         setCurrentSession(newTerminalSession);
 
         mActivity.getDrawer().closeDrawers();
@@ -296,9 +296,9 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             TerminalService service = mActivity.getTermuxService();
             if (service == null) return null;
 
-            TerminalShell terminalShell = service.getLastSession();
-            if (terminalShell != null)
-                return terminalShell.getTerminalSession();
+            Shell shell = service.getLastSession();
+            if (shell != null)
+                return shell.getTerminalSession();
             else
                 return null;
         }
@@ -333,9 +333,9 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
             if (index >= size) {
                 index = size - 1;
             }
-            TerminalShell terminalShell = service.getSession(index);
-            if (terminalShell != null)
-                setCurrentSession(terminalShell.getTerminalSession());
+            Shell shell = service.getSession(index);
+            if (shell != null)
+                setCurrentSession(shell.getTerminalSession());
         }
     }
 
