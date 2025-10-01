@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import awkoo.terminal.R;
+import awkoo.terminal.utils.UI;
 
 /**
  * 终端会话，由一个与终端接口耦合的进程组成。
@@ -306,8 +307,7 @@ public final class TerminalSession extends TerminalOutput {
         if (isRunning()) {
             try {
                 Os.kill(mShellPid, OsConstants.SIGKILL);
-            } catch (ErrnoException ignored) {
-            }
+            } catch (ErrnoException ignored) {}
         }
     }
 

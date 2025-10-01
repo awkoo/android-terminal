@@ -249,7 +249,7 @@ public class TerminalSessionActivityClient extends TerminalSessionClientBase {
         if (service != null) {
             Shell shell = service.getShellFromSession(sessionToRename);
             if (shell != null)
-                shell.getExecutionCommand().shellName = text;
+                shell.getShellInfo().shellName = text;
         }
     }
 

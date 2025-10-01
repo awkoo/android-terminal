@@ -159,6 +159,10 @@ public class Shell {
         return mTerminalSession;
     }
 
+    public ShellInfo getShellInfo() {
+        return mShellInfo;
+    }
+
 
     public interface ExitCallback {
 

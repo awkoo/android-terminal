@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="application_name">Terminal</string>
+    <string name="application_name">终端</string>
     <string name="action_new_session">新会话</string>
     <string name="action_open_settings">设置</string>
     <string name="notification_action_exit">退出</string>
@@ -41,7 +41,7 @@
     <string name="action_share_transcript">分享历史命令</string>
     <string name="termux_soft_keyboard_enabled_title">启用软键盘</string>
     <string name="termux_soft_keyboard_enabled_on">软键盘已启用（默认）</string>
-    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_title">没有物理键盘时只显示软键盘</string>
+    <string name="termux_soft_keyboard_enabled_only_if_no_hardware_title">实体键盘连接后不启用软键盘</string>
     <string name="termux_soft_keyboard_enabled_off">软键盘已禁用</string>
     <string name="termux_soft_keyboard_enabled_only_if_no_hardware_off">即使连接了物理键盘，软键盘仍然会被启用（默认）</string>
     <string name="termux_soft_keyboard_enabled_only_if_no_hardware_on">仅当未连接硬件键盘时，才会启用软键盘</string>
